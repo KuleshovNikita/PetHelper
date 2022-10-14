@@ -1,13 +1,14 @@
 ﻿using PetHelper.Domain;
+using System.Linq.Expressions;
 
 namespace PetHelper.DataAccess.Repo
 {
     public interface IRepository<T> where T : class
     {
-        T Single(Func<T, bool> command);
+        Task<T> Single(Expression<Func<T, bool>> command);
 
-        bool Any(Func<T, bool> command);
+        Task<bool> Any(Expression<Func<T, bool>> command);
 
-        void Insert(T entity);
+        Task Insert(T entity);
     }
 }

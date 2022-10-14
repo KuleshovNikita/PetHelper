@@ -13,14 +13,14 @@ namespace PetHelper.Business.Auth
 
         public AuthService(IRepository<UserModel> repo) : base(repo) { }
 
-        public ClaimsPrincipal Login(AuthModel authModel)
+        public async Task<ClaimsPrincipal> Login(AuthModel authModel)
         {
             if(authModel is null || string.IsNullOrEmpty(authModel.Login) || string.IsNullOrEmpty(authModel.Password))
             {
                 throw new InvalidDataException("Invalid data found, can't authenticate user");
             }
 
-            var userModel = _repository.Single(x => x.Login == authModel.Login);
+            var userModel = await _repository.Single(x => x.Login == authModel.Login);
 
             if(userModel is null)
             {
@@ -35,7 +35,7 @@ namespace PetHelper.Business.Auth
             return BuildClaims(userModel);
         }
 
-        public ClaimsPrincipal Register(UserModel userModel)
+        public async Task<ClaimsPrincipal> Register(UserModel userModel)
         {
             if(userModel is null || string.IsNullOrEmpty(userModel.FirstName) || 
                 string.IsNullOrEmpty(userModel.LastName) || string.IsNullOrEmpty(userModel.Login) ||
@@ -44,7 +44,7 @@ namespace PetHelper.Business.Auth
                 throw new InvalidDataException("Invalid data found, can't register user");
             }
 
-            if(_repository.Any(x => x.Login == userModel.Login))
+            if(await _repository.Any(x => x.Login == userModel.Login))
             {
                 throw new Exception("User with such email is already registered");
             }
@@ -54,7 +54,7 @@ namespace PetHelper.Business.Auth
             userModel.Password = hashedPassword;
             userModel.Id = Guid.NewGuid();
 
-            _repository.Insert(userModel);
+            await _repository.Insert(userModel);
 
             return BuildClaims(userModel);
         }

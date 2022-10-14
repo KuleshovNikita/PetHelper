@@ -30,21 +30,21 @@ namespace PetHelper.Api.Controllers
             var map = new MapperConfiguration(x => x.CreateMap<UserRequestModel, UserModel>());
             var mapper = new Mapper(map);
 
-            var claims = _authService.Register(mapper.Map<UserModel>(userModel));
+            var claims = await _authService.Register(mapper.Map<UserModel>(userModel));
             await HttpContext.SignInAsync(claims);
 
             return true;
         }
 
         [HttpPost("login")]
-        public async Task<AuthModel> Login([FromBody] AuthModel authModel)
+        public async Task<bool> Login([FromBody] AuthModel authModel)
         {
             if (!ModelState.IsValid)
             {
                 throw new InvalidDataException("invalid data found");
             }
 
-            var claims = _authService.Login(authModel);
+            var claims = await _authService.Login(authModel);
 
             if(!claims.Claims.Any())
             {
@@ -53,8 +53,7 @@ namespace PetHelper.Api.Controllers
 
             await HttpContext.SignInAsync(claims);
 
-            return authModel;
-            //TODO выполнить запрос к БД на аунтификацию, если успешно - перенаправить по returnUrl
+            return true;
         }
     }
 }

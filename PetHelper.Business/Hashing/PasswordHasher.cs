@@ -20,7 +20,7 @@ namespace PetHelper.Business.Hashing
             Array.Copy(salt, 0, hashBytes, 0, SaltLength);
             Array.Copy(hash, 0, hashBytes, SaltLength, HashLength);
 
-            string hashedPassword = Convert.ToBase64String(hash);
+            string hashedPassword = Convert.ToBase64String(hashBytes);
 
             return hashedPassword;
         }

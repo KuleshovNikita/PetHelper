@@ -1,5 +1,6 @@
-﻿using PetHelper.DataAccess.Context;
-using PetHelper.Domain;
+﻿using Microsoft.EntityFrameworkCore;
+using PetHelper.DataAccess.Context;
+using System.Linq.Expressions;
 
 namespace PetHelper.DataAccess.Repo
 {
@@ -7,24 +8,18 @@ namespace PetHelper.DataAccess.Repo
     {
         private readonly PetHelperDbContext _context;
 
-        public Repository(PetHelperDbContext context)
+        public Repository(PetHelperDbContext context) => _context = context;
+
+        public async Task<T> Single(Expression<Func<T, bool>> command)
+            => await _context.Set<T>().SingleAsync(command);
+
+        public async Task<bool> Any(Expression<Func<T, bool>> command) 
+            => await _context.Set<T>().AnyAsync(command);
+
+        public async Task Insert(T entity)
         {
-            _context = context;
-        }
-
-        public T Single(Func<T, bool> command)
-        {
-            var user = _context.Set<T>().Single(command);
-
-            return user;
-        }
-
-        public bool Any(Func<T, bool> command) => _context.Set<T>().Any(command);
-
-        public void Insert(T entity)
-        {
-            _context.Set<T>().Add(entity);
-            _context.SaveChanges();
+            await _context.Set<T>().AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }
