@@ -1,4 +1,4 @@
-﻿namespace PetHelper.Api.RequestModels
+﻿namespace PetHelper.Api.Models.RequestModels
 {
     public record UserRequestModel
     {

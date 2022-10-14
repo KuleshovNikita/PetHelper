@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using PetHelper.Api.RequestModels;
+using PetHelper.Api.Models.RequestModels;
 using PetHelper.Business.Auth;
 using PetHelper.Domain;
 
@@ -12,10 +12,12 @@ namespace PetHelper.Api.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IMapper _mapper;
 
-        public AuthenticationController(IAuthService authService)
+        public AuthenticationController(IAuthService authService, IMapper mapper)
         {
             _authService = authService;
+            _mapper = mapper;
         }
 
         [HttpPost("register")]
@@ -26,11 +28,7 @@ namespace PetHelper.Api.Controllers
                 throw new InvalidDataException("invalid data found");
             }
 
-            //TODO вынести конфигурацию в DI
-            var map = new MapperConfiguration(x => x.CreateMap<UserRequestModel, UserModel>());
-            var mapper = new Mapper(map);
-
-            var claims = await _authService.Register(mapper.Map<UserModel>(userModel));
+            var claims = await _authService.Register(_mapper.Map<UserModel>(userModel));
             await HttpContext.SignInAsync(claims);
 
             return true;

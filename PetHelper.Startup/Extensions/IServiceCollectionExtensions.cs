@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
+using PetHelper.Api.Models.RequestModels;
 using PetHelper.Business.Modules;
 using PetHelper.DataAccess.Modules;
+using PetHelper.Domain;
 using PetHelper.Domain.Modules;
 
 namespace PetHelper.Startup.Extensions
@@ -11,6 +14,8 @@ namespace PetHelper.Startup.Extensions
         {
             services.AddModule<BusinessModule>();
             services.AddModule<DataAccessModule>();
+
+            services.AddAutoMapper(GetAutoMapperConfigs());
 
             return services;
         }
@@ -23,5 +28,11 @@ namespace PetHelper.Startup.Extensions
 
             return services;
         }
+
+        private static Action<IMapperConfigurationExpression> GetAutoMapperConfigs()
+            => cfg =>
+            {
+                cfg.CreateMap<UserRequestModel, UserModel>();
+            };
     }
 }
