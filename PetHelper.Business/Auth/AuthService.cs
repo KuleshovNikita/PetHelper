@@ -1,4 +1,5 @@
-﻿using PetHelper.DataAccess.Repo;
+﻿using PetHelper.Business.Hashing;
+using PetHelper.DataAccess.Repo;
 using PetHelper.Domain;
 using System.Globalization;
 using System.Security.Claims;
@@ -11,20 +12,20 @@ namespace PetHelper.Business.Auth
 
         public ClaimsPrincipal Login(AuthModel authModel)
         {
-
-            //TODO создать хеширование пароля
             if(authModel is null || string.IsNullOrEmpty(authModel.Login) || string.IsNullOrEmpty(authModel.Password))
             {
                 throw new InvalidDataException("Invalid data found, can't authenticate user");
             }
 
-            var userModel = _repository.Single(x => x.Login == authModel.Login && 
-                                                    x.Password == authModel.Password);
+            var userModel = _repository.Single(x => x.Login == authModel.Login);
 
             if(userModel is null)
             {
                 return new ClaimsPrincipal();
             }
+
+            var hasher = new PasswordHasher();
+            hasher.ComparePasswords(authModel.Password, userModel.Password);
 
             var claims = new List<Claim>
             {
