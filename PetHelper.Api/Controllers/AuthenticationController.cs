@@ -5,6 +5,7 @@ using PetHelper.Api.Models.RequestModels;
 using PetHelper.Business.Auth;
 using PetHelper.Domain;
 using PetHelper.ServiceResulting;
+using System.Security.Claims;
 
 namespace PetHelper.Api.Controllers
 {
@@ -22,43 +23,39 @@ namespace PetHelper.Api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ServiceResult> Register([FromBody] UserRequestModel userModel)
-        {
-            var serviceResult = new ServiceResult();
-
-            if (!ModelState.IsValid)
-            {
-                return serviceResult.Fail("Invalid data found");
-            }
-
-
-            await serviceResult.ExecuteAsync(
-                async () => await _authService.Register(_mapper.Map<UserModel>(userModel))
-            );
-
-            await HttpContext.SignInAsync(claims);
-
-            return true;
-        }
+        public async Task<ServiceResult<Empty>> Register([FromBody] UserRequestModel userModel)
+            => await RunWithServiceResult(() => _authService.Register(_mapper.Map<UserModel>(userModel)));
 
         [HttpPost("login")]
-        public async Task<bool> Login([FromBody] AuthModel authModel)
+        public async Task<ServiceResult<Empty>> Login([FromBody] AuthModel authModel)
+            => await RunWithServiceResult(() => _authService.Login(authModel));
+
+        private async Task<ServiceResult<Empty>> RunWithServiceResult(Func<Task<ServiceResult<ClaimsPrincipal>>> command)
         {
+            var finalResult = new ServiceResult<Empty>();
+
             if (!ModelState.IsValid)
             {
-                throw new InvalidDataException("invalid data found");
+                return finalResult.Fail("Invalid data found");
             }
 
-            var claims = await _authService.Login(authModel);
-
-            if(!claims.Claims.Any())
+            try
             {
-                throw new Exception("No such user exists");
+                var claimsResult = await command();
+
+                if (!claimsResult.IsSuccessful)
+                {
+                    return finalResult.Fail(claimsResult.ClientErrorMessage!);
+                }
+
+                await HttpContext.SignInAsync(claimsResult.Value);
+
+                return finalResult.Success();
             }
-
-            await HttpContext.SignInAsync(claims);
-
-            return true;
+            catch (FailedServiceResultException ex)
+            {
+                return finalResult.Fail(ex.Message);
+            }
         }
     }
 }

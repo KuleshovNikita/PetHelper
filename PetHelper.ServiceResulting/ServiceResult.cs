@@ -2,18 +2,22 @@
 
 namespace PetHelper.ServiceResulting
 {
-    public class ServiceResult
+    public class ServiceResult<TEntity>
     {
-        public bool IsSuccessful { get; private set; } = true;
+        public bool IsSuccessful { get; set; } = true;
+
+        public TEntity Value { get; set; }
 
         [JsonIgnore]
-        public List<Exception> Exceptions { get; } = new List<Exception>();
+        public Exception Exception { get; private set; } = new Exception();
 
         public string? ClientErrorMessage { get; private set; }
 
-        private bool _continueCatching = true;
+        public ServiceResult() { }
 
-        public ServiceResult Execute(Func<ServiceResult> command)
+        public ServiceResult(TEntity value) => Value = value;
+
+        public ServiceResult<TEntity> Execute(Func<TEntity> command)
         {
             try
             {
@@ -25,13 +29,31 @@ namespace PetHelper.ServiceResulting
             catch(Exception ex)
             {
                 IsSuccessful = false;
-                Exceptions.Add(ex.InnerException ?? ex);
+                Exception = ex.InnerException ?? ex;
             }
 
             return this;
         }
 
-        public async Task<ServiceResult> ExecuteAsync<T>(Func<Task<T>> command)
+        public async Task<ServiceResult<TEntity>> ExecuteAsync(Func<Task<TEntity>> command)
+        {
+            try
+            {
+                if (IsSuccessful)
+                {
+                    Value = await command();
+                }
+            }
+            catch (Exception ex)
+            {
+                IsSuccessful = false;
+                Exception = ex.InnerException ?? ex;
+            }
+
+            return this;
+        }
+
+        public async Task<ServiceResult<TEntity>> ExecuteAsync(Func<Task> command)
         {
             try
             {
@@ -43,28 +65,36 @@ namespace PetHelper.ServiceResulting
             catch (Exception ex)
             {
                 IsSuccessful = false;
-                Exceptions.Add(ex.InnerException ?? ex);
+                Exception = ex.InnerException ?? ex;
             }
 
             return this;
         }
 
-        public ServiceResult Catch<TException>(string errorMessage) where TException : Exception
-        {
-            if(!IsSuccessful && Exceptions.Any(ex => ex is TException))
+        public ServiceResult<TEntity> Catch<TException>(string? errorMessage = null) where TException : Exception
+        {   
+            if(Exception is TException)
             {
-                _continueCatching = false;
-                ClientErrorMessage = errorMessage;
+                ClientErrorMessage = errorMessage ?? Exception.Message;
+
+                throw new FailedServiceResultException(ClientErrorMessage, Exception);
             }
 
             return this;
         }
 
-        public ServiceResult Success() => SetResultState(true, string.Empty);
+        public ServiceResult<TEntity> Success() => SetResultState(true, string.Empty);
 
-        public ServiceResult Fail(string failMessage = "") => SetResultState(false, failMessage);
+        public ServiceResult<TEntity> FailAndThrow(string failMessage = "")
+        {
+            Fail(failMessage);
 
-        private ServiceResult SetResultState(bool state, string message)
+            throw new FailedServiceResultException(failMessage, Exception);
+        }
+
+        public ServiceResult<TEntity> Fail(string failMessage = "") => SetResultState(false, failMessage);
+
+        private ServiceResult<TEntity> SetResultState(bool state, string message)
         {
             ClientErrorMessage = message;
             IsSuccessful = state;
