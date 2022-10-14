@@ -8,13 +8,14 @@ namespace PetHelper.DataAccess.Context.ModelContexts
         public void Configure(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserModel>().HasKey(x => x.Id);
+            modelBuilder.Entity<UserModel>().HasAlternateKey(x => x.Login);
+            modelBuilder.Entity<UserModel>().HasAlternateKey(x => x.Password);
             modelBuilder.Entity<UserModel>(entity =>
             {
                 entity.Property(x => x.Id)
                       .IsRequired();
 
-                entity.Property(x => x.Age)
-                      .IsRequired();
+                entity.Property(x => x.Age);
 
                 entity.Property(x => x.FirstName)
                       .HasMaxLength(30)
@@ -26,7 +27,14 @@ namespace PetHelper.DataAccess.Context.ModelContexts
 
                 entity.HasMany(x => x.Pets)
                       .WithOne(x => x.Owner)
-                      .HasForeignKey(x => x.OwnerId)
+                      .HasForeignKey(x => x.OwnerId);
+
+                entity.Property(x => x.Login)
+                      .HasMaxLength(100)
+                      .IsRequired();
+
+                entity.Property(x => x.Password)
+                      .HasMaxLength(100)
                       .IsRequired();
             });
         }

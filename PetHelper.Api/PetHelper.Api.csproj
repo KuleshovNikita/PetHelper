@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -15,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PetHelper.Api.Models\PetHelper.Api.Models.csproj" />
     <ProjectReference Include="..\PetHelper.Domain\PetHelper.Domain.csproj" />
     <ProjectReference Include="..\PetHelper.Startup\PetHelper.Startup.csproj" />
   </ItemGroup>

@@ -1,6 +1,6 @@
 ﻿namespace PetHelper.Domain
 {
-    public record BaseModel
+    public abstract record BaseModel
     {
         public Guid Id { get; set; }
     }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PetHelper.Api.Controllers
@@ -7,6 +7,8 @@ namespace PetHelper.Api.Controllers
     [ApiController]
     public class UserAccountController : ControllerBase
     {
-
+        [HttpGet]
+        [Authorize]
+        public string Foo() => "success";
     }
 }
