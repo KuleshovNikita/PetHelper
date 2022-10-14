@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PetHelper.DataAccess.Repo;
 using PetHelper.Domain.Modules;
 
 namespace PetHelper.DataAccess.Modules
@@ -7,7 +8,9 @@ namespace PetHelper.DataAccess.Modules
     {
         public IServiceCollection ConfigureModule(IServiceCollection services)
         {
-            return new ServiceCollection();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            return services;
         }
     }
 }

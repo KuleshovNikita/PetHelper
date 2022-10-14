@@ -11,5 +11,9 @@ namespace PetHelper.Domain
         public int Age { get; set; }
 
         public IEnumerable<PetModel> Pets { get; set; }
+
+        public string Password { get; set; }
+
+        public string Login { get; set; }
     }
 }
