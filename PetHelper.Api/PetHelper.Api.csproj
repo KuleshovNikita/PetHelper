@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PetHelper.Api.Models\PetHelper.Api.Models.csproj" />
     <ProjectReference Include="..\PetHelper.Domain\PetHelper.Domain.csproj" />
+    <ProjectReference Include="..\PetHelper.ServiceResulting\PetHelper.ServiceResulting.csproj" />
     <ProjectReference Include="..\PetHelper.Startup\PetHelper.Startup.csproj" />
   </ItemGroup>
 

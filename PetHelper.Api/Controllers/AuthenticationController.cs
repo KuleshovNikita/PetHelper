@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetHelper.Api.Models.RequestModels;
 using PetHelper.Business.Auth;
 using PetHelper.Domain;
+using PetHelper.ServiceResulting;
 
 namespace PetHelper.Api.Controllers
 {
@@ -21,14 +22,20 @@ namespace PetHelper.Api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<bool> Register([FromBody] UserRequestModel userModel)
+        public async Task<ServiceResult> Register([FromBody] UserRequestModel userModel)
         {
+            var serviceResult = new ServiceResult();
+
             if (!ModelState.IsValid)
             {
-                throw new InvalidDataException("invalid data found");
+                return serviceResult.Fail("Invalid data found");
             }
 
-            var claims = await _authService.Register(_mapper.Map<UserModel>(userModel));
+
+            await serviceResult.ExecuteAsync(
+                async () => await _authService.Register(_mapper.Map<UserModel>(userModel))
+            );
+
             await HttpContext.SignInAsync(claims);
 
             return true;
