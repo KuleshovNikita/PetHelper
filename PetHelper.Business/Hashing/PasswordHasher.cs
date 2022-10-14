@@ -9,52 +9,50 @@ namespace PetHelper.Business.Hashing
         private const int HashLength = 20;
         private const int TotalLength = SaltLength + HashLength;
 
-        public string HashPassword(string data)
+        public string HashPassword(string password)
         {
             byte[] salt = new byte[SaltLength];
             new RNGCryptoServiceProvider().GetBytes(salt);
 
-            var derivedBytes = new Rfc2898DeriveBytes(data, salt, RfcIterationsCount);
-            byte[] hash = derivedBytes.GetBytes(HashLength);
+            var hash = MakeHash(password, salt).GetBytes(HashLength);
 
             byte[] hashBytes = new byte[TotalLength];
             Array.Copy(salt, 0, hashBytes, 0, SaltLength);
             Array.Copy(hash, 0, hashBytes, SaltLength, HashLength);
 
-            string hashedPassword = Convert.ToBase64String(hashBytes);
+            string hashedPassword = Convert.ToBase64String(hash);
 
             return hashedPassword;
         }
 
         public bool ComparePasswords(string actualAsValue, string expectedAsHash)
         {
-            var actualHashed = HashPassword(actualAsValue);
+            var expectedBytes = Convert.FromBase64String(expectedAsHash);
 
-            var actualBytes = GetBytesWithoutSalt(actualHashed);
-            var expectedBytes = GetBytesWithoutSalt(expectedAsHash);
+            var salt = GetSaltOfPassword(expectedAsHash);
+            var actualBytes = MakeHash(actualAsValue, salt).GetBytes(HashLength);
 
             for (int i = 0; i < HashLength; i++)
             {
-                if (actualBytes[i + SaltLength] != expectedBytes[i])
+                if (expectedBytes[i + SaltLength] != actualBytes[i])
                 {
                     return false;
                 }
             }
 
-            return true;                
+            return true;
         }
 
-        private byte[] GetBytesWithoutSalt(string hashedPassword)
+        private Rfc2898DeriveBytes MakeHash(string password, byte[] salt) 
+            => new Rfc2898DeriveBytes(password, salt, RfcIterationsCount);
+
+        private byte[] GetSaltOfPassword(string expectedAsHash)
         {
-            byte[] hashBytes = Convert.FromBase64String(hashedPassword);
+            byte[] hashBytes = Convert.FromBase64String(expectedAsHash);
+            byte[] salt = new byte[16];
+            Array.Copy(hashBytes, 0, salt, 0, 16);
 
-            byte[] salt = new byte[SaltLength];
-            Array.Copy(hashBytes, 0, salt, 0, SaltLength);
-            var pbkdf2 = new Rfc2898DeriveBytes(hashedPassword, salt, RfcIterationsCount);
-
-            byte[] hash = pbkdf2.GetBytes(HashLength);
-
-            return hash;
+            return salt;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using PetHelper.Business.Hashing;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using PetHelper.Business.Hashing;
 using PetHelper.DataAccess.Repo;
 using PetHelper.Domain;
 using System.Globalization;
@@ -26,7 +27,10 @@ namespace PetHelper.Business.Auth
                 return new ClaimsPrincipal();
             }
 
-            _passwordHasher.ComparePasswords(authModel.Password, userModel.Password);
+            if(!_passwordHasher.ComparePasswords(authModel.Password, userModel.Password))
+            {
+                throw new Exception("Wrong password");
+            }
 
             return BuildClaims(userModel);
         }
@@ -46,12 +50,15 @@ namespace PetHelper.Business.Auth
             }
 
             var hashedPassword = _passwordHasher.HashPassword(userModel.Password);
+
+            userModel.Password = hashedPassword;
             userModel.Id = Guid.NewGuid();
 
             _repository.Insert(userModel);
 
             return BuildClaims(userModel);
         }
+
         private ClaimsPrincipal BuildClaims(UserModel userModel)
         {
             var claims = new List<Claim>
@@ -61,7 +68,7 @@ namespace PetHelper.Business.Auth
                 new Claim(ClaimTypes.Expiration, AfterMinutes(30))
             };
 
-            var claimsIdentity = new ClaimsIdentity(claims);
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
             return claimsPrincipal;
