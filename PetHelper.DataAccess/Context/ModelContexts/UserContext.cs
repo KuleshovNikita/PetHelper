@@ -15,8 +15,7 @@ namespace PetHelper.DataAccess.Context.ModelContexts
                 entity.Property(x => x.Id)
                       .IsRequired();
 
-                entity.Property(x => x.Age)
-                      .IsRequired();
+                entity.Property(x => x.Age);
 
                 entity.Property(x => x.FirstName)
                       .HasMaxLength(30)
@@ -28,8 +27,7 @@ namespace PetHelper.DataAccess.Context.ModelContexts
 
                 entity.HasMany(x => x.Pets)
                       .WithOne(x => x.Owner)
-                      .HasForeignKey(x => x.OwnerId)
-                      .IsRequired();
+                      .HasForeignKey(x => x.OwnerId);
 
                 entity.Property(x => x.Login)
                       .HasMaxLength(100)

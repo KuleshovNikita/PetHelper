@@ -1,16 +1,12 @@
-﻿using PetHelper.Domain.Pets;
-
-namespace PetHelper.Domain
+﻿namespace PetHelper.Api.RequestModels
 {
-    public record UserModel : BaseModel
+    public record UserRequestModel
     {
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
 
         public int? Age { get; set; }
-
-        public IEnumerable<PetModel>? Pets { get; set; }
 
         public string Password { get; set; }
 

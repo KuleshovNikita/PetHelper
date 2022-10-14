@@ -5,6 +5,8 @@ namespace PetHelper.Business.Auth
 {
     public interface IAuthService
     {
-        public ClaimsPrincipal Login(AuthModel authModel);
+        ClaimsPrincipal Login(AuthModel authModel);
+
+        ClaimsPrincipal Register(UserModel userModel);
     }
 }
