@@ -77,5 +77,22 @@ namespace PetHelper.DataAccess.Repo
                 return Task.FromResult(result.Fail(ex));
             }
         }
+
+        public async Task<ServiceResult<Empty>> Remove(T entity)
+        {
+            var result = new ServiceResult<Empty>();
+
+            try
+            {
+                _context.Set<T>().Remove(entity);
+                await _context.SaveChangesAsync();
+
+                return result.Success();
+            }
+            catch (Exception ex)
+            {
+                return result.Fail(ex);
+            }
+        }
     }
 }

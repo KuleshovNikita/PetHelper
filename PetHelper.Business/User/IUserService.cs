@@ -11,5 +11,7 @@ namespace PetHelper.Business.User
         Task<ServiceResult<UserModel>> GetUser(Expression<Func<UserModel, bool>> predicate, string messageIfNotFound);
 
         Task<ServiceResult<Empty>> UpdateUser(UserModel userModel);
+
+        Task<ServiceResult<Empty>> RemoveUser(Guid userId);
     }
 }

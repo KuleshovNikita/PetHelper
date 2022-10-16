@@ -40,6 +40,23 @@ namespace PetHelper.Business.User
             return serviceResult.Success();
         }
 
+        public async Task<ServiceResult<Empty>> RemoveUser(Guid userId)
+        {
+            var serviceResult = new ServiceResult<Empty>();
+
+            if (UserExists(userId, out var userModel))
+            {
+                (await _repository.Remove(userModel))
+                    .Catch<OperationCanceledException>()
+                    .Catch<DbUpdateException>()
+                    .Catch<DbUpdateConcurrencyException>();
+
+                return serviceResult.Success();
+            }
+
+            return serviceResult.FailAndThrow(Resources.TheItemDoesntExist);
+        }
+
         public async Task<ServiceResult<UserModel>> GetUser(
             Expression<Func<UserModel, bool>> predicate, string messageIfNotFound)
                 => (await _repository.FirstOrDefault(predicate))
@@ -53,6 +70,20 @@ namespace PetHelper.Business.User
                     .Catch<OperationCanceledException>()
                     .Catch<DbUpdateException>()
                     .Catch<DbUpdateConcurrencyException>();
+
+        private bool UserExists(Guid userId, out UserModel userModel)
+        {
+            try
+            {
+                userModel = GetUser(x => x.Id == userId, Resources.TheItemDoesntExist).Result.Value;
+                return true;
+            }
+            catch (FailedServiceResultException)
+            {
+                userModel = new UserModel();
+                return false;
+            }
+        }
 
         private async Task<bool> IsLoginAlreadyRegistered(string login)
         {

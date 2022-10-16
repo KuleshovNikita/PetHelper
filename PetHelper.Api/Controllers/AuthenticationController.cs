@@ -29,7 +29,7 @@ namespace PetHelper.Api.Controllers
                 var claimsResult = await _authService.Register(_mapper.Map<UserModel>(userModel));
                 await HttpContext.SignInAsync(claimsResult.Value);
 
-                return new ServiceResult<Empty>().Success();
+                return SuccessEmptyResult();
             });
 
         [HttpPost("login")]
@@ -39,7 +39,7 @@ namespace PetHelper.Api.Controllers
                 var claimsResult = await _authService.Login(authModel);
                 await HttpContext.SignInAsync(claimsResult.Value);
 
-                return new ServiceResult<Empty>().Success();
+                return SuccessEmptyResult();
             });
 
         [HttpGet("confirmEmail/{key}")]
@@ -49,7 +49,7 @@ namespace PetHelper.Api.Controllers
                 key = Uri.UnescapeDataString(key);
                 await _authService.ConfirmEmail(key);
 
-                return new ServiceResult<Empty>().Success();
+                return SuccessEmptyResult();
             });
 
         [Authorize]
@@ -59,7 +59,7 @@ namespace PetHelper.Api.Controllers
             {
                 await HttpContext.SignOutAsync();
 
-                return new ServiceResult<Empty>().Success();
+                return SuccessEmptyResult();
             });
     }
 }

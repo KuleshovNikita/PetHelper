@@ -12,5 +12,7 @@ namespace PetHelper.DataAccess.Repo
         Task<ServiceResult<Empty>> Insert(T entity);
 
         Task<ServiceResult<Empty>> Update(T entity);
+
+        Task<ServiceResult<Empty>> Remove(T entity);
     }
 }

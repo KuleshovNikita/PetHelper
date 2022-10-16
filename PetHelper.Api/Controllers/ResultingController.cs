@@ -21,5 +21,7 @@ namespace PetHelper.Api.Controllers
                 return result.Fail(ex);
             }
         }
+
+        protected ServiceResult<Empty> SuccessEmptyResult() => new ServiceResult<Empty>().Success();
     }
 }
