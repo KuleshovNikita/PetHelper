@@ -6,6 +6,7 @@ using PetHelper.Domain;
 using PetHelper.Domain.Exceptions;
 using PetHelper.ServiceResulting;
 using System.Globalization;
+using System.Net.Mail;
 using System.Security.Claims;
 
 namespace PetHelper.Business.Auth
@@ -24,6 +25,8 @@ namespace PetHelper.Business.Auth
             {
                 return serviceResult.FailAndThrow("Invalid data found, can't authenticate user");
             }
+
+            ValidateEmail(authModel.Login, serviceResult);
 
             var userModel = (await new ServiceResult<UserModel>()
                 .ExecuteAsync(async () => await _repository.FirstOrDefault(x => x.Login == authModel.Login)))
@@ -51,6 +54,8 @@ namespace PetHelper.Business.Auth
                 return serviceResult.FailAndThrow("Invalid data found, can't register user");
             }
 
+            ValidateEmail(userModel.Login, serviceResult);
+
             if(await LoginIsAlreadyRegistered(userModel.Login))
             {
                 return serviceResult.FailAndThrow("The login is already registered");
@@ -69,6 +74,14 @@ namespace PetHelper.Business.Auth
             serviceResult.Value = BuildClaims(userModel);
 
             return serviceResult;
+        }
+
+        private void ValidateEmail(string login, ServiceResult<ClaimsPrincipal> serviceResult)
+        {
+            if (!MailAddress.TryCreate(login, out _))
+            {
+                serviceResult.FailAndThrow("Invalid email address format specified");
+            }
         }
 
         private async Task<bool> LoginIsAlreadyRegistered(string login)
