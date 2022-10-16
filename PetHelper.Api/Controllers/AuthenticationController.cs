@@ -44,7 +44,7 @@ namespace PetHelper.Api.Controllers
 
                 return result.Success();
             }
-            catch (Exception ex)
+            catch (FailedServiceResultException ex)
             {
                 return result.Fail(ex.Message);
             }
@@ -62,7 +62,7 @@ namespace PetHelper.Api.Controllers
 
                 return result.Success();
             }
-            catch (Exception ex)
+            catch (FailedServiceResultException ex)
             {
                 return result.Fail(ex.Message);
             }
