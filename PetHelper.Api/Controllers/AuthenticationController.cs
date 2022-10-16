@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetHelper.Api.Models.RequestModels;
 using PetHelper.Business.Auth;
@@ -29,6 +30,24 @@ namespace PetHelper.Api.Controllers
         [HttpPost("login")]
         public async Task<ServiceResult<Empty>> Login([FromBody] AuthModel authModel)
             => await RunWithServiceResult(() => _authService.Login(authModel));
+
+        [Authorize]
+        [HttpGet("logout")]
+        public async Task<ServiceResult<Empty>> LogOut()
+        {
+            var result = new ServiceResult<Empty>();
+
+            try
+            {
+                await HttpContext.SignOutAsync();
+
+                return result.Success();
+            }
+            catch (Exception ex)
+            {
+                return result.Fail(ex.Message);
+            }
+        }
 
         private async Task<ServiceResult<Empty>> RunWithServiceResult(Func<Task<ServiceResult<ClaimsPrincipal>>> command)
         {
