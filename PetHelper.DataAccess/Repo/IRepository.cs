@@ -1,14 +1,16 @@
-﻿using PetHelper.Domain;
+﻿using PetHelper.ServiceResulting;
 using System.Linq.Expressions;
 
 namespace PetHelper.DataAccess.Repo
 {
     public interface IRepository<T> where T : class
     {
-        Task<T> FirstOrDefault(Expression<Func<T, bool>> command);
+        Task<ServiceResult<T>> FirstOrDefault(Expression<Func<T, bool>> command);
 
-        Task<bool> Any(Expression<Func<T, bool>> command);
+        Task<ServiceResult<bool>> Any(Expression<Func<T, bool>> command);
 
-        Task Insert(T entity);
+        Task<ServiceResult<Empty>> Insert(T entity);
+
+        Task<ServiceResult<Empty>> Update(T entity);
     }
 }

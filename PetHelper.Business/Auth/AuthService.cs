@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using PetHelper.Business.Email;
 using PetHelper.Business.Hashing;
 using PetHelper.DataAccess.Repo;
 using PetHelper.Domain;
@@ -13,9 +14,13 @@ namespace PetHelper.Business.Auth
 {
     public class AuthService : DataAccessableService<UserModel>, IAuthService
     {
+        private readonly IEmailService _emailService;
         private readonly PasswordHasher _passwordHasher = new PasswordHasher();
 
-        public AuthService(IRepository<UserModel> repo) : base(repo) { }
+        public AuthService(IEmailService emailService, IRepository<UserModel> repo) : base(repo) 
+        {
+            _emailService = emailService;
+        }
 
         public async Task<ServiceResult<ClaimsPrincipal>> Login(AuthModel authModel)
         {
@@ -28,19 +33,24 @@ namespace PetHelper.Business.Auth
 
             ValidateEmail(authModel.Login, serviceResult);
 
-            var userModel = (await new ServiceResult<UserModel>()
-                .ExecuteAsync(async () => await _repository.FirstOrDefault(x => x.Login == authModel.Login)))
-                .Catch<EntityNotFoundException>("User with the provided login doesn't exist")
-                .Catch<ArgumentNullException>()
-                .Catch<InvalidOperationException>()
-                .Catch<OperationCanceledException>();
+            var userResult = 
+                (await _repository.FirstOrDefault(x => x.Login == authModel.Login))
+                    .Catch<EntityNotFoundException>("User with the provided login doesn't exist")
+                    .Catch<ArgumentNullException>()
+                    .Catch<InvalidOperationException>()
+                    .Catch<OperationCanceledException>();
 
-            if(!_passwordHasher.ComparePasswords(authModel.Password, userModel.Value.Password))
+            if(!userResult.Value.IsEmailConfirmed)
+            {
+                return serviceResult.FailAndThrow("You can't authenticate the account, email confirmation is needed");
+            }
+
+            if(!_passwordHasher.ComparePasswords(authModel.Password, userResult.Value.Password))
             {
                 return serviceResult.FailAndThrow("Wrong password or login");
             }
 
-            serviceResult.Value = BuildClaims(userModel.Value);
+            serviceResult.Value = BuildClaims(userResult.Value);
 
             return serviceResult;
         }
@@ -65,15 +75,39 @@ namespace PetHelper.Business.Auth
             userModel.Password = hashedPassword;
             userModel.Id = Guid.NewGuid();
 
-            _ = (await new ServiceResult<Empty>()
-                    .ExecuteAsync(async () => await _repository.Insert(userModel)))
+            (await _repository.Insert(userModel))
                     .Catch<OperationCanceledException>()
                     .Catch<DbUpdateException>()
-                    .Catch<DbUpdateConcurrencyException>();
+                    .Catch<DbUpdateConcurrencyException>(); 
+
+            await _emailService.SendEmailConfirmMessage(userModel);
 
             serviceResult.Value = BuildClaims(userModel);
 
             return serviceResult;
+        }
+
+        public async Task<ServiceResult<Empty>> ConfirmEmail(string key)
+        {
+            var userResult = 
+                (await _repository.FirstOrDefault(x => x.Password.ToLower() == key.ToLower()))
+                    .Catch<ArgumentNullException>()
+                    .Catch<OperationCanceledException>()
+                    .Catch<EntityNotFoundException>("No users for specified key were found");
+
+            if(userResult.Value.IsEmailConfirmed)
+            {
+                return new ServiceResult<Empty>().FailAndThrow("The user's email is already confirmed");
+            }
+
+            userResult.Value.IsEmailConfirmed = true;
+
+            (await _repository.Update(userResult.Value))
+                .Catch<OperationCanceledException>()
+                .Catch<DbUpdateException>()
+                .Catch<DbUpdateConcurrencyException>();
+
+            return new ServiceResult<Empty>().Success();
         }
 
         private void ValidateEmail(string login, ServiceResult<ClaimsPrincipal> serviceResult)
@@ -88,10 +122,10 @@ namespace PetHelper.Business.Auth
         {
             var serviceResult = new ServiceResult<bool>();
 
-            serviceResult = (await serviceResult.ExecuteAsync(
-                async () => await _repository.Any(x => x.Login == login)
-            )).Catch<OperationCanceledException>()
-              .Catch<ArgumentNullException>();
+            serviceResult = 
+                (await _repository.Any(x => x.Login == login))
+                    .Catch<OperationCanceledException>()
+                    .Catch<ArgumentNullException>();
 
             return serviceResult.Value;
         }

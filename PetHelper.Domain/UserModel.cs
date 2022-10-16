@@ -15,5 +15,7 @@ namespace PetHelper.Domain
         public string Password { get; set; }
 
         public string Login { get; set; }
+
+        public bool IsEmailConfirmed { get; set; }
     }
 }

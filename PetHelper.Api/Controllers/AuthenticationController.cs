@@ -7,6 +7,7 @@ using PetHelper.Business.Auth;
 using PetHelper.Domain;
 using PetHelper.ServiceResulting;
 using System.Security.Claims;
+using System.Web;
 
 namespace PetHelper.Api.Controllers
 {
@@ -31,6 +32,24 @@ namespace PetHelper.Api.Controllers
         public async Task<ServiceResult<Empty>> Login([FromBody] AuthModel authModel)
             => await RunWithServiceResult(() => _authService.Login(authModel));
 
+        [HttpGet("confirmEmail/{key}")]
+        public async Task<ServiceResult<Empty>> ConfirmEmail(string key)
+        {
+            var result = new ServiceResult<Empty>();
+
+            try
+            {
+                key = HttpUtility.UrlDecode(key);
+                await _authService.ConfirmEmail(key);
+
+                return result.Success();
+            }
+            catch (FailedServiceResultException ex)
+            {
+                return result.Fail(ex.Message);
+            }
+        }
+
         [Authorize]
         [HttpGet("logout")]
         public async Task<ServiceResult<Empty>> LogOut()
@@ -43,7 +62,7 @@ namespace PetHelper.Api.Controllers
 
                 return result.Success();
             }
-            catch (Exception ex)
+            catch (FailedServiceResultException ex)
             {
                 return result.Fail(ex.Message);
             }
