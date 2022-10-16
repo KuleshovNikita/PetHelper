@@ -6,15 +6,12 @@ using PetHelper.Api.Models.RequestModels;
 using PetHelper.Business.Auth;
 using PetHelper.Domain;
 using PetHelper.ServiceResulting;
-using System.Security.Claims;
-using System.Web;
-using PetHelper.Domain.Properties;
 
 namespace PetHelper.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthenticationController : ControllerBase
+    public class AuthenticationController : ResultingController
     {
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
@@ -27,69 +24,42 @@ namespace PetHelper.Api.Controllers
 
         [HttpPost("register")]
         public async Task<ServiceResult<Empty>> Register([FromBody] UserRequestModel userModel)
-            => await RunWithServiceResult(() => _authService.Register(_mapper.Map<UserModel>(userModel)));
+            => await RunWithServiceResult(async () =>
+            {
+                var claimsResult = await _authService.Register(_mapper.Map<UserModel>(userModel));
+                await HttpContext.SignInAsync(claimsResult.Value);
+
+                return new ServiceResult<Empty>().Success();
+            });
 
         [HttpPost("login")]
         public async Task<ServiceResult<Empty>> Login([FromBody] AuthModel authModel)
-            => await RunWithServiceResult(() => _authService.Login(authModel));
+            => await RunWithServiceResult(async () =>
+            {
+                var claimsResult = await _authService.Login(authModel);
+                await HttpContext.SignInAsync(claimsResult.Value);
+
+                return new ServiceResult<Empty>().Success();
+            });
 
         [HttpGet("confirmEmail/{key}")]
         public async Task<ServiceResult<Empty>> ConfirmEmail(string key)
-        {
-            var result = new ServiceResult<Empty>();
-
-            try
+            => await RunWithServiceResult(async () =>
             {
-                key = HttpUtility.UrlDecode(key);
+                key = Uri.UnescapeDataString(key);
                 await _authService.ConfirmEmail(key);
 
-                return result.Success();
-            }
-            catch (FailedServiceResultException ex)
-            {
-                return result.Fail(ex);
-            }
-        }
+                return new ServiceResult<Empty>().Success();
+            });
 
         [Authorize]
         [HttpGet("logout")]
         public async Task<ServiceResult<Empty>> LogOut()
-        {
-            var result = new ServiceResult<Empty>();
-
-            try
+            => await RunWithServiceResult(async () =>
             {
                 await HttpContext.SignOutAsync();
 
-                return result.Success();
-            }
-            catch (FailedServiceResultException ex)
-            {
-                return result.Fail(ex);
-            }
-        }
-
-        private async Task<ServiceResult<Empty>> RunWithServiceResult(Func<Task<ServiceResult<ClaimsPrincipal>>> command)
-        {
-            var finalResult = new ServiceResult<Empty>();
-
-            if (!ModelState.IsValid)
-            {
-                var ex = new InvalidDataException(Resources.InvalidDataFound);
-                return finalResult.Fail(ex);
-            }
-
-            try
-            {
-                var claimsResult = await command();
-                await HttpContext.SignInAsync(claimsResult.Value);
-
-                return finalResult.Success();
-            }
-            catch (FailedServiceResultException ex)
-            {
-                return finalResult.Fail(ex);
-            }
-        }
+                return new ServiceResult<Empty>().Success();
+            });
     }
 }

@@ -9,7 +9,7 @@ namespace PetHelper.ServiceResulting
         public TEntity Value { get; set; }
 
         [JsonIgnore]
-        public Exception Exception { get; private set; } = new Exception();
+        public Exception Exception { get; private set; }
 
         public string? ClientErrorMessage { get; private set; }
 
