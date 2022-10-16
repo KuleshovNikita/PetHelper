@@ -3,6 +3,7 @@ using System.Net.Mail;
 using System.Net;
 using Microsoft.Extensions.Configuration;
 using System.Web;
+using PetHelper.Domain.Properties;
 
 namespace PetHelper.Business.Email
 {
@@ -34,7 +35,7 @@ namespace PetHelper.Business.Email
 
         private string BuildEmailMessage(string confirmUrl)
         {
-            var messageTemplate = _emailConfig.GetSection("EmailBotData:EmailMessageTemplate").Value;
+            var messageTemplate = Resources.ConfirmYourEmail;
             var messageWithLink = string.Format(messageTemplate, confirmUrl);
 
             return messageWithLink;
@@ -56,7 +57,7 @@ namespace PetHelper.Business.Email
                 Credentials = new NetworkCredential(sender, password)
             };
 
-            await client.SendMailAsync(sender, consumer, "Confirm Your Email", message);
+            await client.SendMailAsync(sender, consumer, Resources.ConfirmYourEmail, message);
         }
     }
 }

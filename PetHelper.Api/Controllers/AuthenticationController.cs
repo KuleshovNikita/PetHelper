@@ -8,6 +8,7 @@ using PetHelper.Domain;
 using PetHelper.ServiceResulting;
 using System.Security.Claims;
 using System.Web;
+using PetHelper.Domain.Properties;
 
 namespace PetHelper.Api.Controllers
 {
@@ -74,7 +75,7 @@ namespace PetHelper.Api.Controllers
 
             if (!ModelState.IsValid)
             {
-                return finalResult.Fail("Invalid data found");
+                return finalResult.Fail(Resources.InvalidDataFound);
             }
 
             try

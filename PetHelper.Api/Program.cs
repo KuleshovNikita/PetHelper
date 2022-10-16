@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using PetHelper.DataAccess.Context;
 using PetHelper.Startup.Extensions;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+var culture = app.Configuration.GetSection("Culture").Value;
+CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(culture);
+CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(culture);
+CultureInfo.CurrentCulture = new CultureInfo(culture);
+CultureInfo.CurrentUICulture = new CultureInfo(culture);
+
 
 app.UseHttpsRedirection();
 
