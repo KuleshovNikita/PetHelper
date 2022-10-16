@@ -35,7 +35,7 @@ namespace PetHelper.Business.Email
 
         private string BuildEmailMessage(string confirmUrl)
         {
-            var messageTemplate = Resources.ConfirmYourEmail;
+            var messageTemplate = Resources.EmailMessageTemplate;
             var messageWithLink = string.Format(messageTemplate, confirmUrl);
 
             return messageWithLink;

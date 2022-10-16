@@ -2,7 +2,7 @@
 
 namespace PetHelper.Business.Hashing
 {
-    public class PasswordHasher
+    public class PasswordHasher : IPasswordHasher
     {
         private const int RfcIterationsCount = 100000;
         private const int SaltLength = 16;
