@@ -9,6 +9,7 @@ using PetHelper.ServiceResulting;
 using System.Globalization;
 using System.Net.Mail;
 using System.Security.Claims;
+using PetHelper.Domain.Properties;
 
 namespace PetHelper.Business.Auth
 {
@@ -28,26 +29,26 @@ namespace PetHelper.Business.Auth
 
             if (authModel is null)
             {
-                return serviceResult.FailAndThrow("Invalid data found, can't authenticate user");
+                return serviceResult.FailAndThrow(Resources.InvalidDataFoundCantAuthenticateUser);
             }
 
             ValidateEmail(authModel.Login, serviceResult);
 
             var userResult = 
                 (await _repository.FirstOrDefault(x => x.Login == authModel.Login))
-                    .Catch<EntityNotFoundException>("User with the provided login doesn't exist")
+                    .Catch<EntityNotFoundException>(Resources.UserWithTheProvidedLoginDoesntExist)
                     .Catch<ArgumentNullException>()
                     .Catch<InvalidOperationException>()
                     .Catch<OperationCanceledException>();
 
             if(!userResult.Value.IsEmailConfirmed)
             {
-                return serviceResult.FailAndThrow("You can't authenticate the account, email confirmation is needed");
+                return serviceResult.FailAndThrow(Resources.YouCantAuthenticateTheAccountEmailConfirmationIsNeeded);
             }
 
             if(!_passwordHasher.ComparePasswords(authModel.Password, userResult.Value.Password))
             {
-                return serviceResult.FailAndThrow("Wrong password or login");
+                return serviceResult.FailAndThrow(Resources.WrongPasswordOrLogin);
             }
 
             serviceResult.Value = BuildClaims(userResult.Value);
@@ -61,14 +62,14 @@ namespace PetHelper.Business.Auth
 
             if (userModel is null)
             {
-                return serviceResult.FailAndThrow("Invalid data found, can't register user");
+                return serviceResult.FailAndThrow(Resources.InvalidDataFoundCantRegisterUser);
             }
 
             ValidateEmail(userModel.Login, serviceResult);
 
             if(await LoginIsAlreadyRegistered(userModel.Login))
             {
-                return serviceResult.FailAndThrow("The login is already registered");
+                return serviceResult.FailAndThrow(Resources.TheLoginIsAlreadyRegistered);
             }
 
             var hashedPassword = _passwordHasher.HashPassword(userModel.Password);
@@ -93,11 +94,11 @@ namespace PetHelper.Business.Auth
                 (await _repository.FirstOrDefault(x => x.Password.ToLower() == key.ToLower()))
                     .Catch<ArgumentNullException>()
                     .Catch<OperationCanceledException>()
-                    .Catch<EntityNotFoundException>("No users for specified key were found");
+                    .Catch<EntityNotFoundException>(Resources.NoUsersForSpecifiedKeyWereFound);
 
             if(userResult.Value.IsEmailConfirmed)
             {
-                return new ServiceResult<Empty>().FailAndThrow("The user's email is already confirmed");
+                return new ServiceResult<Empty>().FailAndThrow(Resources.TheUsersEmailIsAlreadyConfirmed);
             }
 
             userResult.Value.IsEmailConfirmed = true;
@@ -114,7 +115,7 @@ namespace PetHelper.Business.Auth
         {
             if (!MailAddress.TryCreate(login, out _))
             {
-                serviceResult.FailAndThrow("Invalid email address format specified");
+                serviceResult.FailAndThrow(Resources.InvalidEmailAddressFormatSpecified);
             }
         }
 
