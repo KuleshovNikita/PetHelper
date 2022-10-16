@@ -5,15 +5,17 @@ VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetHelper.Api", "PetHelper.Api\PetHelper.Api.csproj", "{C937FE66-F48F-4C6D-8DC7-B13B5C6A0861}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHelper.Business", "PetHelper.Business\PetHelper.Business.csproj", "{16F40A1F-F14C-4E81-A594-6252DA11C849}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetHelper.Business", "PetHelper.Business\PetHelper.Business.csproj", "{16F40A1F-F14C-4E81-A594-6252DA11C849}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHelper.DataAccess", "PetHelper.DataAccess\PetHelper.DataAccess.csproj", "{E3306ACC-8EEE-4F1F-9868-61E02CAC42AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetHelper.DataAccess", "PetHelper.DataAccess\PetHelper.DataAccess.csproj", "{E3306ACC-8EEE-4F1F-9868-61E02CAC42AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHelper.Domain", "PetHelper.Domain\PetHelper.Domain.csproj", "{4208ECEE-2C33-4FA1-A818-DDC21E4F661D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetHelper.Domain", "PetHelper.Domain\PetHelper.Domain.csproj", "{4208ECEE-2C33-4FA1-A818-DDC21E4F661D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHelper.Startup", "PetHelper.Startup\PetHelper.Startup.csproj", "{891E796D-5121-4050-A3BD-215B9DC9E4BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetHelper.Startup", "PetHelper.Startup\PetHelper.Startup.csproj", "{891E796D-5121-4050-A3BD-215B9DC9E4BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHelper.Api.Models", "PetHelper.Api.Models\PetHelper.Api.Models.csproj", "{66353429-08F7-4FBF-BB20-9980E3D03ECF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetHelper.Api.Models", "PetHelper.Api.Models\PetHelper.Api.Models.csproj", "{66353429-08F7-4FBF-BB20-9980E3D03ECF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHelper.ServiceResulting", "PetHelper.ServiceResulting\PetHelper.ServiceResulting.csproj", "{F15C54A4-88E4-425A-A4A0-CD39AD258C5D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{66353429-08F7-4FBF-BB20-9980E3D03ECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66353429-08F7-4FBF-BB20-9980E3D03ECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66353429-08F7-4FBF-BB20-9980E3D03ECF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F15C54A4-88E4-425A-A4A0-CD39AD258C5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F15C54A4-88E4-425A-A4A0-CD39AD258C5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F15C54A4-88E4-425A-A4A0-CD39AD258C5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F15C54A4-88E4-425A-A4A0-CD39AD258C5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

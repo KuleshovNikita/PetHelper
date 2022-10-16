@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 using PetHelper.Business.Hashing;
 using PetHelper.DataAccess.Repo;
 using PetHelper.Domain;
+using PetHelper.Domain.Exceptions;
+using PetHelper.ServiceResulting;
 using System.Globalization;
+using System.Net.Mail;
 using System.Security.Claims;
 
 namespace PetHelper.Business.Auth
@@ -13,50 +17,83 @@ namespace PetHelper.Business.Auth
 
         public AuthService(IRepository<UserModel> repo) : base(repo) { }
 
-        public async Task<ClaimsPrincipal> Login(AuthModel authModel)
+        public async Task<ServiceResult<ClaimsPrincipal>> Login(AuthModel authModel)
         {
-            if(authModel is null || string.IsNullOrEmpty(authModel.Login) || string.IsNullOrEmpty(authModel.Password))
+            var serviceResult = new ServiceResult<ClaimsPrincipal>();
+
+            if (authModel is null)
             {
-                throw new InvalidDataException("Invalid data found, can't authenticate user");
+                return serviceResult.FailAndThrow("Invalid data found, can't authenticate user");
             }
 
-            var userModel = await _repository.Single(x => x.Login == authModel.Login);
+            ValidateEmail(authModel.Login, serviceResult);
 
-            if(userModel is null)
+            var userModel = (await new ServiceResult<UserModel>()
+                .ExecuteAsync(async () => await _repository.FirstOrDefault(x => x.Login == authModel.Login)))
+                .Catch<EntityNotFoundException>("User with the provided login doesn't exist")
+                .Catch<ArgumentNullException>()
+                .Catch<InvalidOperationException>()
+                .Catch<OperationCanceledException>();
+
+            if(!_passwordHasher.ComparePasswords(authModel.Password, userModel.Value.Password))
             {
-                return new ClaimsPrincipal();
+                return serviceResult.FailAndThrow("Wrong password or login");
             }
 
-            if(!_passwordHasher.ComparePasswords(authModel.Password, userModel.Password))
-            {
-                throw new Exception("Wrong password");
-            }
+            serviceResult.Value = BuildClaims(userModel.Value);
 
-            return BuildClaims(userModel);
+            return serviceResult;
         }
 
-        public async Task<ClaimsPrincipal> Register(UserModel userModel)
+        public async Task<ServiceResult<ClaimsPrincipal>> Register(UserModel userModel)
         {
-            if(userModel is null || string.IsNullOrEmpty(userModel.FirstName) || 
-                string.IsNullOrEmpty(userModel.LastName) || string.IsNullOrEmpty(userModel.Login) ||
-                string.IsNullOrEmpty(userModel.Password))
+            var serviceResult = new ServiceResult<ClaimsPrincipal>();
+
+            if (userModel is null)
             {
-                throw new InvalidDataException("Invalid data found, can't register user");
+                return serviceResult.FailAndThrow("Invalid data found, can't register user");
             }
 
-            if(await _repository.Any(x => x.Login == userModel.Login))
+            ValidateEmail(userModel.Login, serviceResult);
+
+            if(await LoginIsAlreadyRegistered(userModel.Login))
             {
-                throw new Exception("User with such email is already registered");
+                return serviceResult.FailAndThrow("The login is already registered");
             }
 
             var hashedPassword = _passwordHasher.HashPassword(userModel.Password);
-
             userModel.Password = hashedPassword;
             userModel.Id = Guid.NewGuid();
 
-            await _repository.Insert(userModel);
+            _ = (await new ServiceResult<Empty>()
+                    .ExecuteAsync(async () => await _repository.Insert(userModel)))
+                    .Catch<OperationCanceledException>()
+                    .Catch<DbUpdateException>()
+                    .Catch<DbUpdateConcurrencyException>();
 
-            return BuildClaims(userModel);
+            serviceResult.Value = BuildClaims(userModel);
+
+            return serviceResult;
+        }
+
+        private void ValidateEmail(string login, ServiceResult<ClaimsPrincipal> serviceResult)
+        {
+            if (!MailAddress.TryCreate(login, out _))
+            {
+                serviceResult.FailAndThrow("Invalid email address format specified");
+            }
+        }
+
+        private async Task<bool> LoginIsAlreadyRegistered(string login)
+        {
+            var serviceResult = new ServiceResult<bool>();
+
+            serviceResult = (await serviceResult.ExecuteAsync(
+                async () => await _repository.Any(x => x.Login == login)
+            )).Catch<OperationCanceledException>()
+              .Catch<ArgumentNullException>();
+
+            return serviceResult.Value;
         }
 
         private ClaimsPrincipal BuildClaims(UserModel userModel)

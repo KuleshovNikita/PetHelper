@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetHelper.Api.Models.RequestModels;
 using PetHelper.Business.Auth;
 using PetHelper.Domain;
+using PetHelper.ServiceResulting;
+using System.Security.Claims;
 
 namespace PetHelper.Api.Controllers
 {
@@ -21,37 +24,57 @@ namespace PetHelper.Api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<bool> Register([FromBody] UserRequestModel userModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                throw new InvalidDataException("invalid data found");
-            }
-
-            var claims = await _authService.Register(_mapper.Map<UserModel>(userModel));
-            await HttpContext.SignInAsync(claims);
-
-            return true;
-        }
+        public async Task<ServiceResult<Empty>> Register([FromBody] UserRequestModel userModel)
+            => await RunWithServiceResult(() => _authService.Register(_mapper.Map<UserModel>(userModel)));
 
         [HttpPost("login")]
-        public async Task<bool> Login([FromBody] AuthModel authModel)
+        public async Task<ServiceResult<Empty>> Login([FromBody] AuthModel authModel)
+            => await RunWithServiceResult(() => _authService.Login(authModel));
+
+        [Authorize]
+        [HttpGet("logout")]
+        public async Task<ServiceResult<Empty>> LogOut()
         {
+            var result = new ServiceResult<Empty>();
+
+            try
+            {
+                await HttpContext.SignOutAsync();
+
+                return result.Success();
+            }
+            catch (Exception ex)
+            {
+                return result.Fail(ex.Message);
+            }
+        }
+
+        private async Task<ServiceResult<Empty>> RunWithServiceResult(Func<Task<ServiceResult<ClaimsPrincipal>>> command)
+        {
+            var finalResult = new ServiceResult<Empty>();
+
             if (!ModelState.IsValid)
             {
-                throw new InvalidDataException("invalid data found");
+                return finalResult.Fail("Invalid data found");
             }
 
-            var claims = await _authService.Login(authModel);
-
-            if(!claims.Claims.Any())
+            try
             {
-                throw new Exception("No such user exists");
+                var claimsResult = await command();
+
+                if (!claimsResult.IsSuccessful)
+                {
+                    return finalResult.Fail(claimsResult.ClientErrorMessage!);
+                }
+
+                await HttpContext.SignInAsync(claimsResult.Value);
+
+                return finalResult.Success();
             }
-
-            await HttpContext.SignInAsync(claims);
-
-            return true;
+            catch (FailedServiceResultException ex)
+            {
+                return finalResult.Fail(ex.Message);
+            }
         }
     }
 }

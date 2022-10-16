@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PetHelper.DataAccess.Context;
+using PetHelper.Domain.Exceptions;
 using System.Linq.Expressions;
 
 namespace PetHelper.DataAccess.Repo
@@ -10,8 +11,8 @@ namespace PetHelper.DataAccess.Repo
 
         public Repository(PetHelperDbContext context) => _context = context;
 
-        public async Task<T> Single(Expression<Func<T, bool>> command)
-            => await _context.Set<T>().SingleAsync(command);
+        public async Task<T> FirstOrDefault(Expression<Func<T, bool>> command)
+            => await _context.Set<T>().FirstOrDefaultAsync(command) ?? throw new EntityNotFoundException();
 
         public async Task<bool> Any(Expression<Func<T, bool>> command) 
             => await _context.Set<T>().AnyAsync(command);
