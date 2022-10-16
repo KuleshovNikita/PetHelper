@@ -24,7 +24,7 @@ namespace PetHelper.DataAccess.Repo
             }
             catch (Exception ex)
             {
-                return result.Fail(ex.Message);
+                return result.Fail(ex);
             }
         }
 
@@ -40,7 +40,7 @@ namespace PetHelper.DataAccess.Repo
             }
             catch(Exception ex)
             {
-                return result.Fail(ex.Message);
+                return result.Fail(ex);
             }
         }
 
@@ -57,7 +57,7 @@ namespace PetHelper.DataAccess.Repo
             }
             catch(Exception ex)
             {
-                return result.Fail(ex.Message);
+                return result.Fail(ex);
             }
         }
 
@@ -74,7 +74,7 @@ namespace PetHelper.DataAccess.Repo
             }
             catch (Exception ex)
             {
-                return Task.FromResult(result.Fail(ex.Message));
+                return Task.FromResult(result.Fail(ex));
             }
         }
     }

@@ -47,7 +47,7 @@ namespace PetHelper.Api.Controllers
             }
             catch (FailedServiceResultException ex)
             {
-                return result.Fail(ex.Message);
+                return result.Fail(ex);
             }
         }
 
@@ -65,7 +65,7 @@ namespace PetHelper.Api.Controllers
             }
             catch (FailedServiceResultException ex)
             {
-                return result.Fail(ex.Message);
+                return result.Fail(ex);
             }
         }
 
@@ -75,25 +75,20 @@ namespace PetHelper.Api.Controllers
 
             if (!ModelState.IsValid)
             {
-                return finalResult.Fail(Resources.InvalidDataFound);
+                var ex = new InvalidDataException(Resources.InvalidDataFound);
+                return finalResult.Fail(ex);
             }
 
             try
             {
                 var claimsResult = await command();
-
-                if (!claimsResult.IsSuccessful)
-                {
-                    return finalResult.Fail(claimsResult.ClientErrorMessage!);
-                }
-
                 await HttpContext.SignInAsync(claimsResult.Value);
 
                 return finalResult.Success();
             }
             catch (FailedServiceResultException ex)
             {
-                return finalResult.Fail(ex.Message);
+                return finalResult.Fail(ex);
             }
         }
     }

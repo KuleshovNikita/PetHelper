@@ -138,6 +138,9 @@
   <data name="NoUsersForSpecifiedKeyWereFound" xml:space="preserve">
     <value>No users for specified key were found</value>
   </data>
+  <data name="TheItemDoesntExist" xml:space="preserve">
+    <value>The item doesn't exist</value>
+  </data>
   <data name="TheLoginIsAlreadyRegistered" xml:space="preserve">
     <value>The login is already registered</value>
   </data>

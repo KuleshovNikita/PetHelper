@@ -31,16 +31,22 @@ namespace PetHelper.ServiceResulting
 
         public ServiceResult<TEntity> FailAndThrow(string failMessage = "")
         {
-            Fail(failMessage);
+            var serviceFailedException = new FailedServiceResultException(failMessage, Exception);
+            Fail(serviceFailedException);
 
-            throw new FailedServiceResultException(failMessage, Exception);
+            throw serviceFailedException;
         }
 
-        public ServiceResult<TEntity> Fail(string failMessage = "") 
-            => SetResultState(false, failMessage);
+        public ServiceResult<TEntity> Fail(Exception ex)
+            => SetResultState(false, ex.Message, ex);
 
-        private ServiceResult<TEntity> SetResultState(bool state, string message)
+        private ServiceResult<TEntity> SetResultState(bool state, string message, Exception? ex = null)
         {
+            if(ex is not null)
+            {
+                Exception = ex.InnerException ?? ex;
+            }
+    
             ClientErrorMessage = message;
             IsSuccessful = state;
             return this;

@@ -124,6 +124,15 @@ namespace PetHelper.Domain.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The item doesn&apos;t exist.
+        /// </summary>
+        public static string TheItemDoesntExist {
+            get {
+                return ResourceManager.GetString("TheItemDoesntExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The login is already registered.
         /// </summary>
         public static string TheLoginIsAlreadyRegistered {

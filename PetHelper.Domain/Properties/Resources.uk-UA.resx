@@ -138,6 +138,9 @@
   <data name="NoUsersForSpecifiedKeyWereFound" xml:space="preserve">
     <value>Користувачів для вказаного ключа не знайдено</value>
   </data>
+  <data name="TheItemDoesntExist" xml:space="preserve">
+    <value>Шукомого об'єкта не існує</value>
+  </data>
   <data name="TheLoginIsAlreadyRegistered" xml:space="preserve">
     <value>Користувач з такою адресою вже зареєстрований</value>
   </data>
