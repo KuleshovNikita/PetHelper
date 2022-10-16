@@ -31,6 +31,10 @@ namespace PetHelper.Api.Controllers
         public async Task<ServiceResult<Empty>> Login([FromBody] AuthModel authModel)
             => await RunWithServiceResult(() => _authService.Login(authModel));
 
+        [HttpGet("confirmEmail/{key}")]
+        public async Task<ServiceResult<Empty>> ConfirmEmail(string key)
+            => await _authService.ConfirmEmail(key);
+
         [Authorize]
         [HttpGet("logout")]
         public async Task<ServiceResult<Empty>> LogOut()

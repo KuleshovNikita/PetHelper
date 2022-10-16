@@ -36,6 +36,10 @@ namespace PetHelper.DataAccess.Context.ModelContexts
                 entity.Property(x => x.Password)
                       .HasMaxLength(100)
                       .IsRequired();
+
+                entity.Property(x => x.IsEmailConfirmed)
+                      .HasDefaultValue(false)
+                      .IsRequired();
             });
         }
     }

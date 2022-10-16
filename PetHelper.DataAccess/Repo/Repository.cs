@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PetHelper.DataAccess.Context;
+using PetHelper.Domain;
 using PetHelper.Domain.Exceptions;
 using System.Linq.Expressions;
 
@@ -21,6 +22,14 @@ namespace PetHelper.DataAccess.Repo
         {
             await _context.Set<T>().AddAsync(entity);
             await _context.SaveChangesAsync();
+        }
+
+        public Task Update(T entity)
+        {
+            _context.Set<T>().Update(entity);
+            _context.SaveChangesAsync();
+
+            return Task.CompletedTask;
         }
     }
 }

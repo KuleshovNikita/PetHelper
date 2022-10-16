@@ -10,5 +10,7 @@ namespace PetHelper.DataAccess.Repo
         Task<bool> Any(Expression<Func<T, bool>> command);
 
         Task Insert(T entity);
+
+        Task Update(T entity);
     }
 }

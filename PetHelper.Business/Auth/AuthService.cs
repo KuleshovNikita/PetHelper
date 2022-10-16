@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using PetHelper.Business.Email;
 using PetHelper.Business.Hashing;
 using PetHelper.DataAccess.Repo;
 using PetHelper.Domain;
 using PetHelper.Domain.Exceptions;
 using PetHelper.ServiceResulting;
 using System.Globalization;
+using System.Net;
 using System.Net.Mail;
 using System.Security.Claims;
 
@@ -13,9 +16,13 @@ namespace PetHelper.Business.Auth
 {
     public class AuthService : DataAccessableService<UserModel>, IAuthService
     {
+        private readonly IEmailService _emailService;
         private readonly PasswordHasher _passwordHasher = new PasswordHasher();
 
-        public AuthService(IRepository<UserModel> repo) : base(repo) { }
+        public AuthService(IEmailService emailService, IRepository<UserModel> repo) : base(repo) 
+        {
+            _emailService = emailService;
+        }
 
         public async Task<ServiceResult<ClaimsPrincipal>> Login(AuthModel authModel)
         {
@@ -69,11 +76,34 @@ namespace PetHelper.Business.Auth
                     .ExecuteAsync(async () => await _repository.Insert(userModel)))
                     .Catch<OperationCanceledException>()
                     .Catch<DbUpdateException>()
-                    .Catch<DbUpdateConcurrencyException>();
+                    .Catch<DbUpdateConcurrencyException>(); 
+
+            await _emailService.SendEmailConfirmMessage(userModel);
 
             serviceResult.Value = BuildClaims(userModel);
 
             return serviceResult;
+        }
+
+        public async Task<ServiceResult<Empty>> ConfirmEmail(string key)
+        {
+            var userResult = (await new ServiceResult<UserModel>()
+                    .ExecuteAsync(async () => await _repository.FirstOrDefault(x => x.Password == key)))
+                    .Catch<ArgumentNullException>()
+                    .Catch<OperationCanceledException>()
+                    .Catch<EntityNotFoundException>("No users for specified key were found");
+
+            if(userResult.Value.IsEmailConfirmed)
+            {
+                return new ServiceResult<Empty>().FailAndThrow("The user's email is already confirmed");
+            }
+
+            (await userResult.ExecuteAsync(async () => await _repository.Update(userResult.Value)))
+                .Catch<OperationCanceledException>()
+                .Catch<DbUpdateException>()
+                .Catch<DbUpdateConcurrencyException>();
+
+            return new ServiceResult<Empty>().Success();
         }
 
         private void ValidateEmail(string login, ServiceResult<ClaimsPrincipal> serviceResult)
