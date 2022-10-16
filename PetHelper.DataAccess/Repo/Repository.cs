@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PetHelper.DataAccess.Context;
-using PetHelper.Domain;
 using PetHelper.Domain.Exceptions;
 using System.Linq.Expressions;
 

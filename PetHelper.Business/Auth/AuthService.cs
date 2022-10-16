@@ -35,19 +35,24 @@ namespace PetHelper.Business.Auth
 
             ValidateEmail(authModel.Login, serviceResult);
 
-            var userModel = (await new ServiceResult<UserModel>()
+            var userResult = (await new ServiceResult<UserModel>()
                 .ExecuteAsync(async () => await _repository.FirstOrDefault(x => x.Login == authModel.Login)))
                 .Catch<EntityNotFoundException>("User with the provided login doesn't exist")
                 .Catch<ArgumentNullException>()
                 .Catch<InvalidOperationException>()
                 .Catch<OperationCanceledException>();
 
-            if(!_passwordHasher.ComparePasswords(authModel.Password, userModel.Value.Password))
+            if(!userResult.Value.IsEmailConfirmed)
+            {
+                return serviceResult.FailAndThrow("You can't authenticate the account, email confirmation is needed");
+            }
+
+            if(!_passwordHasher.ComparePasswords(authModel.Password, userResult.Value.Password))
             {
                 return serviceResult.FailAndThrow("Wrong password or login");
             }
 
-            serviceResult.Value = BuildClaims(userModel.Value);
+            serviceResult.Value = BuildClaims(userResult.Value);
 
             return serviceResult;
         }
@@ -88,7 +93,9 @@ namespace PetHelper.Business.Auth
         public async Task<ServiceResult<Empty>> ConfirmEmail(string key)
         {
             var userResult = (await new ServiceResult<UserModel>()
-                    .ExecuteAsync(async () => await _repository.FirstOrDefault(x => x.Password == key)))
+                    .ExecuteAsync(async () => await _repository.FirstOrDefault(
+                                                        x => x.Password.ToLower() == key.ToLower())
+                    ))
                     .Catch<ArgumentNullException>()
                     .Catch<OperationCanceledException>()
                     .Catch<EntityNotFoundException>("No users for specified key were found");
@@ -97,6 +104,8 @@ namespace PetHelper.Business.Auth
             {
                 return new ServiceResult<Empty>().FailAndThrow("The user's email is already confirmed");
             }
+
+            userResult.Value.IsEmailConfirmed = true;
 
             (await userResult.ExecuteAsync(async () => await _repository.Update(userResult.Value)))
                 .Catch<OperationCanceledException>()
