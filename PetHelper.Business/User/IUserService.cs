@@ -1,4 +1,5 @@
-﻿using PetHelper.Domain;
+﻿using PetHelper.Api.Models.RequestModels;
+using PetHelper.Domain;
 using PetHelper.ServiceResulting;
 using System.Linq.Expressions;
 
@@ -10,7 +11,7 @@ namespace PetHelper.Business.User
 
         Task<ServiceResult<UserModel>> GetUser(Expression<Func<UserModel, bool>> predicate, string messageIfNotFound);
 
-        Task<ServiceResult<Empty>> UpdateUser(UserModel userModel);
+        Task<ServiceResult<Empty>> UpdateUser(UserUpdateRequestModel userModel);
 
         Task<ServiceResult<Empty>> RemoveUser(Guid userId);
     }

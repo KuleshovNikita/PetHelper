@@ -11,12 +11,12 @@ namespace PetHelper.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserAccountController : ResultingController
+    public class UserController : ResultingController
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public UserAccountController(IUserService userService, IMapper mapper)
+        public UserController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
             _mapper = mapper;
@@ -32,13 +32,15 @@ namespace PetHelper.Api.Controllers
                                 messageIfNotFound: Resources.TheItemDoesntExist);
             });
 
-        [HttpPut("updateUser")]
+        [HttpPut("updateUser/{userId:guid}")]
         [Authorize]
-        public async Task<ServiceResult<Empty>> UpdateUser([FromBody] UserRequestModel userRequestModel)
+        public async Task<ServiceResult<Empty>> UpdateUser(Guid userId, [FromBody] UserUpdateRequestModel userRequestModel)
             => await RunWithServiceResult(async () =>
             {
-                var userDomainModel = _mapper.Map<UserModel>(userRequestModel);
-                await _userService.UpdateUser(userDomainModel);
+                //var userDomainModel = _mapper.Map<UserModel>(userRequestModel);
+                userRequestModel.Id = userId;
+
+                await _userService.UpdateUser(userRequestModel);
 
                 return SuccessEmptyResult();
             });

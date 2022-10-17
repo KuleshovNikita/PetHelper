@@ -33,6 +33,9 @@ namespace PetHelper.Startup.Extensions
             => cfg =>
             {
                 cfg.CreateMap<UserRequestModel, UserModel>();
+
+                cfg.CreateMap<UserUpdateRequestModel, UserModel>();
+                cfg.CreateMap<UserModel, UserUpdateRequestModel>();
             };
     }
 }

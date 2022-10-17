@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using PetHelper.Api.Models.RequestModels;
 using PetHelper.Business.Hashing;
 using PetHelper.DataAccess.Repo;
 using PetHelper.Domain;
@@ -6,17 +8,20 @@ using PetHelper.Domain.Exceptions;
 using PetHelper.Domain.Properties;
 using PetHelper.ServiceResulting;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace PetHelper.Business.User
 {
     public class UserService : DataAccessableService<UserModel>, IUserService
     {
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IMapper _mapper;
 
-        public UserService(IPasswordHasher passwordHasher, IRepository<UserModel> repository) 
+        public UserService(IMapper mapper, IPasswordHasher passwordHasher, IRepository<UserModel> repository) 
             : base(repository)
         {
             _passwordHasher = passwordHasher;
+            _mapper = mapper;
         }
 
         public async Task<ServiceResult<Empty>> AddUser(UserModel userModel)
@@ -61,15 +66,23 @@ namespace PetHelper.Business.User
             Expression<Func<UserModel, bool>> predicate, string messageIfNotFound)
                 => (await _repository.FirstOrDefault(predicate))
                         .Catch<EntityNotFoundException>(messageIfNotFound)
-                        .Catch<ArgumentNullException>()
-                        .Catch<InvalidOperationException>()
-                        .Catch<OperationCanceledException>();
+                        .CatchAny();
 
-        public async Task<ServiceResult<Empty>> UpdateUser(UserModel userModel)
-            => (await _repository.Update(userModel))
-                    .Catch<OperationCanceledException>()
-                    .Catch<DbUpdateException>()
-                    .Catch<DbUpdateConcurrencyException>();
+        public async Task<ServiceResult<Empty>> UpdateUser(UserUpdateRequestModel userModel)
+        {
+            var user = await GetUser(x => x.Id == userModel.Id, Resources.TheItemDoesntExist);
+
+            var propertiesToUpdate = userModel.GetType().GetProperties().Where(x => x.GetValue(userModel) != null).ToList();
+            var userModelProps = user.Value.GetType().GetProperties();
+
+            foreach (var prop in propertiesToUpdate)
+            {
+                var propToUpdate = userModelProps.First(x => x.Name == prop.Name);
+                propToUpdate.SetValue(user.Value, prop.GetValue(userModel));
+            }
+
+            return (await _repository.Update(user.Value)).CatchAny();
+        }
 
         private bool UserExists(Guid userId, out UserModel userModel)
         {

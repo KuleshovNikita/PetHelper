@@ -68,6 +68,7 @@ namespace PetHelper.DataAccess.Repo
             try
             {
                 _context.Set<T>().Update(entity);
+                _context.Entry(entity).State = EntityState.Modified;
                 _context.SaveChangesAsync();
 
                 return Task.FromResult(result.Success());

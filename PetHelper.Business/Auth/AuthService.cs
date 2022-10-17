@@ -9,6 +9,8 @@ using System.Net.Mail;
 using System.Security.Claims;
 using PetHelper.Domain.Properties;
 using PetHelper.Business.User;
+using AutoMapper;
+using PetHelper.Api.Models.RequestModels;
 
 namespace PetHelper.Business.Auth
 {
@@ -17,14 +19,16 @@ namespace PetHelper.Business.Auth
         private readonly IEmailService _emailService;
         private readonly IUserService _userService;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IMapper _mapper;
 
-        public AuthService(IPasswordHasher passwordHasher, IEmailService emailService, 
+        public AuthService(IMapper mapper, IPasswordHasher passwordHasher, IEmailService emailService, 
             IUserService userService, IRepository<UserModel> repo) 
             : base(repo) 
         {
             _emailService = emailService;
             _userService = userService;
             _passwordHasher = passwordHasher;
+            _mapper = mapper;
         }
 
         public async Task<ServiceResult<ClaimsPrincipal>> Login(AuthModel authModel)
@@ -88,7 +92,9 @@ namespace PetHelper.Business.Auth
             }
 
             userResult.Value.IsEmailConfirmed = true;
-            await _userService.UpdateUser(userResult.Value);
+            var mappedUser = _mapper.Map<UserUpdateRequestModel>(userResult.Value);
+
+            await _userService.UpdateUser(mappedUser);
 
             return new ServiceResult<Empty>().Success();
         }

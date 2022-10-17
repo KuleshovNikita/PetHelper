@@ -19,9 +19,17 @@ namespace PetHelper.ServiceResulting
         {   
             if(Exception is TException)
             {
-                ClientErrorMessage = errorMessage ?? Exception.Message;
+                BuildException(errorMessage);
+            }
 
-                throw new FailedServiceResultException(ClientErrorMessage, Exception);
+            return this;
+        }
+
+        public ServiceResult<TEntity> CatchAny(string? errorMessage = null)
+        {
+            if(Exception is not null)
+            {
+                BuildException(errorMessage);
             }
 
             return this;
@@ -39,6 +47,12 @@ namespace PetHelper.ServiceResulting
 
         public ServiceResult<TEntity> Fail(Exception ex)
             => SetResultState(false, ex.Message, ex);
+
+        private void BuildException(string? errorMessage = null)
+        {
+            ClientErrorMessage = errorMessage ?? Exception.Message;
+            throw new FailedServiceResultException(ClientErrorMessage, Exception);
+        }
 
         private ServiceResult<TEntity> SetResultState(bool state, string message, Exception? ex = null)
         {
