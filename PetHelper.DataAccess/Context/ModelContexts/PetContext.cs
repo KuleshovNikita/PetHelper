@@ -17,12 +17,10 @@ namespace PetHelper.DataAccess.Context.ModelContexts
                       .HasMaxLength(30)
                       .IsRequired();
 
-                entity.Property(x => x.AnimalType)
-                      .IsRequired();
+                entity.Property(x => x.AnimalType);
 
                 entity.Property(x => x.Breed)
-                      .HasMaxLength(50)
-                      .IsRequired();
+                      .HasMaxLength(50);
             });
         }
     }

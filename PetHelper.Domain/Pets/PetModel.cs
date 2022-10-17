@@ -4,9 +4,9 @@
     {
         public string Name { get; set; }
 
-        public AnimalType AnimalType { get; set; }
+        public AnimalType? AnimalType { get; set; }
 
-        public string Breed { get; set; }
+        public string? Breed { get; set; }
 
         public IEnumerable<ScheduleModel> WalkingSchedule { get; set; }
 
