@@ -1,9 +1,9 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetHelper.Api.Models.RequestModels;
 using PetHelper.Business.Auth;
+using PetHelper.Business.User;
 using PetHelper.Domain;
 using PetHelper.ServiceResulting;
 
@@ -42,7 +42,9 @@ namespace PetHelper.Api.Controllers
             => await RunWithServiceResult(async () =>
             {
                 key = Uri.UnescapeDataString(key);
-                await _authService.ConfirmEmail(key);
+                var newClaims = await _authService.ConfirmEmail(key);
+
+                await HttpContext.SignInAsync(newClaims.Value);
 
                 return SuccessEmptyResult();
             });

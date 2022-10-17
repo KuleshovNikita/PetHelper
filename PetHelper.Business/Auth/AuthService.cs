@@ -59,7 +59,7 @@ namespace PetHelper.Business.Auth
                 return serviceResult.FailAndThrow(Resources.WrongPasswordOrLogin);
             }
 
-            serviceResult.Value = BuildClaims(userResult.Value);
+            serviceResult.Value = BuildInitialClaims(userResult.Value);
 
             return serviceResult;
         }
@@ -80,14 +80,14 @@ namespace PetHelper.Business.Auth
             await _userService.AddUser(userDomainModel);
             await _emailService.SendEmailConfirmMessage(userDomainModel);
 
-            serviceResult.Value = BuildClaims(userDomainModel);
+            serviceResult.Value = BuildInitialClaims(userDomainModel);
 
             return serviceResult;
         }
 
-        public async Task<ServiceResult<Empty>> ConfirmEmail(string key)
+        public async Task<ServiceResult<ClaimsPrincipal>> ConfirmEmail(string key)
         {
-            var serviceResult = new ServiceResult<Empty>();
+            var serviceResult = new ServiceResult<ClaimsPrincipal>();
 
             var userResult = await _userService.GetUser(
                                 predicate: x => x.Password.ToLower() == key.ToLower(), 
@@ -103,6 +103,7 @@ namespace PetHelper.Business.Auth
 
             await _userService.UpdateUser(mappedUser);
 
+            serviceResult.Value = BuildClaimsWithEmail(userResult.Value);
             return serviceResult.Success();
         }
 
@@ -114,17 +115,20 @@ namespace PetHelper.Business.Auth
             }
         }
 
-        private ClaimsPrincipal BuildClaims(UserModel userModel)
+        private ClaimsPrincipal BuildInitialClaims(UserModel userModel)
         {
-            var expireTime = _configuration.GetSection("TokenExpirationTime").Value;
+            var claims = ClaimsSets.GetInitialClaims(userModel);
+            return BuildClaims(claims);
+        }
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, $"{userModel.FirstName} {userModel.LastName}"),
-                new Claim(ClaimTypes.NameIdentifier, userModel.Id.ToString()),
-                new Claim(ClaimTypes.Expiration, AfterMinutes(int.Parse(expireTime)))
-            };
+        private ClaimsPrincipal BuildClaimsWithEmail(UserModel userModel)
+        {
+            var claims = ClaimsSets.GetClaimsWithEmail(userModel);
+            return BuildClaims(claims);
+        }
 
+        private ClaimsPrincipal BuildClaims(IEnumerable<Claim> claims)
+        {
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
