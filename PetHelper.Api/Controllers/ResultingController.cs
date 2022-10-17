@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetHelper.ServiceResulting;
+using System.Security.Claims;
 
 namespace PetHelper.Api.Controllers
 {
@@ -23,5 +24,11 @@ namespace PetHelper.Api.Controllers
         }
 
         protected ServiceResult<Empty> SuccessEmptyResult() => new ServiceResult<Empty>().Success();
+
+        protected Guid GetUserIdFromToken()
+        {
+            var userId = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
+            return new Guid(userId);
+        }
     }
 }

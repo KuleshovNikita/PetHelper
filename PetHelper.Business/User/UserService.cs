@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PetHelper.Api.Models.RequestModels;
+using PetHelper.Business.Extensions;
 using PetHelper.Business.Hashing;
 using PetHelper.DataAccess.Repo;
 using PetHelper.Domain;
@@ -13,10 +14,12 @@ namespace PetHelper.Business.User
     public class UserService : DataAccessableService<UserModel>, IUserService
     {
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IMapper _mapper;
 
-        public UserService(IPasswordHasher passwordHasher, IRepository<UserModel> repository) 
+        public UserService(IMapper mapper, IPasswordHasher passwordHasher, IRepository<UserModel> repository) 
             : base(repository)
         {
+            _mapper = mapper;
             _passwordHasher = passwordHasher;
         }
 
@@ -44,7 +47,7 @@ namespace PetHelper.Business.User
 
             if (await UserExists(userId))
             {
-                var userModel = await GetUser(x => x.Id == userId, Resources.TheItemDoesntExist);
+                var userModel = await GetUser(x => x.Id == userId);
                 (await _repository.Remove(userModel.Value)).CatchAny();
 
                 return serviceResult.Success();
@@ -53,39 +56,21 @@ namespace PetHelper.Business.User
             return serviceResult.FailAndThrow(Resources.TheItemDoesntExist);
         }
 
-        public async Task<ServiceResult<UserModel>> GetUser(Expression<Func<UserModel, bool>> predicate, string messageIfNotFound)
+        public async Task<ServiceResult<UserModel>> GetUser(Expression<Func<UserModel, bool>> predicate)
         {
             var result = await _repository.FirstOrDefault(predicate);
 
-            return result.Catch<EntityNotFoundException>(messageIfNotFound)
+            return result.Catch<EntityNotFoundException>(Resources.TheItemDoesntExist)
                          .CatchAny();
         }
 
         public async Task<ServiceResult<Empty>> UpdateUser(UserUpdateRequestModel userModel)
         {
-            var user = await GetUser(x => x.Id == userModel.Id, Resources.TheItemDoesntExist);
-            user.Value = MapOnlyUpdatedProperties(userModel, user.Value);
+            var user = await GetUser(x => x.Id == userModel.Id);
+            user.Value = _mapper.MapOnlyUpdatedProperties(userModel, user.Value);
 
             var result = await _repository.Update(user.Value);
             return result.CatchAny();
-        }
-
-        private UserModel MapOnlyUpdatedProperties(UserUpdateRequestModel from, UserModel to)
-        {
-            var propertiesToUpdate = from.GetType()
-                                         .GetProperties()
-                                         .Where(x => x.GetValue(from) != null)
-                                         .ToList();
-
-            var userModelProps = to.GetType().GetProperties();
-
-            foreach (var prop in propertiesToUpdate)
-            {
-                var propToUpdate = userModelProps.First(x => x.Name == prop.Name);
-                propToUpdate.SetValue(to, prop.GetValue(from));
-            }
-
-            return to;
         }
 
         private async Task<bool> UserExists(Guid userId)

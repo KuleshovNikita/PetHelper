@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetHelper.Api.Models.RequestModels;
 using PetHelper.Business.Auth;
-using PetHelper.Business.User;
 using PetHelper.Domain;
 using PetHelper.ServiceResulting;
 

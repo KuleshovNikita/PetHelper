@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using PetHelper.Api.Models.RequestModels;
 using PetHelper.Business.User;
 using PetHelper.Domain;
-using PetHelper.Domain.Properties;
 using PetHelper.ServiceResulting;
 
 namespace PetHelper.Api.Controllers
@@ -19,12 +18,7 @@ namespace PetHelper.Api.Controllers
         [HttpGet("getUser/{userId:guid}")]
         [Authorize]
         public async Task<ServiceResult<UserModel>> GetUser(Guid userId)
-            => await RunWithServiceResult(async () =>
-            {
-                return await _userService.GetUser(
-                                predicate: x => x.Id == userId,
-                                messageIfNotFound: Resources.TheItemDoesntExist);
-            });
+            => await RunWithServiceResult(async () => await _userService.GetUser(x => x.Id == userId));
 
         [HttpPut("updateUser/{userId:guid}")]
         [Authorize]
@@ -32,20 +26,12 @@ namespace PetHelper.Api.Controllers
             => await RunWithServiceResult(async () =>
             {
                 userRequestModel.Id = userId;
-
-                await _userService.UpdateUser(userRequestModel);
-
-                return SuccessEmptyResult();
+                return await _userService.UpdateUser(userRequestModel);
             });
 
         [HttpDelete("removeUser/{userId:guid}")]
         [Authorize]
         public async Task<ServiceResult<Empty>> RemoveUser(Guid userId)
-            => await RunWithServiceResult(async () =>
-            {
-                await _userService.RemoveUser(userId);
-
-                return SuccessEmptyResult();
-            });
+            => await RunWithServiceResult(async () => await _userService.RemoveUser(userId));
     }
 }

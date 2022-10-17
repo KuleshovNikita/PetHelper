@@ -45,9 +45,7 @@ namespace PetHelper.Business.Auth
 
             ValidateEmail(authModel.Login, serviceResult);
 
-            var userResult = await _userService.GetUser(
-                                predicate: x => x.Login == authModel.Login, 
-                                messageIfNotFound: Resources.UserWithTheProvidedLoginDoesntExist);
+            var userResult = await _userService.GetUser(x => x.Login == authModel.Login);
 
             if(!userResult.Value.IsEmailConfirmed)
             {
@@ -89,9 +87,7 @@ namespace PetHelper.Business.Auth
         {
             var serviceResult = new ServiceResult<ClaimsPrincipal>();
 
-            var userResult = await _userService.GetUser(
-                                predicate: x => x.Password.ToLower() == key.ToLower(), 
-                                messageIfNotFound: Resources.NoUsersForSpecifiedKeyWereFound);
+            var userResult = await _userService.GetUser(x => x.Password.ToLower() == key.ToLower());
 
             if(userResult.Value.IsEmailConfirmed)
             {

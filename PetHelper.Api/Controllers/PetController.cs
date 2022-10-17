@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using PetHelper.Api.Models.RequestModels.Pets;
 using PetHelper.Business.Pet;
+using PetHelper.Domain.Pets;
 using PetHelper.ServiceResulting;
-using System.Security.Claims;
 
 namespace PetHelper.Api.Controllers
 {
@@ -15,16 +15,29 @@ namespace PetHelper.Api.Controllers
 
         public PetController(IPetService petService) => _petService = petService;
 
-        [HttpPost("addpet")]
+        [HttpPost("addPet")]
         [Authorize]
         public async Task<ServiceResult<Empty>> AddPet([FromBody] PetRequestModel petModel)
             => await RunWithServiceResult(async () =>
             {
-                var userId = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
+                var userId = GetUserIdFromToken();
 
-                await _petService.AddPet(petModel, new Guid(userId));
-
-                return SuccessEmptyResult();
+                return await _petService.AddPet(petModel, userId);
             });
+
+        [HttpPut("updatePet/{petId:guid}")]
+        [Authorize]
+        public async Task<ServiceResult<Empty>> UpdatePet(Guid petId, [FromBody] PetUpdateRequestModel petModel)
+            => await RunWithServiceResult(async () => await _petService.UpdatePet(petModel, petId));
+
+        [HttpGet("getPet/{petId:guid}")]
+        [Authorize]
+        public async Task<ServiceResult<PetModel>> GetPet(Guid petId)
+            => await RunWithServiceResult(async () => await _petService.GetPet(x => x.Id == petId));
+
+        [HttpDelete("removePet/{petId:guid}")]
+        [Authorize]
+        public async Task<ServiceResult<Empty>> RemovePet(Guid petId)
+            => await RunWithServiceResult(async () => await _petService.RemovePet(petId));
     }
 }

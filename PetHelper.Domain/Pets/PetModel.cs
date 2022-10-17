@@ -1,4 +1,6 @@
-﻿namespace PetHelper.Domain.Pets
+﻿using System.Text.Json.Serialization;
+
+namespace PetHelper.Domain.Pets
 {
     public record PetModel : BaseModel
     {
@@ -12,6 +14,7 @@
 
         public Guid OwnerId { get; set; }
 
+        [JsonIgnore]
         public UserModel Owner { get; set; }
     }
 }

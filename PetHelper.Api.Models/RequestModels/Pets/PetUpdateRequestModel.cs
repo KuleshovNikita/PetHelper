@@ -2,9 +2,9 @@
 
 namespace PetHelper.Api.Models.RequestModels.Pets
 {
-    public record PetRequestModel
+    public record PetUpdateRequestModel
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public AnimalType? AnimalType { get; set; }
 

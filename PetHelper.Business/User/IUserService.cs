@@ -9,7 +9,7 @@ namespace PetHelper.Business.User
     {
         Task<ServiceResult<Empty>> AddUser(UserModel userModel);
 
-        Task<ServiceResult<UserModel>> GetUser(Expression<Func<UserModel, bool>> predicate, string messageIfNotFound);
+        Task<ServiceResult<UserModel>> GetUser(Expression<Func<UserModel, bool>> predicate);
 
         Task<ServiceResult<Empty>> UpdateUser(UserUpdateRequestModel userModel);
 
