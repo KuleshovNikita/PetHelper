@@ -20,6 +20,12 @@ builder.Services.AddCors(x => x.AddPolicy(
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(opt =>
     {
+        var expireTime = builder.Configuration.GetSection("TokenExpirationTime").Value;
+        var cookieName = builder.Configuration.GetSection("CookieTokenName").Value;
+
+        opt.Cookie.Name = cookieName;
+        opt.ExpireTimeSpan = TimeSpan.FromMinutes(int.Parse(expireTime));
+        opt.SlidingExpiration = true;
         opt.Events.OnRedirectToLogin = (op) => Task.FromResult(op.Response.StatusCode = 401);
     });
 

@@ -11,6 +11,7 @@ using PetHelper.Domain.Properties;
 using PetHelper.Business.User;
 using AutoMapper;
 using PetHelper.Api.Models.RequestModels;
+using Microsoft.Extensions.Configuration;
 
 namespace PetHelper.Business.Auth
 {
@@ -20,8 +21,9 @@ namespace PetHelper.Business.Auth
         private readonly IUserService _userService;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public AuthService(IMapper mapper, IPasswordHasher passwordHasher, IEmailService emailService, 
+        public AuthService(IConfiguration configuration, IMapper mapper, IPasswordHasher passwordHasher, IEmailService emailService, 
             IUserService userService, IRepository<UserModel> repo) 
             : base(repo) 
         {
@@ -29,6 +31,7 @@ namespace PetHelper.Business.Auth
             _userService = userService;
             _passwordHasher = passwordHasher;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         public async Task<ServiceResult<ClaimsPrincipal>> Login(AuthModel authModel)
@@ -111,11 +114,13 @@ namespace PetHelper.Business.Auth
 
         private ClaimsPrincipal BuildClaims(UserModel userModel)
         {
+            var expireTime = _configuration.GetSection("TokenExpirationTime").Value;
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, $"{userModel.FirstName} {userModel.LastName}"),
-                new Claim(ClaimTypes.NameIdentifier, userModel.Login),
-                new Claim(ClaimTypes.Expiration, AfterMinutes(30))
+                new Claim(ClaimTypes.NameIdentifier, userModel.Id.ToString()),
+                new Claim(ClaimTypes.Expiration, AfterMinutes(int.Parse(expireTime)))
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
