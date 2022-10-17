@@ -82,13 +82,15 @@ namespace PetHelper.Business.Auth
 
         public async Task<ServiceResult<Empty>> ConfirmEmail(string key)
         {
+            var serviceResult = new ServiceResult<Empty>();
+
             var userResult = await _userService.GetUser(
                                 predicate: x => x.Password.ToLower() == key.ToLower(), 
                                 messageIfNotFound: Resources.NoUsersForSpecifiedKeyWereFound);
 
             if(userResult.Value.IsEmailConfirmed)
             {
-                return new ServiceResult<Empty>().FailAndThrow(Resources.TheUsersEmailIsAlreadyConfirmed);
+                return serviceResult.FailAndThrow(Resources.TheUsersEmailIsAlreadyConfirmed);
             }
 
             userResult.Value.IsEmailConfirmed = true;
@@ -96,7 +98,7 @@ namespace PetHelper.Business.Auth
 
             await _userService.UpdateUser(mappedUser);
 
-            return new ServiceResult<Empty>().Success();
+            return serviceResult.Success();
         }
 
         private void ValidateEmail(string login, ServiceResult<ClaimsPrincipal> serviceResult)

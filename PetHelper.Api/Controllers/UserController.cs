@@ -45,7 +45,7 @@ namespace PetHelper.Api.Controllers
                 return SuccessEmptyResult();
             });
 
-        [HttpPut("removeUser/{userId:guid}")]
+        [HttpDelete("removeUser/{userId:guid}")]
         [Authorize]
         public async Task<ServiceResult<Empty>> RemoveUser(Guid userId)
             => await RunWithServiceResult(async () =>
