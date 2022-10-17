@@ -51,7 +51,7 @@ namespace PetHelper.Business.Auth
 
             if(!userResult.Value.IsEmailConfirmed)
             {
-                return serviceResult.FailAndThrow(Resources.YouCantAuthenticateTheAccountEmailConfirmationIsNeeded);
+                return serviceResult.FailAndThrow(Resources.EmailConfirmationIsNeeded);
             }
 
             if(!_passwordHasher.ComparePasswords(authModel.Password, userResult.Value.Password))
@@ -64,7 +64,7 @@ namespace PetHelper.Business.Auth
             return serviceResult;
         }
 
-        public async Task<ServiceResult<ClaimsPrincipal>> Register(UserModel userModel)
+        public async Task<ServiceResult<ClaimsPrincipal>> Register(UserRequestModel userModel)
         {
             var serviceResult = new ServiceResult<ClaimsPrincipal>();
 
@@ -73,12 +73,14 @@ namespace PetHelper.Business.Auth
                 return serviceResult.FailAndThrow(Resources.InvalidDataFoundCantRegisterUser);
             }
 
+            var userDomainModel = _mapper.Map<UserModel>(userModel);
+
             ValidateEmail(userModel.Login, serviceResult);
 
-            await _userService.AddUser(userModel);
-            await _emailService.SendEmailConfirmMessage(userModel);
+            await _userService.AddUser(userDomainModel);
+            await _emailService.SendEmailConfirmMessage(userDomainModel);
 
-            serviceResult.Value = BuildClaims(userModel);
+            serviceResult.Value = BuildClaims(userDomainModel);
 
             return serviceResult;
         }

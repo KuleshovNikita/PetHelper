@@ -14,19 +14,14 @@ namespace PetHelper.Api.Controllers
     public class AuthenticationController : ResultingController
     {
         private readonly IAuthService _authService;
-        private readonly IMapper _mapper;
 
-        public AuthenticationController(IAuthService authService, IMapper mapper)
-        {
-            _authService = authService;
-            _mapper = mapper;
-        }
+        public AuthenticationController(IAuthService authService) => _authService = authService;
 
         [HttpPost("register")]
         public async Task<ServiceResult<Empty>> Register([FromBody] UserRequestModel userModel)
             => await RunWithServiceResult(async () =>
             {
-                var claimsResult = await _authService.Register(_mapper.Map<UserModel>(userModel));
+                var claimsResult = await _authService.Register(userModel);
                 await HttpContext.SignInAsync(claimsResult.Value);
 
                 return SuccessEmptyResult();

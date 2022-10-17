@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetHelper.Api.Models.RequestModels;
 using PetHelper.Business.User;
@@ -14,13 +13,8 @@ namespace PetHelper.Api.Controllers
     public class UserController : ResultingController
     {
         private readonly IUserService _userService;
-        private readonly IMapper _mapper;
 
-        public UserController(IUserService userService, IMapper mapper)
-        {
-            _userService = userService;
-            _mapper = mapper;
-        }
+        public UserController(IUserService userService) => _userService = userService;
 
         [HttpGet("getUser/{userId:guid}")]
         [Authorize]
@@ -37,7 +31,6 @@ namespace PetHelper.Api.Controllers
         public async Task<ServiceResult<Empty>> UpdateUser(Guid userId, [FromBody] UserUpdateRequestModel userRequestModel)
             => await RunWithServiceResult(async () =>
             {
-                //var userDomainModel = _mapper.Map<UserModel>(userRequestModel);
                 userRequestModel.Id = userId;
 
                 await _userService.UpdateUser(userRequestModel);

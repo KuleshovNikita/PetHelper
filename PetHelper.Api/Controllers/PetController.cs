@@ -13,10 +13,7 @@ namespace PetHelper.Api.Controllers
     {
         private readonly IPetService _petService;
 
-        public PetController(IPetService petService)
-        {
-            _petService = petService;
-        }
+        public PetController(IPetService petService) => _petService = petService;
 
         [HttpPost("addpet")]
         [Authorize]

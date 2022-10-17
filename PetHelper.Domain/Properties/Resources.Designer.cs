@@ -70,6 +70,15 @@ namespace PetHelper.Domain.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email confirmation is needed.
+        /// </summary>
+        public static string EmailConfirmationIsNeeded {
+            get {
+                return ResourceManager.GetString("EmailConfirmationIsNeeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hi! Your email was used for registration in PetHelper! Follow this link to confirm your email address and finish registration {0}.
         /// </summary>
         public static string EmailMessageTemplate {
@@ -165,15 +174,6 @@ namespace PetHelper.Domain.Properties {
         public static string WrongPasswordOrLogin {
             get {
                 return ResourceManager.GetString("WrongPasswordOrLogin", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You can&apos;t authenticate the account, email confirmation is needed.
-        /// </summary>
-        public static string YouCantAuthenticateTheAccountEmailConfirmationIsNeeded {
-            get {
-                return ResourceManager.GetString("YouCantAuthenticateTheAccountEmailConfirmationIsNeeded", resourceCulture);
             }
         }
     }

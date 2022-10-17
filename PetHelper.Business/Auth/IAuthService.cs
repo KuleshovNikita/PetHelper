@@ -1,4 +1,5 @@
-﻿using PetHelper.Domain;
+﻿using PetHelper.Api.Models.RequestModels;
+using PetHelper.Domain;
 using PetHelper.ServiceResulting;
 using System.Security.Claims;
 
@@ -10,6 +11,6 @@ namespace PetHelper.Business.Auth
 
         Task<ServiceResult<ClaimsPrincipal>> Login(AuthModel authModel);
 
-        Task<ServiceResult<ClaimsPrincipal>> Register(UserModel userModel);
+        Task<ServiceResult<ClaimsPrincipal>> Register(UserRequestModel userModel);
     }
 }

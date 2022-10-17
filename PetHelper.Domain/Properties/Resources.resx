@@ -120,6 +120,9 @@
   <data name="ConfirmYourEmail" xml:space="preserve">
     <value>Confirm Your Email</value>
   </data>
+  <data name="EmailConfirmationIsNeeded" xml:space="preserve">
+    <value>Email confirmation is needed</value>
+  </data>
   <data name="EmailMessageTemplate" xml:space="preserve">
     <value>Hi! Your email was used for registration in PetHelper! Follow this link to confirm your email address and finish registration {0}</value>
   </data>
@@ -152,8 +155,5 @@
   </data>
   <data name="WrongPasswordOrLogin" xml:space="preserve">
     <value>Wrong password or login</value>
-  </data>
-  <data name="YouCantAuthenticateTheAccountEmailConfirmationIsNeeded" xml:space="preserve">
-    <value>You can't authenticate the account, email confirmation is needed</value>
   </data>
 </root>
