@@ -2,7 +2,9 @@
 {
     public record ScheduleModel : BaseModel
     {
-        public DateTime ScheduledTime { get; set; }
+        public TimeSpan ScheduledStart { get; set; }
+
+        public TimeSpan ScheduledEnd { get; set; }
 
         public Guid PetId { get; set; }
 
