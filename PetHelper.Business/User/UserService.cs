@@ -64,8 +64,9 @@ namespace PetHelper.Business.User
                          .CatchAny();
         }
 
-        public async Task<ServiceResult<Empty>> UpdateUser(UserUpdateRequestModel userModel)
+        public async Task<ServiceResult<Empty>> UpdateUser(UserUpdateRequestModel userModel, Guid userId)
         {
+            userModel.Id = userId;
             var user = await GetUser(x => x.Id == userModel.Id);
             user.Value = _mapper.MapOnlyUpdatedProperties(userModel, user.Value);
 

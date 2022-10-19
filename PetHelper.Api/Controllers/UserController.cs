@@ -7,8 +7,7 @@ using PetHelper.ServiceResulting;
 
 namespace PetHelper.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Authorize]
     public class UserController : ResultingController
     {
         private readonly IUserService _userService;
@@ -16,21 +15,14 @@ namespace PetHelper.Api.Controllers
         public UserController(IUserService userService) => _userService = userService;
 
         [HttpGet("getUser/{userId:guid}")]
-        [Authorize]
         public async Task<ServiceResult<UserModel>> GetUser(Guid userId)
             => await RunWithServiceResult(async () => await _userService.GetUser(x => x.Id == userId));
 
         [HttpPut("updateUser/{userId:guid}")]
-        [Authorize]
         public async Task<ServiceResult<Empty>> UpdateUser(Guid userId, [FromBody] UserUpdateRequestModel userRequestModel)
-            => await RunWithServiceResult(async () =>
-            {
-                userRequestModel.Id = userId;
-                return await _userService.UpdateUser(userRequestModel);
-            });
+            => await RunWithServiceResult(async () => await _userService.UpdateUser(userRequestModel, userId));
 
         [HttpDelete("removeUser/{userId:guid}")]
-        [Authorize]
         public async Task<ServiceResult<Empty>> RemoveUser(Guid userId)
             => await RunWithServiceResult(async () => await _userService.RemoveUser(userId));
     }

@@ -8,8 +8,6 @@ using PetHelper.ServiceResulting;
 
 namespace PetHelper.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class AuthenticationController : ResultingController
     {
         private readonly IAuthService _authService;

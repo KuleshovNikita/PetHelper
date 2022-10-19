@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using PetHelper.Api.Models.RequestModels;
 using PetHelper.Api.Models.RequestModels.Pets;
+using PetHelper.Api.Models.RequestModels.Schedules;
 using PetHelper.Business.Modules;
 using PetHelper.DataAccess.Modules;
 using PetHelper.Domain;
@@ -35,11 +36,13 @@ namespace PetHelper.Startup.Extensions
             => cfg =>
             {
                 cfg.CreateMap<UserRequestModel, UserModel>();
-
                 cfg.CreateMap<UserUpdateRequestModel, UserModel>();
                 cfg.CreateMap<UserModel, UserUpdateRequestModel>();
 
                 cfg.CreateMap<PetRequestModel, PetModel>();
+
+                cfg.CreateMap<ScheduleRequestModel, ScheduleModel>();
+                cfg.CreateMap<ScheduleUpdateRequestModel, ScheduleModel>();
             };
     }
 }
