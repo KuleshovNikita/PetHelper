@@ -8,8 +8,8 @@ namespace PetHelper.DataAccess.Context.ModelContexts
         public void Configure(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserModel>().HasKey(x => x.Id);
-            modelBuilder.Entity<UserModel>().HasAlternateKey(x => x.Login);
-            modelBuilder.Entity<UserModel>().HasAlternateKey(x => x.Password);
+            modelBuilder.Entity<UserModel>().HasIndex(x => x.Login).IsUnique();
+            modelBuilder.Entity<UserModel>().HasIndex(x => x.Password).IsUnique();
             modelBuilder.Entity<UserModel>(entity =>
             {
                 entity.Property(x => x.Id)

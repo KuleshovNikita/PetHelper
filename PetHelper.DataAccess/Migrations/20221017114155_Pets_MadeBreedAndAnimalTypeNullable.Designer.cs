@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetHelper.DataAccess.Context;
 
@@ -11,9 +12,10 @@ using PetHelper.DataAccess.Context;
 namespace PetHelper.DataAccess.Migrations
 {
     [DbContext(typeof(PetHelperDbContext))]
-    partial class PetHelperDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221017114155_Pets_MadeBreedAndAnimalTypeNullable")]
+    partial class Pets_MadeBreedAndAnimalTypeNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,11 +61,8 @@ namespace PetHelper.DataAccess.Migrations
                     b.Property<Guid>("PetId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<TimeSpan>("ScheduledEnd")
-                        .HasColumnType("time");
-
-                    b.Property<TimeSpan>("ScheduledStart")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("ScheduledTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

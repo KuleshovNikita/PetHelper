@@ -1,100 +1,59 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetHelper.Api.Models.RequestModels;
 using PetHelper.Business.Auth;
 using PetHelper.Domain;
 using PetHelper.ServiceResulting;
-using System.Security.Claims;
-using System.Web;
-using PetHelper.Domain.Properties;
 
 namespace PetHelper.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthenticationController : ControllerBase
+    public class AuthenticationController : ResultingController
     {
         private readonly IAuthService _authService;
-        private readonly IMapper _mapper;
 
-        public AuthenticationController(IAuthService authService, IMapper mapper)
-        {
-            _authService = authService;
-            _mapper = mapper;
-        }
+        public AuthenticationController(IAuthService authService) => _authService = authService;
 
         [HttpPost("register")]
         public async Task<ServiceResult<Empty>> Register([FromBody] UserRequestModel userModel)
-            => await RunWithServiceResult(() => _authService.Register(_mapper.Map<UserModel>(userModel)));
+            => await RunWithServiceResult(async () =>
+            {
+                var claimsResult = await _authService.Register(userModel);
+                await HttpContext.SignInAsync(claimsResult.Value);
+
+                return SuccessEmptyResult();
+            });
 
         [HttpPost("login")]
         public async Task<ServiceResult<Empty>> Login([FromBody] AuthModel authModel)
-            => await RunWithServiceResult(() => _authService.Login(authModel));
+            => await RunWithServiceResult(async () =>
+            {
+                var claimsResult = await _authService.Login(authModel);
+                await HttpContext.SignInAsync(claimsResult.Value);
+
+                return SuccessEmptyResult();
+            });
 
         [HttpGet("confirmEmail/{key}")]
         public async Task<ServiceResult<Empty>> ConfirmEmail(string key)
-        {
-            var result = new ServiceResult<Empty>();
-
-            try
+            => await RunWithServiceResult(async () =>
             {
-                key = HttpUtility.UrlDecode(key);
-                await _authService.ConfirmEmail(key);
+                key = Uri.UnescapeDataString(key);
+                var newClaims = await _authService.ConfirmEmail(key);
 
-                return result.Success();
-            }
-            catch (FailedServiceResultException ex)
-            {
-                return result.Fail(ex.Message);
-            }
-        }
+                await HttpContext.SignInAsync(newClaims.Value);
+
+                return SuccessEmptyResult();
+            });
 
         [Authorize]
         [HttpGet("logout")]
         public async Task<ServiceResult<Empty>> LogOut()
-        {
-            var result = new ServiceResult<Empty>();
-
-            try
+            => await RunWithServiceResult(async () =>
             {
                 await HttpContext.SignOutAsync();
 
-                return result.Success();
-            }
-            catch (FailedServiceResultException ex)
-            {
-                return result.Fail(ex.Message);
-            }
-        }
-
-        private async Task<ServiceResult<Empty>> RunWithServiceResult(Func<Task<ServiceResult<ClaimsPrincipal>>> command)
-        {
-            var finalResult = new ServiceResult<Empty>();
-
-            if (!ModelState.IsValid)
-            {
-                return finalResult.Fail(Resources.InvalidDataFound);
-            }
-
-            try
-            {
-                var claimsResult = await command();
-
-                if (!claimsResult.IsSuccessful)
-                {
-                    return finalResult.Fail(claimsResult.ClientErrorMessage!);
-                }
-
-                await HttpContext.SignInAsync(claimsResult.Value);
-
-                return finalResult.Success();
-            }
-            catch (FailedServiceResultException ex)
-            {
-                return finalResult.Fail(ex.Message);
-            }
-        }
+                return SuccessEmptyResult();
+            });
     }
 }

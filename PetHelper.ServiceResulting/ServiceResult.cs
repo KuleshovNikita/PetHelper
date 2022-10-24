@@ -9,7 +9,7 @@ namespace PetHelper.ServiceResulting
         public TEntity Value { get; set; }
 
         [JsonIgnore]
-        public Exception Exception { get; private set; } = new Exception();
+        public Exception Exception { get; private set; }
 
         public string? ClientErrorMessage { get; private set; }
 
@@ -19,9 +19,17 @@ namespace PetHelper.ServiceResulting
         {   
             if(Exception is TException)
             {
-                ClientErrorMessage = errorMessage ?? Exception.Message;
+                BuildException(errorMessage);
+            }
 
-                throw new FailedServiceResultException(ClientErrorMessage, Exception);
+            return this;
+        }
+
+        public ServiceResult<TEntity> CatchAny(string? errorMessage = null)
+        {
+            if(Exception is not null)
+            {
+                BuildException(errorMessage);
             }
 
             return this;
@@ -31,16 +39,28 @@ namespace PetHelper.ServiceResulting
 
         public ServiceResult<TEntity> FailAndThrow(string failMessage = "")
         {
-            Fail(failMessage);
+            var serviceFailedException = new FailedServiceResultException(failMessage, Exception);
+            Fail(serviceFailedException);
 
-            throw new FailedServiceResultException(failMessage, Exception);
+            throw serviceFailedException;
         }
 
-        public ServiceResult<TEntity> Fail(string failMessage = "") 
-            => SetResultState(false, failMessage);
+        public ServiceResult<TEntity> Fail(Exception ex)
+            => SetResultState(false, ex.Message, ex);
 
-        private ServiceResult<TEntity> SetResultState(bool state, string message)
+        private void BuildException(string? errorMessage = null)
         {
+            ClientErrorMessage = errorMessage ?? Exception.Message;
+            throw new FailedServiceResultException(ClientErrorMessage, Exception);
+        }
+
+        private ServiceResult<TEntity> SetResultState(bool state, string message, Exception? ex = null)
+        {
+            if(ex is not null)
+            {
+                Exception = ex.InnerException ?? ex;
+            }
+    
             ClientErrorMessage = message;
             IsSuccessful = state;
             return this;

@@ -1,26 +1,37 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.EntityFrameworkCore;
 using PetHelper.Business.Email;
 using PetHelper.Business.Hashing;
 using PetHelper.DataAccess.Repo;
 using PetHelper.Domain;
-using PetHelper.Domain.Exceptions;
 using PetHelper.ServiceResulting;
 using System.Globalization;
 using System.Net.Mail;
 using System.Security.Claims;
 using PetHelper.Domain.Properties;
+using PetHelper.Business.User;
+using AutoMapper;
+using PetHelper.Api.Models.RequestModels;
+using Microsoft.Extensions.Configuration;
 
 namespace PetHelper.Business.Auth
 {
     public class AuthService : DataAccessableService<UserModel>, IAuthService
     {
         private readonly IEmailService _emailService;
-        private readonly PasswordHasher _passwordHasher = new PasswordHasher();
+        private readonly IUserService _userService;
+        private readonly IPasswordHasher _passwordHasher;
+        private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public AuthService(IEmailService emailService, IRepository<UserModel> repo) : base(repo) 
+        public AuthService(IConfiguration configuration, IMapper mapper, IPasswordHasher passwordHasher, IEmailService emailService, 
+            IUserService userService, IRepository<UserModel> repo) 
+            : base(repo) 
         {
             _emailService = emailService;
+            _userService = userService;
+            _passwordHasher = passwordHasher;
+            _mapper = mapper;
+            _configuration = configuration;
         }
 
         public async Task<ServiceResult<ClaimsPrincipal>> Login(AuthModel authModel)
@@ -34,16 +45,11 @@ namespace PetHelper.Business.Auth
 
             ValidateEmail(authModel.Login, serviceResult);
 
-            var userResult = 
-                (await _repository.FirstOrDefault(x => x.Login == authModel.Login))
-                    .Catch<EntityNotFoundException>(Resources.UserWithTheProvidedLoginDoesntExist)
-                    .Catch<ArgumentNullException>()
-                    .Catch<InvalidOperationException>()
-                    .Catch<OperationCanceledException>();
+            var userResult = await _userService.GetUser(x => x.Login == authModel.Login);
 
             if(!userResult.Value.IsEmailConfirmed)
             {
-                return serviceResult.FailAndThrow(Resources.YouCantAuthenticateTheAccountEmailConfirmationIsNeeded);
+                return serviceResult.FailAndThrow(Resources.EmailConfirmationIsNeeded);
             }
 
             if(!_passwordHasher.ComparePasswords(authModel.Password, userResult.Value.Password))
@@ -51,12 +57,12 @@ namespace PetHelper.Business.Auth
                 return serviceResult.FailAndThrow(Resources.WrongPasswordOrLogin);
             }
 
-            serviceResult.Value = BuildClaims(userResult.Value);
+            serviceResult.Value = BuildInitialClaims(userResult.Value);
 
             return serviceResult;
         }
 
-        public async Task<ServiceResult<ClaimsPrincipal>> Register(UserModel userModel)
+        public async Task<ServiceResult<ClaimsPrincipal>> Register(UserRequestModel userModel)
         {
             var serviceResult = new ServiceResult<ClaimsPrincipal>();
 
@@ -65,50 +71,36 @@ namespace PetHelper.Business.Auth
                 return serviceResult.FailAndThrow(Resources.InvalidDataFoundCantRegisterUser);
             }
 
+            var userDomainModel = _mapper.Map<UserModel>(userModel);
+
             ValidateEmail(userModel.Login, serviceResult);
 
-            if(await LoginIsAlreadyRegistered(userModel.Login))
-            {
-                return serviceResult.FailAndThrow(Resources.TheLoginIsAlreadyRegistered);
-            }
+            await _userService.AddUser(userDomainModel);
+            await _emailService.SendEmailConfirmMessage(userDomainModel);
 
-            var hashedPassword = _passwordHasher.HashPassword(userModel.Password);
-            userModel.Password = hashedPassword;
-            userModel.Id = Guid.NewGuid();
-
-            (await _repository.Insert(userModel))
-                    .Catch<OperationCanceledException>()
-                    .Catch<DbUpdateException>()
-                    .Catch<DbUpdateConcurrencyException>(); 
-
-            await _emailService.SendEmailConfirmMessage(userModel);
-
-            serviceResult.Value = BuildClaims(userModel);
+            serviceResult.Value = BuildInitialClaims(userDomainModel);
 
             return serviceResult;
         }
 
-        public async Task<ServiceResult<Empty>> ConfirmEmail(string key)
+        public async Task<ServiceResult<ClaimsPrincipal>> ConfirmEmail(string key)
         {
-            var userResult = 
-                (await _repository.FirstOrDefault(x => x.Password.ToLower() == key.ToLower()))
-                    .Catch<ArgumentNullException>()
-                    .Catch<OperationCanceledException>()
-                    .Catch<EntityNotFoundException>(Resources.NoUsersForSpecifiedKeyWereFound);
+            var serviceResult = new ServiceResult<ClaimsPrincipal>();
+
+            var userResult = await _userService.GetUser(x => x.Password.ToLower() == key.ToLower());
 
             if(userResult.Value.IsEmailConfirmed)
             {
-                return new ServiceResult<Empty>().FailAndThrow(Resources.TheUsersEmailIsAlreadyConfirmed);
+                return serviceResult.FailAndThrow(Resources.TheUsersEmailIsAlreadyConfirmed);
             }
 
             userResult.Value.IsEmailConfirmed = true;
+            var mappedUser = _mapper.Map<UserUpdateRequestModel>(userResult.Value);
 
-            (await _repository.Update(userResult.Value))
-                .Catch<OperationCanceledException>()
-                .Catch<DbUpdateException>()
-                .Catch<DbUpdateConcurrencyException>();
+            await _userService.UpdateUser(mappedUser);
 
-            return new ServiceResult<Empty>().Success();
+            serviceResult.Value = BuildClaimsWithEmail(userResult.Value);
+            return serviceResult.Success();
         }
 
         private void ValidateEmail(string login, ServiceResult<ClaimsPrincipal> serviceResult)
@@ -119,27 +111,20 @@ namespace PetHelper.Business.Auth
             }
         }
 
-        private async Task<bool> LoginIsAlreadyRegistered(string login)
+        private ClaimsPrincipal BuildInitialClaims(UserModel userModel)
         {
-            var serviceResult = new ServiceResult<bool>();
-
-            serviceResult = 
-                (await _repository.Any(x => x.Login == login))
-                    .Catch<OperationCanceledException>()
-                    .Catch<ArgumentNullException>();
-
-            return serviceResult.Value;
+            var claims = ClaimsSets.GetInitialClaims(userModel);
+            return BuildClaims(claims);
         }
 
-        private ClaimsPrincipal BuildClaims(UserModel userModel)
+        private ClaimsPrincipal BuildClaimsWithEmail(UserModel userModel)
         {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, $"{userModel.FirstName} {userModel.LastName}"),
-                new Claim(ClaimTypes.NameIdentifier, userModel.Login),
-                new Claim(ClaimTypes.Expiration, AfterMinutes(30))
-            };
+            var claims = ClaimsSets.GetClaimsWithEmail(userModel);
+            return BuildClaims(claims);
+        }
 
+        private ClaimsPrincipal BuildClaims(IEnumerable<Claim> claims)
+        {
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 

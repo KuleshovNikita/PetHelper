@@ -1,0 +1,255 @@
+{
+	"info": {
+		"_postman_id": "a56a1174-2ef9-48ad-b6c3-591f471801c7",
+		"name": "PetHelper",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"FirstName\": \"Mykyta\",\r\n    \"LastName\": \"Kuleshov\",\r\n    \"Login\": \"mykyta.kuleshov@nure.ua\",\r\n    \"Password\": \"admin\",\r\n    \"ReturnUrl\": \"url\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/authentication/register",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"authentication",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Login\": \"mykyta.kuleshov@nure.ua\",\r\n    \"Password\": \"admin\",\r\n    \"ReturnUrl\": \"url\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/authentication/login",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"authentication",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/authentication/confirmEmail?key=12345",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"authentication",
+								"confirmEmail"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "12345"
+								},
+								{
+									"key": null,
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pets",
+			"item": [
+				{
+					"name": "Get Pet",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/pet/getpet/",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"pet",
+								"getpet",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Pet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/pet/addPet",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"pet",
+								"addPet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Pet",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"Dodick\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/pet/updatePet/F00986B8-39B1-4985-D42F-08DAB06F9C09",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"pet",
+								"updatePet",
+								"F00986B8-39B1-4985-D42F-08DAB06F9C09"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Pet",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "GetUserAccount",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Login\": \"login\",\r\n    \"Password\": \"password\",\r\n    \"ReturnUrl\": \"url\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/login",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/user/removeUser/070A4095-1C81-4496-B7A1-6C2504A033A9",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"user",
+								"removeUser",
+								"070A4095-1C81-4496-B7A1-6C2504A033A9"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "api_url",
+			"value": "https://localhost:5001/api"
+		}
+	]
+}

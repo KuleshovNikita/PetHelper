@@ -13,7 +13,10 @@ namespace PetHelper.DataAccess.Context.ModelContexts
                 entity.Property(x => x.Id)
                       .IsRequired();
 
-                entity.Property(x => x.ScheduledTime)
+                entity.Property(x => x.ScheduledStart)
+                      .IsRequired();
+
+                entity.Property(x => x.ScheduledEnd)
                       .IsRequired();
 
                 entity.HasOne(x => x.Pet)

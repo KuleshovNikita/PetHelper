@@ -24,7 +24,7 @@ namespace PetHelper.DataAccess.Repo
             }
             catch (Exception ex)
             {
-                return result.Fail(ex.Message);
+                return result.Fail(ex);
             }
         }
 
@@ -40,7 +40,7 @@ namespace PetHelper.DataAccess.Repo
             }
             catch(Exception ex)
             {
-                return result.Fail(ex.Message);
+                return result.Fail(ex);
             }
         }
 
@@ -57,7 +57,7 @@ namespace PetHelper.DataAccess.Repo
             }
             catch(Exception ex)
             {
-                return result.Fail(ex.Message);
+                return result.Fail(ex);
             }
         }
 
@@ -68,13 +68,31 @@ namespace PetHelper.DataAccess.Repo
             try
             {
                 _context.Set<T>().Update(entity);
+                _context.Entry(entity).State = EntityState.Modified;
                 _context.SaveChangesAsync();
 
                 return Task.FromResult(result.Success());
             }
             catch (Exception ex)
             {
-                return Task.FromResult(result.Fail(ex.Message));
+                return Task.FromResult(result.Fail(ex));
+            }
+        }
+
+        public async Task<ServiceResult<Empty>> Remove(T entity)
+        {
+            var result = new ServiceResult<Empty>();
+
+            try
+            {
+                _context.Set<T>().Remove(entity);
+                await _context.SaveChangesAsync();
+
+                return result.Success();
+            }
+            catch (Exception ex)
+            {
+                return result.Fail(ex);
             }
         }
     }

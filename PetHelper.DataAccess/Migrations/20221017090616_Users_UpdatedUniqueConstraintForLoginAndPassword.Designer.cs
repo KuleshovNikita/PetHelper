@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetHelper.DataAccess.Context;
 
@@ -11,9 +12,10 @@ using PetHelper.DataAccess.Context;
 namespace PetHelper.DataAccess.Migrations
 {
     [DbContext(typeof(PetHelperDbContext))]
-    partial class PetHelperDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221017090616_Users_UpdatedUniqueConstraintForLoginAndPassword")]
+    partial class Users_UpdatedUniqueConstraintForLoginAndPassword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,10 +30,11 @@ namespace PetHelper.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("AnimalType")
+                    b.Property<int>("AnimalType")
                         .HasColumnType("int");
 
                     b.Property<string>("Breed")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -59,11 +62,8 @@ namespace PetHelper.DataAccess.Migrations
                     b.Property<Guid>("PetId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<TimeSpan>("ScheduledEnd")
-                        .HasColumnType("time");
-
-                    b.Property<TimeSpan>("ScheduledStart")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("ScheduledTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

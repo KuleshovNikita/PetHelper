@@ -2,7 +2,6 @@
 using System.Net.Mail;
 using System.Net;
 using Microsoft.Extensions.Configuration;
-using System.Web;
 using PetHelper.Domain.Properties;
 
 namespace PetHelper.Business.Email
@@ -27,7 +26,7 @@ namespace PetHelper.Business.Email
         {
             var serverUrl = Environment.GetEnvironmentVariable("ASPNETCORE_URLS")?.Split(";").First();
 
-            var encodedHashKey = HttpUtility.UrlEncode(userModel.Password);
+            var encodedHashKey = Uri.EscapeDataString(userModel.Password);
             var confirmEndpoint = $"/api/authentication/confirmEmail/{encodedHashKey}";
 
             return serverUrl + confirmEndpoint;
@@ -35,7 +34,7 @@ namespace PetHelper.Business.Email
 
         private string BuildEmailMessage(string confirmUrl)
         {
-            var messageTemplate = Resources.ConfirmYourEmail;
+            var messageTemplate = Resources.EmailMessageTemplate;
             var messageWithLink = string.Format(messageTemplate, confirmUrl);
 
             return messageWithLink;
