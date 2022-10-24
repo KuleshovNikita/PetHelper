@@ -26,6 +26,10 @@ namespace PetHelper.Api.Controllers
         public async Task<ServiceResult<ScheduleModel>> GetSchedule(Guid scheduleId)
             => await RunWithServiceResult(async () => await _scheduleService.GetSchedule(x => x.Id == scheduleId));
 
+        [HttpGet("getPetSchedules/{petId:guid}")]
+        public async Task<ServiceResult<IEnumerable<ScheduleModel>>> GetScheduleForPet(Guid petId)
+            => await RunWithServiceResult(async () => await _scheduleService.GetSchedules(x => x.PetId == petId));
+
         [HttpDelete("removeSchedule/{scheduleId:guid}")]
         public async Task<ServiceResult<Empty>> RemoveSchedule(Guid scheduleId)
             => await RunWithServiceResult(async () => await _scheduleService.RemoveSchedule(scheduleId));
