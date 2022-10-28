@@ -4,17 +4,19 @@ namespace PetHelper.Domain.Pets
 {
     public record PetModel : BaseModel
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         public AnimalType? AnimalType { get; set; }
 
         public string? Breed { get; set; }
 
-        public IEnumerable<ScheduleModel> WalkingSchedule { get; set; }
+        public IEnumerable<ScheduleModel> WalkingSchedule { get; set; } = null!;
+
+        public IEnumerable<WalkModel> WalksHistory { get; set; } = null!;
 
         public Guid OwnerId { get; set; }
 
         [JsonIgnore]
-        public UserModel Owner { get; set; }
+        public UserModel Owner { get; set; } = null!;
     }
 }

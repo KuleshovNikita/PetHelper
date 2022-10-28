@@ -13,11 +13,14 @@ namespace PetHelper.DataAccess.Context
 
         public DbSet<ScheduleModel> WalkingSchedules { get; set; }
 
+        public DbSet<WalkModel> WalksHistory { get; set; }
+
         private readonly IReadOnlyCollection<IModelContext> _modelContexts = new List<IModelContext>
         {
             new UserContext(),
             new PetContext(),
             new ScheduleContext(),
+            new WalkHistoryContext(),
         };
 
         public PetHelperDbContext(DbContextOptions options) : base(options)
