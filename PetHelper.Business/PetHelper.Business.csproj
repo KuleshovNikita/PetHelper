@@ -18,8 +18,4 @@
     <ProjectReference Include="..\PetHelper.ServiceResulting\PetHelper.ServiceResulting.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Schedules\" />
-  </ItemGroup>
-
 </Project>
