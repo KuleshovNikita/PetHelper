@@ -4,7 +4,6 @@ using PetHelper.Business.Hashing;
 using PetHelper.DataAccess.Repo;
 using PetHelper.Domain;
 using PetHelper.ServiceResulting;
-using System.Globalization;
 using System.Net.Mail;
 using System.Security.Claims;
 using PetHelper.Domain.Properties;
