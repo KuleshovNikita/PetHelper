@@ -2,12 +2,24 @@
 {
     public record WalkTimesCriteria : BaseStatCriteria
     {
-        public decimal AverageWalkTimesPerDay { get; set; }
+        public decimal AverageWalksCountPerDay { get; set; }
 
         public override void Calculate(decimal IdleValue, IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime)
         {
+            CalculateCommon(walksTime);
+            Criteria = CalculateCriteriaResult(IdleValue, AverageWalksCountPerDay);
+        }
+
+        public override void CalculateWithoutIdle(IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime)
+        {
+            CalculateCommon(walksTime);
+            Criteria = null;
+        }
+
+        private void CalculateCommon(IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime)
+        {
             var groupedWalksByDay = walksTime.GroupBy(
-                x => x.StartTime.Date, 
+                x => x.StartTime.Date,
                 x => walksTime.Where(y => y.StartTime.Date == x.StartTime.Date),
                 (key, count) => new
                 {
@@ -16,20 +28,17 @@
                 }
             ); //надо протестить
 
-            var actualAverageWalkTimesPerDay = (decimal)groupedWalksByDay.Select(x => x.Count).Average();
-
-            AverageWalkTimesPerDay = actualAverageWalkTimesPerDay;
-            CriteriaResult = CalulateCriteriaResult(IdleValue, actualAverageWalkTimesPerDay);
+            AverageWalksCountPerDay = (decimal)groupedWalksByDay.Select(x => x.Count).Average();
         }
 
-        protected override CriteriaResult CalulateCriteriaResult(decimal idleWalkTimesPerDay, decimal actualAverageWalkDuring)
+        protected override CriteriaResult CalculateCriteriaResult(decimal idleWalkTimesPerDay, decimal actualAverageWalkDuring)
         {
             if(actualAverageWalkDuring >= idleWalkTimesPerDay)
             {
                 return CriteriaResult.Good;
             }
 
-            return base.CalulateCriteriaResult(idleWalkTimesPerDay, actualAverageWalkDuring);
+            return base.CalculateCriteriaResult(idleWalkTimesPerDay, actualAverageWalkDuring);
         }
     }
 }

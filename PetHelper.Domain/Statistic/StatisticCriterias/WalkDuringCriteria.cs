@@ -8,10 +8,17 @@ namespace PetHelper.Domain.Statistic.StatisticCriterias
 
         public override void Calculate(decimal idleValue, IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime)
         {
-            var actualAverageWalkDuring = walksTime.Average(x => x.EndTime.MinusTime(x.StartTime).ToMinutes());
-
-            AverageWalkDuring = actualAverageWalkDuring;
-            CriteriaResult = CalulateCriteriaResult(idleValue, actualAverageWalkDuring);
+            CalculateCommon(walksTime);
+            Criteria = CalculateCriteriaResult(idleValue, AverageWalkDuring);
         }
+
+        public override void CalculateWithoutIdle(IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime)
+        {
+            CalculateCommon(walksTime);
+            Criteria = null;
+        }
+
+        private void CalculateCommon(IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime)
+            => AverageWalkDuring = walksTime.Average(x => x.EndTime.MinusTime(x.StartTime).ToMinutes());
     }
 }

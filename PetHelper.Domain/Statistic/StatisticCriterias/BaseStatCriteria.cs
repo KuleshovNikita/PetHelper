@@ -2,11 +2,13 @@
 {
     public abstract record BaseStatCriteria
     {
-        public CriteriaResult CriteriaResult { get; set; }
+        public CriteriaResult? Criteria { get; set; }
 
         public abstract void Calculate(decimal idleValue, IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime);
 
-        protected virtual CriteriaResult CalulateCriteriaResult(decimal idleValue, decimal actualAverageWalkDuring)
+        public abstract void CalculateWithoutIdle(IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime);
+
+        protected virtual CriteriaResult CalculateCriteriaResult(decimal idleValue, decimal actualAverageWalkDuring)
         {
             var criteriaTypesCount = Enum.GetValues<CriteriaResult>().Count();
             var criteriaStepSize = idleValue / criteriaTypesCount;

@@ -22,7 +22,11 @@ namespace PetHelper.DataAccess.Context.ModelContexts
                 entity.Property(x => x.IdleWalksCountPerDay)
                       .IsRequired();
 
+                entity.Property(x => x.IsGeneralData)
+                      .IsRequired();
+
                 entity.Property(x => x.Breed)
+                      .IsRequired(false)
                       .HasMaxLength(50);
             });
         }

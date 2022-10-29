@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetHelper.DataAccess.Context;
 
@@ -11,9 +12,10 @@ using PetHelper.DataAccess.Context;
 namespace PetHelper.DataAccess.Migrations
 {
     [DbContext(typeof(PetHelperDbContext))]
-    partial class PetHelperDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221029164936_IdlePetStatistic_CreatedTable")]
+    partial class IdlePetStatistic_CreatedTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
