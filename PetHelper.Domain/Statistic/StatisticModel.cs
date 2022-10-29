@@ -11,7 +11,7 @@ namespace PetHelper.Domain.Statistic
 
         public WalkDuringCriteria WalkDuringCriteria { get; set; } = null!;
 
-        public WalkTimeCriteria WalkTimeCriteria { get; set; } = null!;
+        public WalkTimesCriteria WalkTimeCriteria { get; set; } = null!;
 
         public CriteriaResult? GeneralResult { get; set; } = null!;
 

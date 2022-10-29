@@ -4,16 +4,16 @@ namespace PetHelper.Domain.Statistic.StatisticCriterias
 {
     public enum CriteriaResult
     {
-        [Description("Good")]
-        Good = 0,
-
-        [Description("Acceptable")]
-        Acceptable = 1,
+        [Description("Very Bad")]
+        VeryBad = 0,
 
         [Description("Bad")]
-        Bad = 2,
+        Bad = 1,
 
-        [Description("Very Bad")]
-        VeryBad = 3,
+        [Description("Acceptable")]
+        Acceptable = 2,
+
+        [Description("Good")]
+        Good = 3,
     }
 }
