@@ -25,8 +25,8 @@ namespace PetHelper.Business.Statistic
 
             var walksTimeHistory = walksData.Select(x => (StartTime: x.StartTime, EndTime: x.EndTime));
 
-            statistic.WalkDuringCriteria.Calculate(walksTimeHistory);
-            statistic.WalkTimeCriteria.Calculate(walksTimeHistory);
+            statistic.WalkDuringCriteria.Calculate(statistic.IdlePetStatisticModel.IdleWalkDuringTime, walksTimeHistory);
+            statistic.WalksCountCriteria.Calculate(statistic.IdlePetStatisticModel.IdleWalksCountPerDay, walksTimeHistory);
         }
     }
 }

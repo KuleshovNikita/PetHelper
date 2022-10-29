@@ -9,9 +9,11 @@ namespace PetHelper.Domain.Statistic
 
         public DateTime SampleEndDate { get; set; }
 
+        public IdlePetStatisticModel IdlePetStatisticModel { get; set; } = null!;
+
         public WalkDuringCriteria WalkDuringCriteria { get; set; } = null!;
 
-        public WalkTimesCriteria WalkTimeCriteria { get; set; } = null!;
+        public WalkTimesCriteria WalksCountCriteria { get; set; } = null!;
 
         public CriteriaResult? GeneralResult { get; set; } = null!;
 

@@ -4,9 +4,7 @@
     {
         public decimal AverageWalkTimesPerDay { get; set; }
 
-        public decimal IdleWalkTimesPerDay { get; set; }
-
-        public override void Calculate(IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime)
+        public override void Calculate(decimal IdleValue, IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime)
         {
             var groupedWalksByDay = walksTime.GroupBy(
                 x => x.StartTime.Date, 
@@ -21,7 +19,7 @@
             var actualAverageWalkTimesPerDay = (decimal)groupedWalksByDay.Select(x => x.Count).Average();
 
             AverageWalkTimesPerDay = actualAverageWalkTimesPerDay;
-            CriteriaResult = CalulateCriteriaResult(IdleWalkTimesPerDay, actualAverageWalkTimesPerDay);
+            CriteriaResult = CalulateCriteriaResult(IdleValue, actualAverageWalkTimesPerDay);
         }
 
         protected override CriteriaResult CalulateCriteriaResult(decimal idleWalkTimesPerDay, decimal actualAverageWalkDuring)

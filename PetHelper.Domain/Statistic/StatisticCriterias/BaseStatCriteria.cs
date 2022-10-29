@@ -4,7 +4,7 @@
     {
         public CriteriaResult CriteriaResult { get; set; }
 
-        public abstract void Calculate(IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime);
+        public abstract void Calculate(decimal idleValue, IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime);
 
         protected virtual CriteriaResult CalulateCriteriaResult(decimal idleValue, decimal actualAverageWalkDuring)
         {

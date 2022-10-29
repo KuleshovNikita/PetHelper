@@ -2,6 +2,7 @@
 using PetHelper.DataAccess.Context.ModelContexts;
 using PetHelper.Domain;
 using PetHelper.Domain.Pets;
+using PetHelper.Domain.Statistic;
 
 namespace PetHelper.DataAccess.Context
 {
@@ -15,12 +16,15 @@ namespace PetHelper.DataAccess.Context
 
         public DbSet<WalkModel> WalksHistory { get; set; }
 
+        public DbSet<IdlePetStatisticModel> IdlePetStatistic { get; set; }
+
         private readonly IReadOnlyCollection<IModelContext> _modelContexts = new List<IModelContext>
         {
             new UserContext(),
             new PetContext(),
             new ScheduleContext(),
             new WalkHistoryContext(),
+            new IdlePetStatisticModelContext(),
         };
 
         public PetHelperDbContext(DbContextOptions options) : base(options)

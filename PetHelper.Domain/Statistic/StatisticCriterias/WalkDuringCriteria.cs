@@ -6,14 +6,12 @@ namespace PetHelper.Domain.Statistic.StatisticCriterias
     {
         public decimal AverageWalkDuring { get; set; }
 
-        public decimal IdleWalkDuring { get; set; }
-
-        public override void Calculate(IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime)
+        public override void Calculate(decimal idleValue, IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime)
         {
             var actualAverageWalkDuring = walksTime.Average(x => x.EndTime.MinusTime(x.StartTime).ToMinutes());
 
             AverageWalkDuring = actualAverageWalkDuring;
-            CriteriaResult = CalulateCriteriaResult(IdleWalkDuring, actualAverageWalkDuring);
+            CriteriaResult = CalulateCriteriaResult(idleValue, actualAverageWalkDuring);
         }
     }
 }
