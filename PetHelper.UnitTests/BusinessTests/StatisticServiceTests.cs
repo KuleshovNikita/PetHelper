@@ -62,12 +62,8 @@ namespace PetHelper.UnitTests.BusinessTests
 
             //Assert
             Assert.True(result.IsSuccessful);
-
             Assert.That(result.Value.WalkDuringCriteria.AverageWalkDuring, Is.EqualTo((decimal)16.5));
-            Assert.That(result.Value.WalkDuringCriteria.Criteria, Is.EqualTo(CriteriaResult.Good));
-
             Assert.That(result.Value.WalksCountCriteria.AverageWalksCountPerDay, Is.EqualTo(2));
-            Assert.That(result.Value.WalksCountCriteria.Criteria, Is.EqualTo(CriteriaResult.Good));
         }
 
         [Test]
@@ -90,12 +86,8 @@ namespace PetHelper.UnitTests.BusinessTests
 
             //Assert
             Assert.True(result.IsSuccessful);
-
             Assert.That(result.Value.WalkDuringCriteria.AverageWalkDuring, Is.EqualTo((decimal)16.5));
-            Assert.That(result.Value.WalkDuringCriteria.Criteria, Is.EqualTo(CriteriaResult.Good));
-
             Assert.That(result.Value.WalksCountCriteria.AverageWalksCountPerDay, Is.EqualTo(2));
-            Assert.That(result.Value.WalksCountCriteria.Criteria, Is.EqualTo(CriteriaResult.Acceptable));
         }
 
         [Test]
@@ -122,12 +114,8 @@ namespace PetHelper.UnitTests.BusinessTests
 
             //Assert
             Assert.True(result.IsSuccessful);
-
             Assert.That(result.Value.WalkDuringCriteria.AverageWalkDuring, Is.EqualTo((decimal)16.5));
-            Assert.That(result.Value.WalkDuringCriteria.Criteria, Is.EqualTo(CriteriaResult.Good));
-
             Assert.That(result.Value.WalksCountCriteria.AverageWalksCountPerDay, Is.EqualTo(2));
-            Assert.That(result.Value.WalksCountCriteria.Criteria, Is.EqualTo(CriteriaResult.Acceptable));
         }
 
         private StatisticRequestModel MockPetStatistic(Guid targetPetId)

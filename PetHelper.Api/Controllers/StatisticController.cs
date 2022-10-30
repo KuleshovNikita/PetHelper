@@ -14,7 +14,7 @@ namespace PetHelper.Api.Controllers
 
         public StatisticController(IStatisticService statisticService) => _statisticService = statisticService;
 
-        [HttpGet("")]
+        [HttpPost("")]
         public async Task<ServiceResult<StatisticModel>> GetPet([FromBody] StatisticRequestModel statisticModel)
             => await RunWithServiceResult(async () => await _statisticService.GetStatistic(statisticModel));
     }
