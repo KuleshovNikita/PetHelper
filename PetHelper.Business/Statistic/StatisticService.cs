@@ -32,25 +32,40 @@ namespace PetHelper.Business.Statistic
                 SampleEndDate = model.SampleEndDate
             };
 
-            var walksTimeHistory = walksData.Select(x => (x.StartTime, x.EndTime)).ToList();
+            var walksTimeHistory = walksData.Select(x => (x.StartTime, x.EndTime));
+
+            var filteredWalksHistory = SkipUnfinishedWalks(walksTimeHistory).ToList();
 
             if (targetPet.AnimalType is null)
             {
-                statistic.WalkDuringCriteria.CalculateWithoutIdle(walksTimeHistory);
-                statistic.WalksCountCriteria.CalculateWithoutIdle(walksTimeHistory);
+                statistic.WalkDuringCriteria.CalculateWithoutIdle(filteredWalksHistory);
+                statistic.WalksCountCriteria.CalculateWithoutIdle(filteredWalksHistory);
             }
             else
             {
                 statistic.IdlePetStatisticModel = await GetPetIdleStatistic(targetPet);
 
-                statistic.WalkDuringCriteria.Calculate(statistic.IdlePetStatisticModel.IdleWalkDuringTime, walksTimeHistory);
-                statistic.WalksCountCriteria.Calculate(statistic.IdlePetStatisticModel.IdleWalksCountPerDay, walksTimeHistory);
+                statistic.WalkDuringCriteria.Calculate(statistic.IdlePetStatisticModel.IdleWalkDuringTime, filteredWalksHistory);
+                statistic.WalksCountCriteria.Calculate(statistic.IdlePetStatisticModel.IdleWalksCountPerDay, filteredWalksHistory);
             }
 
             return new ServiceResult<StatisticModel>
             {
                 Value = statistic
             }.Success();
+        }
+
+        private IEnumerable<(DateTime StartTime, DateTime EndTime)> SkipUnfinishedWalks(
+            IEnumerable<(DateTime StartTime, DateTime? EndTime)> walksTimeHistory)
+        {
+            var filteredResult = new List<(DateTime StartTime, DateTime EndTime)>();
+
+            foreach(var pair in walksTimeHistory)
+            {
+                filteredResult.Add((pair.StartTime, pair.EndTime ?? DateTime.MinValue));
+            }
+
+            return filteredResult.Where(x => x.EndTime != DateTime.MinValue);
         }
 
         private async Task<IdlePetStatisticModel> GetPetIdleStatistic(PetModel targetPet)

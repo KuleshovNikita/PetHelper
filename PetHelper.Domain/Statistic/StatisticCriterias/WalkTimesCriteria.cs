@@ -6,10 +6,10 @@
 
         protected override IDictionary<int, CriteriaResult> CriteriaResultOrder => new Dictionary<int, CriteriaResult>
         {
-            [1] = CriteriaResult.Good,
-            [2] = CriteriaResult.Acceptable,
-            [3] = CriteriaResult.Bad,
-            [4] = CriteriaResult.VeryBad,
+            [0] = CriteriaResult.Good,
+            [1] = CriteriaResult.Acceptable,
+            [2] = CriteriaResult.Bad,
+            [3] = CriteriaResult.VeryBad,
         };
 
         public override void Calculate(decimal IdleValue, IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime)

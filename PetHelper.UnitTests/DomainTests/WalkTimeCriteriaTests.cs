@@ -13,8 +13,8 @@ namespace PetHelper.UnitTests.DomainTests
                 (new DateTime(2022, 10, 1, 18, 0, 0), new DateTime(2022, 10, 1, 18, 9, 0)),
             };
 
-        [TestCase(2, CriteriaResult.Good)]
-        [TestCase(3, CriteriaResult.Good)]
+        //[TestCase(2, CriteriaResult.Good)]
+        //[TestCase(3, CriteriaResult.Good)]
         [TestCase(4, CriteriaResult.Acceptable)]
         [TestCase(5, CriteriaResult.Bad)]
         [TestCase(6, CriteriaResult.VeryBad)]
