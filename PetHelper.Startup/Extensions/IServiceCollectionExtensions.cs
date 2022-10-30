@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PetHelper.Api.Models.RequestModels;
 using PetHelper.Api.Models.RequestModels.Pets;
 using PetHelper.Api.Models.RequestModels.Schedules;
+using PetHelper.Api.Models.RequestModels.Walks;
 using PetHelper.Business.Modules;
 using PetHelper.DataAccess.Modules;
 using PetHelper.Domain;
@@ -43,6 +44,8 @@ namespace PetHelper.Startup.Extensions
 
                 cfg.CreateMap<ScheduleRequestModel, ScheduleModel>();
                 cfg.CreateMap<ScheduleUpdateRequestModel, ScheduleModel>();
+
+                cfg.CreateMap<WalkRequestModel, WalkModel>();
             };
     }
 }
