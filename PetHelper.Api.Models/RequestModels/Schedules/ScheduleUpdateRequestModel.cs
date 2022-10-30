@@ -2,8 +2,8 @@
 {
     public class ScheduleUpdateRequestModel
     {
-        public TimeSpan? ScheduledStart { get; set; }
+        public DateTime? ScheduledStart { get; set; }
 
-        public TimeSpan? ScheduledEnd { get; set; }
+        public DateTime? ScheduledEnd { get; set; }
     }
 }

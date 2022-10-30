@@ -11,6 +11,8 @@ namespace PetHelper.Business.Schedule
 
         Task<ServiceResult<ScheduleModel>> GetSchedule(Expression<Func<ScheduleModel, bool>> predicate);
 
+        Task<ServiceResult<IEnumerable<ScheduleModel>>> GetSchedules(Expression<Func<ScheduleModel, bool>> predicate);
+
         Task<ServiceResult<Empty>> UpdateSchedule(ScheduleUpdateRequestModel scheduleUpdateModel, Guid scheduleId);
 
         Task<ServiceResult<Empty>> RemoveSchedule(Guid scheduleId);

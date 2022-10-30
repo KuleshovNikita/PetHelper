@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "a56a1174-2ef9-48ad-b6c3-591f471801c7",
+		"_postman_id": "d58c064e-0f69-420d-bda0-e5a26ace2c2f",
 		"name": "PetHelper",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17873562"
 	},
 	"item": [
 		{
@@ -42,7 +43,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"Login\": \"mykyta.kuleshov@nure.ua\",\r\n    \"Password\": \"admin\",\r\n    \"ReturnUrl\": \"url\"\r\n}",
+							"raw": "{\r\n    \"Login\": \"garrysm8@gmail.com\",\r\n    \"Password\": \"admin\",\r\n    \"ReturnUrl\": \"url\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -120,6 +121,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"Rex\",\r\n    \"AnimalType\": 0,\r\n    \"Breed\": \"Taxa\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{api_url}}/pet/addPet",
 							"host": [
@@ -166,7 +176,9 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": null
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				}
@@ -218,6 +230,119 @@
 								"user",
 								"removeUser",
 								"070A4095-1C81-4496-B7A1-6C2504A033A9"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Schedule",
+			"item": [
+				{
+					"name": "AddSchedule",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ScheduledStart\": \"2022-10-28T10:10:00\",\r\n    \"ScheduledEnd\": \"2022-10-28T10:25:00\",\r\n    \"PetId\": \"176C27FB-D9C1-4AC5-D68B-08DAB8E8D51D\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/schedule",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"schedule"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Schedule",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ScheduledStart\": \"2022-10-28T10:00:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/schedule/7BD929F2-DFFE-4F36-1A06-08DAB8EA2A3D",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"schedule",
+								"7BD929F2-DFFE-4F36-1A06-08DAB8EA2A3D"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Schedule",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/schedule/7BD929F2-DFFE-4F36-1A06-08DAB8EA2A3D",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"schedule",
+								"7BD929F2-DFFE-4F36-1A06-08DAB8EA2A3D"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Schedules For Pet",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/schedule/pet/176C27FB-D9C1-4AC5-D68B-08DAB8E8D51D",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"schedule",
+								"pet",
+								"176C27FB-D9C1-4AC5-D68B-08DAB8E8D51D"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Schedule",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/schedule/7BD929F2-DFFE-4F36-1A06-08DAB8EA2A3D",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"schedule",
+								"7BD929F2-DFFE-4F36-1A06-08DAB8EA2A3D"
 							]
 						}
 					},

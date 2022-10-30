@@ -4,14 +4,12 @@ using PetHelper.Business.Hashing;
 using PetHelper.DataAccess.Repo;
 using PetHelper.Domain;
 using PetHelper.ServiceResulting;
-using System.Globalization;
 using System.Net.Mail;
 using System.Security.Claims;
 using PetHelper.Domain.Properties;
 using PetHelper.Business.User;
 using AutoMapper;
 using PetHelper.Api.Models.RequestModels;
-using Microsoft.Extensions.Configuration;
 
 namespace PetHelper.Business.Auth
 {
@@ -21,9 +19,8 @@ namespace PetHelper.Business.Auth
         private readonly IUserService _userService;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IMapper _mapper;
-        private readonly IConfiguration _configuration;
 
-        public AuthService(IConfiguration configuration, IMapper mapper, IPasswordHasher passwordHasher, IEmailService emailService, 
+        public AuthService(IMapper mapper, IPasswordHasher passwordHasher, IEmailService emailService, 
             IUserService userService, IRepository<UserModel> repo) 
             : base(repo) 
         {
@@ -31,7 +28,6 @@ namespace PetHelper.Business.Auth
             _userService = userService;
             _passwordHasher = passwordHasher;
             _mapper = mapper;
-            _configuration = configuration;
         }
 
         public async Task<ServiceResult<ClaimsPrincipal>> Login(AuthModel authModel)
@@ -97,7 +93,7 @@ namespace PetHelper.Business.Auth
             userResult.Value.IsEmailConfirmed = true;
             var mappedUser = _mapper.Map<UserUpdateRequestModel>(userResult.Value);
 
-            await _userService.UpdateUser(mappedUser);
+            await _userService.UpdateUser(mappedUser, userResult.Value.Id);
 
             serviceResult.Value = BuildClaimsWithEmail(userResult.Value);
             return serviceResult.Success();
@@ -130,8 +126,5 @@ namespace PetHelper.Business.Auth
 
             return claimsPrincipal;
         }
-
-        private string AfterMinutes(int lifetime)
-            => DateTime.UtcNow.AddMinutes(lifetime).ToString("G", CultureInfo.InvariantCulture);
     }
 }

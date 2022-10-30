@@ -4,6 +4,7 @@ using PetHelper.Business.Email;
 using PetHelper.Business.Hashing;
 using PetHelper.Business.Pet;
 using PetHelper.Business.Schedule;
+using PetHelper.Business.Statistic;
 using PetHelper.Business.User;
 using PetHelper.Domain.Modules;
 
@@ -19,6 +20,7 @@ namespace PetHelper.Business.Modules
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IPetService, PetService>();
             services.AddScoped<IScheduleService, ScheduleService>();
+            services.AddScoped<IStatisticService, StatisticService>();
 
             return services;
         }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetHelper.DataAccess.Context;
 
@@ -11,9 +12,10 @@ using PetHelper.DataAccess.Context;
 namespace PetHelper.DataAccess.Migrations
 {
     [DbContext(typeof(PetHelperDbContext))]
-    partial class PetHelperDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221028152025_WalksHistory_CreatedTable")]
+    partial class WalksHistory_CreatedTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,33 +99,6 @@ namespace PetHelper.DataAccess.Migrations
                     b.HasIndex("ScheduleId");
 
                     b.ToTable("WalksHistory");
-                });
-
-            modelBuilder.Entity("PetHelper.Domain.Statistic.IdlePetStatisticModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("AnimalType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Breed")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<decimal>("IdleWalkDuringTime")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("IdleWalksCountPerDay")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("IsGeneralData")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("IdlePetStatistic");
                 });
 
             modelBuilder.Entity("PetHelper.Domain.UserModel", b =>

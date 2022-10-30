@@ -41,6 +41,12 @@ namespace PetHelper.Business.Schedule
                          .CatchAny();
         }
 
+        public async Task<ServiceResult<IEnumerable<ScheduleModel>>> GetSchedules(Expression<Func<ScheduleModel, bool>> predicate)
+        {
+            var result = await _repository.Where(predicate);
+            return result.CatchAny();
+        }
+
         public async Task<ServiceResult<Empty>> UpdateSchedule(ScheduleUpdateRequestModel scheduleUpdateModel, Guid scheduleId)
         {
             var scheduleModel = await GetSchedule(x => x.Id == scheduleId);

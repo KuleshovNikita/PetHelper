@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetHelper.DataAccess.Context;
 
@@ -11,9 +12,10 @@ using PetHelper.DataAccess.Context;
 namespace PetHelper.DataAccess.Migrations
 {
     [DbContext(typeof(PetHelperDbContext))]
-    partial class PetHelperDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221028132508_WalkingSchedule_UpdatedTimeColumnsType")]
+    partial class WalkingSchedule_UpdatedTimeColumnsType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,60 +72,6 @@ namespace PetHelper.DataAccess.Migrations
                     b.HasIndex("PetId");
 
                     b.ToTable("WalkingSchedules");
-                });
-
-            modelBuilder.Entity("PetHelper.Domain.Pets.WalkModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("PetId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ScheduleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PetId");
-
-                    b.HasIndex("ScheduleId");
-
-                    b.ToTable("WalksHistory");
-                });
-
-            modelBuilder.Entity("PetHelper.Domain.Statistic.IdlePetStatisticModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("AnimalType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Breed")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<decimal>("IdleWalkDuringTime")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("IdleWalksCountPerDay")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("IsGeneralData")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("IdlePetStatistic");
                 });
 
             modelBuilder.Entity("PetHelper.Domain.UserModel", b =>
@@ -193,30 +141,9 @@ namespace PetHelper.DataAccess.Migrations
                     b.Navigation("Pet");
                 });
 
-            modelBuilder.Entity("PetHelper.Domain.Pets.WalkModel", b =>
-                {
-                    b.HasOne("PetHelper.Domain.Pets.PetModel", "Pet")
-                        .WithMany("WalksHistory")
-                        .HasForeignKey("PetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PetHelper.Domain.Pets.ScheduleModel", "Schedule")
-                        .WithMany()
-                        .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pet");
-
-                    b.Navigation("Schedule");
-                });
-
             modelBuilder.Entity("PetHelper.Domain.Pets.PetModel", b =>
                 {
                     b.Navigation("WalkingSchedule");
-
-                    b.Navigation("WalksHistory");
                 });
 
             modelBuilder.Entity("PetHelper.Domain.UserModel", b =>

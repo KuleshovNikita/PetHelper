@@ -28,6 +28,22 @@ namespace PetHelper.DataAccess.Repo
             }
         }
 
+        public Task<ServiceResult<IEnumerable<T>>> Where(Expression<Func<T, bool>> command)
+        {
+            var result = new ServiceResult<IEnumerable<T>>();
+
+            try
+            {
+                result.Value = _context.Set<T>().Where(command) ?? throw new EntityNotFoundException();
+
+                return Task.FromResult(result.Success());
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(result.Fail(ex));
+            }
+        }
+
         public async Task<ServiceResult<bool>> Any(Expression<Func<T, bool>> command)
         {
             var result = new ServiceResult<bool>();
