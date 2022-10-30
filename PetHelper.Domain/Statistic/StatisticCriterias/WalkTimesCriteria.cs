@@ -30,15 +30,5 @@
 
             AverageWalksCountPerDay = (decimal)groupedWalksByDay.Select(x => x.Count).Average();
         }
-
-        protected override CriteriaResult CalculateCriteriaResult(decimal idleWalkTimesPerDay, decimal actualAverageWalkDuring)
-        {
-            if(actualAverageWalkDuring >= idleWalkTimesPerDay)
-            {
-                return CriteriaResult.Good;
-            }
-
-            return base.CalculateCriteriaResult(idleWalkTimesPerDay, actualAverageWalkDuring);
-        }
     }
 }

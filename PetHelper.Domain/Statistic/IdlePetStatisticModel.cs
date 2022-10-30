@@ -6,7 +6,7 @@ namespace PetHelper.Domain.Statistic
     {
         public AnimalType AnimalType { get; set; }
 
-        public bool IsGeneralData { get; set; }
+        public bool IsUnifiedAnimalData { get; set; }
 
         public string Breed { get; set; } = null!;
 

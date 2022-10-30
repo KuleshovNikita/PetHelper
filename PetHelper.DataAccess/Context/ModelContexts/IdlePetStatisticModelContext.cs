@@ -22,7 +22,7 @@ namespace PetHelper.DataAccess.Context.ModelContexts
                 entity.Property(x => x.IdleWalksCountPerDay)
                       .IsRequired();
 
-                entity.Property(x => x.IsGeneralData)
+                entity.Property(x => x.IsUnifiedAnimalData)
                       .IsRequired();
 
                 entity.Property(x => x.Breed)

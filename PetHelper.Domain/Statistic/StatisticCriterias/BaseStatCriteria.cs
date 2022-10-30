@@ -10,6 +10,11 @@
 
         protected virtual CriteriaResult CalculateCriteriaResult(decimal idleValue, decimal actualAverageWalkDuring)
         {
+            if (actualAverageWalkDuring >= idleValue)
+            {
+                return CriteriaResult.Good;
+            }
+
             var criteriaTypesCount = Enum.GetValues<CriteriaResult>().Count();
             var criteriaStepSize = idleValue / criteriaTypesCount;
 

@@ -1,10 +1,8 @@
 ﻿using PetHelper.Api.Models.RequestModels.Statistic;
-using PetHelper.Business.Extensions;
 using PetHelper.DataAccess.Repo;
 using PetHelper.Domain.Exceptions;
 using PetHelper.Domain.Pets;
 using PetHelper.Domain.Statistic;
-using PetHelper.Domain.Statistic.StatisticCriterias;
 using PetHelper.ServiceResulting;
 
 namespace PetHelper.Business.Statistic
@@ -34,7 +32,7 @@ namespace PetHelper.Business.Statistic
                 SampleEndDate = model.SampleEndDate
             };
 
-            var walksTimeHistory = walksData.Select(x => (x.StartTime, x.EndTime));
+            var walksTimeHistory = walksData.Select(x => (x.StartTime, x.EndTime)).ToList();
 
             if (targetPet.AnimalType is null)
             {
@@ -65,8 +63,8 @@ namespace PetHelper.Business.Statistic
             var breedResult = await _idleStaticRepository.FirstOrDefault(x => x.Breed == targetPet.Breed
                                                                            && x.AnimalType == targetPet.AnimalType);
 
-            if (breedResult.Exception is EntityNotFoundException || 
-                breedResult.Exception.InnerException is EntityNotFoundException)
+            if (breedResult.Exception is not null && breedResult.Exception is EntityNotFoundException || 
+                breedResult.Exception?.InnerException is EntityNotFoundException)
             {
                 return await GetGeneralIdlePetData(targetPet.AnimalType);
             }
@@ -77,7 +75,7 @@ namespace PetHelper.Business.Statistic
         private async Task<IdlePetStatisticModel> GetGeneralIdlePetData(AnimalType? animalType)
         {
             var result = await _idleStaticRepository.FirstOrDefault(x => x.AnimalType == animalType 
-                                                                      && x.IsGeneralData == true);
+                                                                      && x.IsUnifiedAnimalData == true);
             return result.CatchAny().Value;
         }
     }

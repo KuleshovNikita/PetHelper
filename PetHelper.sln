@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetHelper.Startup", "PetHel
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetHelper.Api.Models", "PetHelper.Api.Models\PetHelper.Api.Models.csproj", "{66353429-08F7-4FBF-BB20-9980E3D03ECF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHelper.ServiceResulting", "PetHelper.ServiceResulting\PetHelper.ServiceResulting.csproj", "{F15C54A4-88E4-425A-A4A0-CD39AD258C5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetHelper.ServiceResulting", "PetHelper.ServiceResulting\PetHelper.ServiceResulting.csproj", "{F15C54A4-88E4-425A-A4A0-CD39AD258C5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHelper.UnitTests", "PetHelper.UnitTests\PetHelper.UnitTests.csproj", "{EAB2589C-EB0A-48AB-A772-90461EDF99A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{F15C54A4-88E4-425A-A4A0-CD39AD258C5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F15C54A4-88E4-425A-A4A0-CD39AD258C5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F15C54A4-88E4-425A-A4A0-CD39AD258C5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAB2589C-EB0A-48AB-A772-90461EDF99A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAB2589C-EB0A-48AB-A772-90461EDF99A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAB2589C-EB0A-48AB-A772-90461EDF99A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAB2589C-EB0A-48AB-A772-90461EDF99A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

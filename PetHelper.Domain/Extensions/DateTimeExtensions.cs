@@ -1,20 +1,23 @@
-﻿namespace PetHelper.Domain.Extensions
+﻿using PetHelper.Domain.Wrappers;
+
+namespace PetHelper.Domain.Extensions
 {
     public static class DateTimeExtensions
     {
-        public static DateTime MinusTime(this DateTime bigger, DateTime smaller)
+        public static DateTimeWrapper MinusTime(this DateTime bigger, DateTime smaller)
         {
-            return new DateTime(
-                bigger.Year - smaller.Year, 
-                bigger.Month - smaller.Month, 
-                bigger.Day - smaller.Day, 
-                bigger.Hour - smaller.Hour, 
-                bigger.Minute - smaller.Minute, 
-                bigger.Second - smaller.Second
-            );
+            return new DateTimeWrapper
+            {
+                Year = bigger.Year - smaller.Year,
+                Month = bigger.Month - smaller.Month,
+                Day = bigger.Day - smaller.Day,
+                Hour = bigger.Hour - smaller.Hour,
+                Minute = bigger.Minute - smaller.Minute,
+                Second = bigger.Second - smaller.Second
+            };
         }
 
-        public static decimal ToMinutes(this DateTime source)
+        public static decimal ToMinutes(this DateTimeWrapper source)
         {
             var months = source.Year * 12 + source.Month;
             var days = months * 30 + source.Day;
