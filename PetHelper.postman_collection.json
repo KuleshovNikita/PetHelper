@@ -91,6 +91,24 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/authentication/logout",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"authentication",
+								"logout"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -103,14 +121,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api_url}}/pet/getpet/",
+							"raw": "{{api_url}}/pet/176C27FB-D9C1-4AC5-D68B-08DAB8E8D51D",
 							"host": [
 								"{{api_url}}"
 							],
 							"path": [
 								"pet",
-								"getpet",
-								""
+								"176C27FB-D9C1-4AC5-D68B-08DAB8E8D51D"
 							]
 						}
 					},
@@ -131,13 +148,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{api_url}}/pet/addPet",
+							"raw": "{{api_url}}/pet",
 							"host": [
 								"{{api_url}}"
 							],
 							"path": [
-								"pet",
-								"addPet"
+								"pet"
 							]
 						}
 					},
@@ -158,13 +174,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{api_url}}/pet/updatePet/F00986B8-39B1-4985-D42F-08DAB06F9C09",
+							"raw": "{{api_url}}/pet/F00986B8-39B1-4985-D42F-08DAB06F9C09",
 							"host": [
 								"{{api_url}}"
 							],
 							"path": [
 								"pet",
-								"updatePet",
 								"F00986B8-39B1-4985-D42F-08DAB06F9C09"
 							]
 						}
@@ -174,10 +189,17 @@
 				{
 					"name": "Remove Pet",
 					"request": {
-						"method": "GET",
+						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "{{api_url}}/pet/176C27FB-D9C1-4AC5-D68B-08DAB8E8D51D",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"pet",
+								"176C27FB-D9C1-4AC5-D68B-08DAB8E8D51D"
+							]
 						}
 					},
 					"response": []
@@ -188,7 +210,7 @@
 			"name": "User",
 			"item": [
 				{
-					"name": "GetUserAccount",
+					"name": "Get User",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -205,12 +227,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{api_url}}/login",
+							"raw": "{{api_url}}/user/F169A72E-80C1-496E-9764-35762A9CE384",
 							"host": [
 								"{{api_url}}"
 							],
 							"path": [
-								"login"
+								"user",
+								"F169A72E-80C1-496E-9764-35762A9CE384"
 							]
 						}
 					},
@@ -222,14 +245,31 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{api_url}}/user/removeUser/070A4095-1C81-4496-B7A1-6C2504A033A9",
+							"raw": "{{api_url}}/user/070A4095-1C81-4496-B7A1-6C2504A033A9",
 							"host": [
 								"{{api_url}}"
 							],
 							"path": [
 								"user",
-								"removeUser",
 								"070A4095-1C81-4496-B7A1-6C2504A033A9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/user/F169A72E-80C1-496E-9764-35762A9CE384",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"user",
+								"F169A72E-80C1-496E-9764-35762A9CE384"
 							]
 						}
 					},
@@ -343,6 +383,104 @@
 							"path": [
 								"schedule",
 								"7BD929F2-DFFE-4F36-1A06-08DAB8EA2A3D"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Walks",
+			"item": [
+				{
+					"name": "Start Walk",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ScheduleId\": \"176C27FB-D9C1-4AC5-D68B-08DAB8E8D513\",\r\n    \"PetId\": \"176C27FB-D9C1-4AC5-D68B-08DAB8E8D51D\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/walk",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"walk"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finish Walk",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/walk/3C8C0A4D-F82B-4D58-84BB-5E4879DB2011",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"walk",
+								"3C8C0A4D-F82B-4D58-84BB-5E4879DB2011"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Walks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/walk/176C27FB-D9C1-4AC5-D68B-08DAB8E8D51D",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"walk",
+								"176C27FB-D9C1-4AC5-D68B-08DAB8E8D51D"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Statistics",
+			"item": [
+				{
+					"name": "Get Statistic For Pet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"PetId\": \"176C27FB-D9C1-4AC5-D68B-08DAB8E8D51D\",\r\n    \"SampleStartDate\": \"2022-10-31T00:00:00.0\",\r\n    \"SampleEndDate\": \"2022-11-01T00:00:00.0\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/statistic",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"statistic"
 							]
 						}
 					},
