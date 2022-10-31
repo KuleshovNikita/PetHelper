@@ -8,11 +8,11 @@ namespace PetHelper.DataAccess.Repo
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly PetHelperDbContext _context;
+        protected readonly PetHelperDbContext _context;
 
         public Repository(PetHelperDbContext context) => _context = context;
 
-        public async Task<ServiceResult<T>> FirstOrDefault(Expression<Func<T, bool>> command)
+        public virtual async Task<ServiceResult<T>> FirstOrDefault(Expression<Func<T, bool>> command)
         {
             var result = new ServiceResult<T>();
 
@@ -28,7 +28,7 @@ namespace PetHelper.DataAccess.Repo
             }
         }
 
-        public Task<ServiceResult<IEnumerable<T>>> Where(Expression<Func<T, bool>> command)
+        public virtual Task<ServiceResult<IEnumerable<T>>> Where(Expression<Func<T, bool>> command)
         {
             var result = new ServiceResult<IEnumerable<T>>();
 
@@ -44,7 +44,7 @@ namespace PetHelper.DataAccess.Repo
             }
         }
 
-        public async Task<ServiceResult<bool>> Any(Expression<Func<T, bool>> command)
+        public virtual async Task<ServiceResult<bool>> Any(Expression<Func<T, bool>> command)
         {
             var result = new ServiceResult<bool>();
 
@@ -60,7 +60,7 @@ namespace PetHelper.DataAccess.Repo
             }
         }
 
-        public async Task<ServiceResult<Empty>> Insert(T entity)
+        public virtual async Task<ServiceResult<Empty>> Insert(T entity)
         {
             var result = new ServiceResult<Empty>();
 
@@ -77,7 +77,7 @@ namespace PetHelper.DataAccess.Repo
             }
         }
 
-        public Task<ServiceResult<Empty>> Update(T entity)
+        public virtual Task<ServiceResult<Empty>> Update(T entity)
         {
             var result = new ServiceResult<Empty>();
 
@@ -95,7 +95,7 @@ namespace PetHelper.DataAccess.Repo
             }
         }
 
-        public async Task<ServiceResult<Empty>> Remove(T entity)
+        public virtual async Task<ServiceResult<Empty>> Remove(T entity)
         {
             var result = new ServiceResult<Empty>();
 
