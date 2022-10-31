@@ -160,6 +160,15 @@ namespace PetHelper.Domain.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This walk is already finished.
+        /// </summary>
+        public static string TheWalkIsAlreadyFinished {
+            get {
+                return ResourceManager.GetString("TheWalkIsAlreadyFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User with the provided login doesn&apos;t exist.
         /// </summary>
         public static string UserWithTheProvidedLoginDoesntExist {

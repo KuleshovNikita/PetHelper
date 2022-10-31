@@ -22,4 +22,6 @@
     <ProjectReference Include="..\PetHelper.Startup\PetHelper.Startup.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
 </Project>

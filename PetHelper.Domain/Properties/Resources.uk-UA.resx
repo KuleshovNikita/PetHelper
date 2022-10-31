@@ -150,6 +150,9 @@
   <data name="TheUsersEmailIsAlreadyConfirmed" xml:space="preserve">
     <value>Поштову адресу вже підтверджено</value>
   </data>
+  <data name="TheWalkIsAlreadyFinished" xml:space="preserve">
+    <value>Цей вигул тварини вже закінчено</value>
+  </data>
   <data name="UserWithTheProvidedLoginDoesntExist" xml:space="preserve">
     <value>Користувача з такою адресою не існує</value>
   </data>

@@ -64,6 +64,11 @@ namespace PetHelper.Business.Walk
                 targetWalkResult.FailAndThrow(Resources.TheItemDoesntExist);
             }
 
+            if(targetWalk!.EndTime != null)
+            {
+                targetWalkResult.FailAndThrow(Resources.TheWalkIsAlreadyFinished);
+            }
+
             targetWalk!.EndTime = DateTime.UtcNow;
 
             serviceResult = await _repository.Update(targetWalk);
