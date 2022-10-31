@@ -16,13 +16,13 @@ namespace PetHelper.UnitTests.BusinessTests
     public class StatisticServiceTests
     {
         private Mock<IRepository<IdlePetStatisticModel>> _mockIdleStaticRepository;
-        private Mock<IRepository<WalkModel>> _mockWalkRepository;
+        private Mock<IWalkRepository> _mockWalkRepository;
 
         [SetUp]
         public void Setup()
         {
             _mockIdleStaticRepository = new Mock<IRepository<IdlePetStatisticModel>>();
-            _mockWalkRepository = new Mock<IRepository<WalkModel>>();
+            _mockWalkRepository = new Mock<IWalkRepository>();
         }
 
         [Test]
@@ -127,7 +127,7 @@ namespace PetHelper.UnitTests.BusinessTests
                 SampleEndDate = new DateTime(2022, 12, 1)
             };
 
-            _mockWalkRepository = new Mock<IRepository<WalkModel>>();
+            _mockWalkRepository = new Mock<IWalkRepository>();
             _mockWalkRepository
                 .Setup(x => x.Where( AnyExpression<WalkModel>() ))
                 .Returns(TaskServiceResult(MockWalkStorage.Data.Where(x => x.PetId == targetPetId)));
