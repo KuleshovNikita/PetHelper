@@ -6,10 +6,8 @@ using PetHelper.DataAccess.Repo;
 using PetHelper.Domain.Exceptions;
 using PetHelper.Domain.Pets;
 using PetHelper.Domain.Statistic;
-using PetHelper.Domain.Statistic.StatisticCriterias;
 using PetHelper.ServiceResulting;
 using PetHelper.UnitTests.MockStorages;
-using PetHelper.UnitTests.Utils;
 using System.Linq.Expressions;
 
 namespace PetHelper.UnitTests.BusinessTests
