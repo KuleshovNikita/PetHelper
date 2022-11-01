@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using PetHelper.Business.Email;
 using PetHelper.Business.Hashing;
-using PetHelper.DataAccess.Repo;
 using PetHelper.Domain;
 using PetHelper.ServiceResulting;
 using System.Net.Mail;
@@ -13,7 +12,7 @@ using PetHelper.Api.Models.RequestModels;
 
 namespace PetHelper.Business.Auth
 {
-    public class AuthService : DataAccessableService<UserModel>, IAuthService
+    public class AuthService : IAuthService
     {
         private readonly IEmailService _emailService;
         private readonly IUserService _userService;
@@ -21,8 +20,7 @@ namespace PetHelper.Business.Auth
         private readonly IMapper _mapper;
 
         public AuthService(IMapper mapper, IPasswordHasher passwordHasher, IEmailService emailService, 
-            IUserService userService, IRepository<UserModel> repo) 
-            : base(repo) 
+            IUserService userService) 
         {
             _emailService = emailService;
             _userService = userService;
@@ -53,9 +51,9 @@ namespace PetHelper.Business.Auth
                 return serviceResult.FailAndThrow(Resources.WrongPasswordOrLogin);
             }
 
-            serviceResult.Value = BuildClaimsWithEmail(userResult.Value); //TODO баг, должно делать клаимы с почтой
+            serviceResult.Value = BuildClaimsWithEmail(userResult.Value);
 
-            return serviceResult;
+            return serviceResult.CatchAny();
         }
 
         public async Task<ServiceResult<ClaimsPrincipal>> Register(UserRequestModel userModel)
@@ -76,7 +74,7 @@ namespace PetHelper.Business.Auth
 
             serviceResult.Value = BuildInitialClaims(userDomainModel);
 
-            return serviceResult;
+            return serviceResult.CatchAny();
         }
 
         public async Task<ServiceResult<ClaimsPrincipal>> ConfirmEmail(string key)
@@ -97,7 +95,7 @@ namespace PetHelper.Business.Auth
             await _userService.UpdateUser(userUpdateModel, userDomainModel.Id);
 
             serviceResult.Value = BuildClaimsWithEmail(userDomainModel);
-            return serviceResult.Success();
+            return serviceResult.CatchAny();
         }
 
         private void ValidateEmail(string login, ServiceResult<ClaimsPrincipal> serviceResult)

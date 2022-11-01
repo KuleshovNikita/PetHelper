@@ -21,7 +21,6 @@ namespace PetHelper.UnitTests.BusinessTests
         private Mock<IEmailService> _mockEmailService;
         private Mock<IPasswordHasher> _mockPasswordHasher;
         private Mock<IMapper> _mockMapper;
-        private Mock<IRepository<UserModel>> _mockRepo;
 
         [SetUp]
         public void Setup()
@@ -30,7 +29,6 @@ namespace PetHelper.UnitTests.BusinessTests
             _mockEmailService = new Mock<IEmailService>();
             _mockPasswordHasher = new Mock<IPasswordHasher>();
             _mockMapper = new Mock<IMapper>();
-            _mockRepo = new Mock<IRepository<UserModel>>();
         }
 
         #region LoginTests
@@ -319,10 +317,6 @@ namespace PetHelper.UnitTests.BusinessTests
             => new AuthService(_mockMapper.Object,
                      _mockPasswordHasher.Object,
                      _mockEmailService.Object,
-                     _mockUserService.Object,
-                     _mockRepo.Object);
-
-        private void InvokeActAndAssertFailedResult(AsyncTestDelegate action)
-            => Assert.ThrowsAsync<FailedServiceResultException>(action);
+                     _mockUserService.Object);
     }
 }

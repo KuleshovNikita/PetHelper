@@ -33,6 +33,7 @@ namespace PetHelper.Business.Pet
 
             var petOwnerModel = await _userService.GetUser(x => x.Id == userId);
 
+            //TODO добавить Policy и удалить
             if(!petOwnerModel.Value.IsEmailConfirmed)
             {
                 return serviceResult.FailAndThrow(Resources.EmailConfirmationIsNeeded);
@@ -42,9 +43,8 @@ namespace PetHelper.Business.Pet
             petDomainModel.OwnerId = userId;
 
             var result = await _repository.Insert(petDomainModel);
-            result.CatchAny();
 
-            return serviceResult.Success();
+            return result.CatchAny();
         }
 
         public async Task<ServiceResult<PetModel>> GetPet(Expression<Func<PetModel, bool>> predicate)
@@ -71,9 +71,8 @@ namespace PetHelper.Business.Pet
             {
                 var userModel = await GetPet(x => x.Id == petId);
                 var removeResult = await _repository.Remove(userModel.Value);
-                removeResult.CatchAny();
 
-                return serviceResult.Success();
+                return removeResult.CatchAny();
             }
 
             return serviceResult.FailAndThrow(Resources.TheItemDoesntExist);
