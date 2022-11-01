@@ -53,7 +53,7 @@ namespace PetHelper.Business.Auth
                 return serviceResult.FailAndThrow(Resources.WrongPasswordOrLogin);
             }
 
-            serviceResult.Value = BuildInitialClaims(userResult.Value);
+            serviceResult.Value = BuildClaimsWithEmail(userResult.Value); //TODO баг, должно делать клаимы с почтой
 
             return serviceResult;
         }
@@ -84,18 +84,19 @@ namespace PetHelper.Business.Auth
             var serviceResult = new ServiceResult<ClaimsPrincipal>();
 
             var userResult = await _userService.GetUser(x => x.Password.ToLower() == key.ToLower());
+            var userDomainModel = userResult.Value;
 
-            if(userResult.Value.IsEmailConfirmed)
+            if(userDomainModel.IsEmailConfirmed)
             {
                 return serviceResult.FailAndThrow(Resources.TheUsersEmailIsAlreadyConfirmed);
             }
 
-            userResult.Value.IsEmailConfirmed = true;
-            var mappedUser = _mapper.Map<UserUpdateRequestModel>(userResult.Value);
+            userDomainModel.IsEmailConfirmed = true;
+            var userUpdateModel = _mapper.Map<UserUpdateRequestModel>(userDomainModel);
 
-            await _userService.UpdateUser(mappedUser, userResult.Value.Id);
+            await _userService.UpdateUser(userUpdateModel, userDomainModel.Id);
 
-            serviceResult.Value = BuildClaimsWithEmail(userResult.Value);
+            serviceResult.Value = BuildClaimsWithEmail(userDomainModel);
             return serviceResult.Success();
         }
 

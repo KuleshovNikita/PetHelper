@@ -1,4 +1,5 @@
-﻿using PetHelper.Domain.Statistic.StatisticCriterias;
+﻿using NUnit.Framework;
+using PetHelper.Domain.Statistic.StatisticCriterias;
 
 namespace PetHelper.UnitTests.DomainTests
 {

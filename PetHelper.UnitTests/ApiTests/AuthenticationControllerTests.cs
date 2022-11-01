@@ -1,4 +1,5 @@
-﻿using PetHelper.Api.Controllers;
+﻿using NUnit.Framework;
+using PetHelper.Api.Controllers;
 using PetHelper.Business.Auth;
 using PetHelper.UnitTests.Utils;
 
