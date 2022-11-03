@@ -34,7 +34,7 @@ namespace PetHelper.Api.Controllers
                 return SuccessEmptyResult();
             });
 
-        [HttpGet("confirmEmail/{key}")]
+        [HttpPatch("confirmEmail/{key}")]
         public async Task<ServiceResult<Empty>> ConfirmEmail(string key)
             => await RunWithServiceResult(async () =>
             {
