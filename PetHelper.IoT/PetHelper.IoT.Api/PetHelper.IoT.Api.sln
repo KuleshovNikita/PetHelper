@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32922.545
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHelper.IoT.Api", "PetHelper.IoT.Api.csproj", "{A112DEB4-2FB4-471D-9FD4-CAF21B9CAD21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHelper.IoT.ServerClient", "..\PetHelper.IoT.ServerClient\PetHelper.IoT.ServerClient.csproj", "{9A31DD47-3205-49B1-98BF-82DA263B7CE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHelper.IoT.Business", "..\PetHelper.IoT.Business\PetHelper.IoT.Business.csproj", "{960DE3AC-3249-4D3F-ABBE-ACD2351D0C12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHelper.IoT.Domain", "..\PetHelper.IoT.Domain\PetHelper.IoT.Domain.csproj", "{0B01920F-03FD-4E93-AD1B-A6B99B0A3C5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHelper.IoT.Startup", "..\PetHelper.IoT.Startup\PetHelper.IoT.Startup.csproj", "{CEB10B39-9583-45E5-A05D-FB599D768242}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHelper.IoT.DeviceController", "..\PetHelper.IoT.DeviceController\PetHelper.IoT.DeviceController.csproj", "{3CBDB894-0F40-4A92-8D7F-A7713AF7097E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetHelper.ServiceResulting", "..\..\PetHelper.ServiceResulting\PetHelper.ServiceResulting.csproj", "{EE345FDB-93C8-48EB-915B-E0462E088544}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A112DEB4-2FB4-471D-9FD4-CAF21B9CAD21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A112DEB4-2FB4-471D-9FD4-CAF21B9CAD21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A112DEB4-2FB4-471D-9FD4-CAF21B9CAD21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A112DEB4-2FB4-471D-9FD4-CAF21B9CAD21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A31DD47-3205-49B1-98BF-82DA263B7CE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A31DD47-3205-49B1-98BF-82DA263B7CE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A31DD47-3205-49B1-98BF-82DA263B7CE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A31DD47-3205-49B1-98BF-82DA263B7CE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{960DE3AC-3249-4D3F-ABBE-ACD2351D0C12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{960DE3AC-3249-4D3F-ABBE-ACD2351D0C12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{960DE3AC-3249-4D3F-ABBE-ACD2351D0C12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{960DE3AC-3249-4D3F-ABBE-ACD2351D0C12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B01920F-03FD-4E93-AD1B-A6B99B0A3C5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B01920F-03FD-4E93-AD1B-A6B99B0A3C5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B01920F-03FD-4E93-AD1B-A6B99B0A3C5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B01920F-03FD-4E93-AD1B-A6B99B0A3C5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEB10B39-9583-45E5-A05D-FB599D768242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEB10B39-9583-45E5-A05D-FB599D768242}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEB10B39-9583-45E5-A05D-FB599D768242}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEB10B39-9583-45E5-A05D-FB599D768242}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CBDB894-0F40-4A92-8D7F-A7713AF7097E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CBDB894-0F40-4A92-8D7F-A7713AF7097E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CBDB894-0F40-4A92-8D7F-A7713AF7097E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CBDB894-0F40-4A92-8D7F-A7713AF7097E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE345FDB-93C8-48EB-915B-E0462E088544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE345FDB-93C8-48EB-915B-E0462E088544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE345FDB-93C8-48EB-915B-E0462E088544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE345FDB-93C8-48EB-915B-E0462E088544}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5FC68EA9-A259-4C45-A778-308F5FA7130C}
+	EndGlobalSection
+EndGlobal
