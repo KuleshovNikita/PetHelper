@@ -9,19 +9,20 @@ namespace PetHelper.Business.Hashing
         private const int HashLength = 20;
         private const int TotalLength = SaltLength + HashLength;
 
+        private readonly RandomNumberGenerator _cryptoProvider = RandomNumberGenerator.Create();
+
         public string HashPassword(string password)
         {
-            byte[] salt = new byte[SaltLength];
-            new RNGCryptoServiceProvider().GetBytes(salt);
+            var salt = new byte[SaltLength];
+            _cryptoProvider.GetBytes(salt);
 
             var hash = MakeHash(password, salt).GetBytes(HashLength);
+            var hashBytes = new byte[TotalLength];
 
-            byte[] hashBytes = new byte[TotalLength];
-            Array.Copy(salt, 0, hashBytes, 0, SaltLength);
-            Array.Copy(hash, 0, hashBytes, SaltLength, HashLength);
+            CopySaltBytes(salt, hashBytes);
+            CopyHashBytes(hash, hashBytes);
 
             string hashedPassword = Convert.ToBase64String(hashBytes);
-
             return hashedPassword;
         }
 
@@ -48,11 +49,16 @@ namespace PetHelper.Business.Hashing
 
         private byte[] GetSaltOfPassword(string expectedAsHash)
         {
-            byte[] hashBytes = Convert.FromBase64String(expectedAsHash);
-            byte[] salt = new byte[16];
-            Array.Copy(hashBytes, 0, salt, 0, 16);
+            var hashBytes = Convert.FromBase64String(expectedAsHash);
+            var salt = new byte[SaltLength];
+
+            CopySaltBytes(hashBytes, salt);
 
             return salt;
         }
+
+        private void CopySaltBytes(byte[] from, byte[] to) => Array.Copy(from, 0, to, 0, SaltLength);
+
+        private void CopyHashBytes(byte[] from, byte[] to) => Array.Copy(from, 0, to, SaltLength, HashLength);
     }
 }

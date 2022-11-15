@@ -150,6 +150,9 @@
   <data name="TheUsersEmailIsAlreadyConfirmed" xml:space="preserve">
     <value>The email is already confirmed</value>
   </data>
+  <data name="TheWalkIsAlreadyFinished" xml:space="preserve">
+    <value>This walk is already finished</value>
+  </data>
   <data name="UserWithTheProvidedLoginDoesntExist" xml:space="preserve">
     <value>User with the provided login doesn't exist</value>
   </data>

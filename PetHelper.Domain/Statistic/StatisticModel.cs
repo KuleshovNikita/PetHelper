@@ -11,9 +11,9 @@ namespace PetHelper.Domain.Statistic
 
         public IdlePetStatisticModel IdlePetStatisticModel { get; set; } = null!;
 
-        public WalkDuringCriteria WalkDuringCriteria { get; set; } = null!;
+        public WalkDuringCriteria WalkDuringCriteria { get; set; } = new WalkDuringCriteria();
 
-        public WalkTimesCriteria WalksCountCriteria { get; set; } = null!;
+        public WalkTimesCriteria WalksCountCriteria { get; set; } = new WalkTimesCriteria();
 
         public CriteriaResult? GeneralResult { get; set; } = null!;
 

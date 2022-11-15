@@ -78,7 +78,7 @@ namespace PetHelper.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("EndTime")
+                    b.Property<DateTime?>("EndTime")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("PetId")
@@ -118,7 +118,7 @@ namespace PetHelper.DataAccess.Migrations
                     b.Property<decimal>("IdleWalksCountPerDay")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<bool>("IsGeneralData")
+                    b.Property<bool>("IsUnifiedAnimalData")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");

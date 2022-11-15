@@ -6,6 +6,7 @@ using PetHelper.Business.Pet;
 using PetHelper.Business.Schedule;
 using PetHelper.Business.Statistic;
 using PetHelper.Business.User;
+using PetHelper.Business.Walk;
 using PetHelper.Domain.Modules;
 
 namespace PetHelper.Business.Modules
@@ -21,6 +22,7 @@ namespace PetHelper.Business.Modules
             services.AddScoped<IPetService, PetService>();
             services.AddScoped<IScheduleService, ScheduleService>();
             services.AddScoped<IStatisticService, StatisticService>();
+            services.AddScoped<IWalkService, WalkService>();
 
             return services;
         }

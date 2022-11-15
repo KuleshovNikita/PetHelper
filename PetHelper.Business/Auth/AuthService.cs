@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using PetHelper.Business.Email;
 using PetHelper.Business.Hashing;
-using PetHelper.DataAccess.Repo;
 using PetHelper.Domain;
 using PetHelper.ServiceResulting;
 using System.Net.Mail;
@@ -13,7 +12,7 @@ using PetHelper.Api.Models.RequestModels;
 
 namespace PetHelper.Business.Auth
 {
-    public class AuthService : DataAccessableService<UserModel>, IAuthService
+    public class AuthService : IAuthService
     {
         private readonly IEmailService _emailService;
         private readonly IUserService _userService;
@@ -21,8 +20,7 @@ namespace PetHelper.Business.Auth
         private readonly IMapper _mapper;
 
         public AuthService(IMapper mapper, IPasswordHasher passwordHasher, IEmailService emailService, 
-            IUserService userService, IRepository<UserModel> repo) 
-            : base(repo) 
+            IUserService userService) 
         {
             _emailService = emailService;
             _userService = userService;
@@ -53,9 +51,9 @@ namespace PetHelper.Business.Auth
                 return serviceResult.FailAndThrow(Resources.WrongPasswordOrLogin);
             }
 
-            serviceResult.Value = BuildInitialClaims(userResult.Value);
+            serviceResult.Value = BuildClaimsWithEmail(userResult.Value);
 
-            return serviceResult;
+            return serviceResult.CatchAny();
         }
 
         public async Task<ServiceResult<ClaimsPrincipal>> Register(UserRequestModel userModel)
@@ -76,7 +74,7 @@ namespace PetHelper.Business.Auth
 
             serviceResult.Value = BuildInitialClaims(userDomainModel);
 
-            return serviceResult;
+            return serviceResult.CatchAny();
         }
 
         public async Task<ServiceResult<ClaimsPrincipal>> ConfirmEmail(string key)
@@ -84,19 +82,20 @@ namespace PetHelper.Business.Auth
             var serviceResult = new ServiceResult<ClaimsPrincipal>();
 
             var userResult = await _userService.GetUser(x => x.Password.ToLower() == key.ToLower());
+            var userDomainModel = userResult.Value;
 
-            if(userResult.Value.IsEmailConfirmed)
+            if(userDomainModel.IsEmailConfirmed)
             {
                 return serviceResult.FailAndThrow(Resources.TheUsersEmailIsAlreadyConfirmed);
             }
 
-            userResult.Value.IsEmailConfirmed = true;
-            var mappedUser = _mapper.Map<UserUpdateRequestModel>(userResult.Value);
+            userDomainModel.IsEmailConfirmed = true;
+            var userUpdateModel = _mapper.Map<UserUpdateRequestModel>(userDomainModel);
 
-            await _userService.UpdateUser(mappedUser, userResult.Value.Id);
+            await _userService.UpdateUser(userUpdateModel, userDomainModel.Id);
 
-            serviceResult.Value = BuildClaimsWithEmail(userResult.Value);
-            return serviceResult.Success();
+            serviceResult.Value = BuildClaimsWithEmail(userDomainModel);
+            return serviceResult.CatchAny();
         }
 
         private void ValidateEmail(string login, ServiceResult<ClaimsPrincipal> serviceResult)

@@ -4,6 +4,14 @@
     {
         public decimal AverageWalksCountPerDay { get; set; }
 
+        protected override IDictionary<int, CriteriaResult> CriteriaResultOrder => new Dictionary<int, CriteriaResult>
+        {
+            [0] = CriteriaResult.Good,
+            [1] = CriteriaResult.Acceptable,
+            [2] = CriteriaResult.Bad,
+            [3] = CriteriaResult.VeryBad,
+        };
+
         public override void Calculate(decimal IdleValue, IEnumerable<(DateTime StartTime, DateTime EndTime)> walksTime)
         {
             CalculateCommon(walksTime);
@@ -26,19 +34,26 @@
                     Key = key,
                     Count = count.Count(),
                 }
-            ); //надо протестить
+            );
 
             AverageWalksCountPerDay = (decimal)groupedWalksByDay.Select(x => x.Count).Average();
         }
 
-        protected override CriteriaResult CalculateCriteriaResult(decimal idleWalkTimesPerDay, decimal actualAverageWalkDuring)
+        protected override CriteriaResult CalculateCriteriaResult(decimal idleValue, decimal actualAverageData)
         {
-            if(actualAverageWalkDuring >= idleWalkTimesPerDay)
+            if (actualAverageData >= idleValue)
             {
                 return CriteriaResult.Good;
             }
 
-            return base.CalculateCriteriaResult(idleWalkTimesPerDay, actualAverageWalkDuring);
+            var skippedWalksCount = (int)(idleValue - actualAverageData);
+
+            if(skippedWalksCount > (int)Enum.GetValues<CriteriaResult>().Max())
+            {
+                return CriteriaResult.VeryBad;
+            }
+
+            return CriteriaResultOrder[skippedWalksCount];
         }
     }
 }

@@ -17,7 +17,7 @@ namespace PetHelper.DataAccess.Context.ModelContexts
                       .IsRequired();
 
                 entity.Property(x => x.EndTime)
-                      .IsRequired();
+                      .IsRequired(false);
 
                 entity.Property(x => x.ScheduleId)
                       .IsRequired();

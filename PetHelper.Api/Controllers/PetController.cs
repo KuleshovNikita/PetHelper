@@ -14,7 +14,7 @@ namespace PetHelper.Api.Controllers
 
         public PetController(IPetService petService) => _petService = petService;
 
-        [HttpPost("addPet")]
+        [HttpPost("")]
         public async Task<ServiceResult<Empty>> AddPet([FromBody] PetRequestModel petModel)
             => await RunWithServiceResult(async () =>
             {
@@ -23,15 +23,15 @@ namespace PetHelper.Api.Controllers
                 return await _petService.AddPet(petModel, userId);
             });
 
-        [HttpPut("updatePet/{petId:guid}")]
+        [HttpPut("{petId:guid}")]
         public async Task<ServiceResult<Empty>> UpdatePet(Guid petId, [FromBody] PetUpdateRequestModel petModel)
             => await RunWithServiceResult(async () => await _petService.UpdatePet(petModel, petId));
 
-        [HttpGet("getPet/{petId:guid}")]
+        [HttpGet("{petId:guid}")]
         public async Task<ServiceResult<PetModel>> GetPet(Guid petId)
             => await RunWithServiceResult(async () => await _petService.GetPet(x => x.Id == petId));
 
-        [HttpDelete("removePet/{petId:guid}")]
+        [HttpDelete("{petId:guid}")]
         public async Task<ServiceResult<Empty>> RemovePet(Guid petId)
             => await RunWithServiceResult(async () => await _petService.RemovePet(petId));
     }
