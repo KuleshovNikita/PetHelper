@@ -17,7 +17,7 @@ using PetHelper.Domain.Pets;
 
 namespace PetHelper.Startup.Extensions
 {
-    public static class IServiceCollectionExtensions
+    public static class ServiceCollectionExtensions
     {
         public static IServiceCollection RegisterDependencies(this IServiceCollection services)
         {
@@ -69,6 +69,7 @@ namespace PetHelper.Startup.Extensions
                 cfg.CreateMap<UserModel, UserUpdateRequestModel>();
 
                 cfg.CreateMap<PetRequestModel, PetModel>();
+
 
                 cfg.CreateMap<ScheduleRequestModel, ScheduleModel>();
                 cfg.CreateMap<ScheduleUpdateRequestModel, ScheduleModel>();

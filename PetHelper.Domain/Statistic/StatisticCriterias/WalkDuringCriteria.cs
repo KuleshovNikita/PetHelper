@@ -40,6 +40,12 @@ namespace PetHelper.Domain.Statistic.StatisticCriterias
             var criteriaStepSize = idleValue / criteriaTypesCount;
 
             var actualCriteriaScore = (int)Math.Round(actualAverageData / criteriaStepSize, MidpointRounding.AwayFromZero);
+
+            if(actualCriteriaScore < 1)
+            {
+                return CriteriaResult.VeryBad;
+            }
+
             return CriteriaResultOrder[actualCriteriaScore];
         }
     }
