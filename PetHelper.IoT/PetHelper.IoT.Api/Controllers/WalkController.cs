@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetHelper.Api.Controllers;
 using PetHelper.IoT.Business.Walks;
+using PetHelper.IoT.Domain.WalksModels;
 using PetHelper.ServiceResulting;
 
 namespace PetHelper.IoT.Api.Controllers
@@ -12,11 +13,10 @@ namespace PetHelper.IoT.Api.Controllers
         public WalkController(IWalkService walkService)
             => _walkService = walkService;
 
-        [HttpPost("/{petId:guid}")]
-        public async Task<ServiceResult<Empty>> StartWalk(Guid petId)
-            => await RunWithServiceResult(async () =>
-            {
-                return await _walkService.SetWalkSettings(petId);
-            });
+        [HttpPost]
+        public async Task<ServiceResult<Empty>> StartWalk(WalkStartInfo walkStartInfo)
+            => await RunWithServiceResult(async () => await _walkService.SetWalkSettings(walkStartInfo));
+
+
     }
 }
