@@ -1,5 +1,7 @@
 using PetHelper.Api.Extensions;
+using PetHelper.Domain.Auth;
 using PetHelper.Startup.Extensions;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +18,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.RegisterDependencies();
 builder.Services.AddCors(x => x.AllowAnyOriginPolicy());
 
-builder.Services.ConfigureAuthentication(builder.Configuration);
+builder.Services.ConfigureAuthentication(builder.Configuration.GetSection("Jwt").Get<JwtSettings>());
 builder.Services.ConfigureDbConnection(builder.Configuration);
 
 var app = builder.Build();
