@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using PetHelper.Business.Email;
+﻿using PetHelper.Business.Email;
 using PetHelper.Business.Hashing;
 using PetHelper.Domain;
 using PetHelper.ServiceResulting;
@@ -9,6 +8,12 @@ using PetHelper.Domain.Properties;
 using PetHelper.Business.User;
 using AutoMapper;
 using PetHelper.Api.Models.RequestModels;
+using Microsoft.Extensions.Configuration;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using PetHelper.Domain.Auth;
+using System.Text.Json;
 
 namespace PetHelper.Business.Auth
 {
@@ -18,19 +23,22 @@ namespace PetHelper.Business.Auth
         private readonly IUserService _userService;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IMapper _mapper;
+        private readonly JwtSettings _jwtSettings;
 
         public AuthService(IMapper mapper, IPasswordHasher passwordHasher, IEmailService emailService, 
-            IUserService userService) 
+            IUserService userService, IConfiguration config) 
         {
             _emailService = emailService;
             _userService = userService;
             _passwordHasher = passwordHasher;
             _mapper = mapper;
+
+            _jwtSettings = config.GetSection("Jwt").Get<JwtSettings>();
         }
 
-        public async Task<ServiceResult<ClaimsPrincipal>> Login(AuthModel authModel)
+        public async Task<ServiceResult<string>> Login(AuthModel authModel)
         {
-            var serviceResult = new ServiceResult<ClaimsPrincipal>();
+            var serviceResult = new ServiceResult<string>();
 
             if (authModel is null)
             {
@@ -56,9 +64,9 @@ namespace PetHelper.Business.Auth
             return serviceResult.CatchAny();
         }
 
-        public async Task<ServiceResult<ClaimsPrincipal>> Register(UserRequestModel userModel)
+        public async Task<ServiceResult<string>> Register(UserRequestModel userModel)
         {
-            var serviceResult = new ServiceResult<ClaimsPrincipal>();
+            var serviceResult = new ServiceResult<string>();
 
             if (userModel is null)
             {
@@ -77,9 +85,9 @@ namespace PetHelper.Business.Auth
             return serviceResult.CatchAny();
         }
 
-        public async Task<ServiceResult<ClaimsPrincipal>> ConfirmEmail(string key)
+        public async Task<ServiceResult<string>> ConfirmEmail(string key)
         {
-            var serviceResult = new ServiceResult<ClaimsPrincipal>();
+            var serviceResult = new ServiceResult<string>();
 
             var userResult = await _userService.GetUser(x => x.Password.ToLower() == key.ToLower());
             var userDomainModel = userResult.Value;
@@ -98,7 +106,7 @@ namespace PetHelper.Business.Auth
             return serviceResult.CatchAny();
         }
 
-        private void ValidateEmail(string login, ServiceResult<ClaimsPrincipal> serviceResult)
+        private void ValidateEmail(string login, ServiceResult<string> serviceResult)
         {
             if (!MailAddress.TryCreate(login, out _))
             {
@@ -106,24 +114,35 @@ namespace PetHelper.Business.Auth
             }
         }
 
-        private ClaimsPrincipal BuildInitialClaims(UserModel userModel)
+        private string BuildInitialClaims(UserModel userModel)
         {
             var claims = ClaimsSets.GetInitialClaims(userModel);
             return BuildClaims(claims);
         }
 
-        private ClaimsPrincipal BuildClaimsWithEmail(UserModel userModel)
+        private string BuildClaimsWithEmail(UserModel userModel)
         {
             var claims = ClaimsSets.GetClaimsWithEmail(userModel);
             return BuildClaims(claims);
         }
 
-        private ClaimsPrincipal BuildClaims(IEnumerable<Claim> claims)
+        private string BuildClaims(IEnumerable<Claim> claims)
         {
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+            var secretBytes = Encoding.UTF8.GetBytes(_jwtSettings.Secret);
+            var key = new SymmetricSecurityKey(secretBytes);
+            var signingCreds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            return claimsPrincipal;
+            var token = new JwtSecurityToken(
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.Audience,
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(_jwtSettings.ExpiresInMinutes),
+                signingCredentials: signingCreds
+            );
+
+            var tokenHandler = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return tokenHandler;
         }
     }
 }

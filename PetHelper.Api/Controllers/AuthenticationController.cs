@@ -15,35 +15,35 @@ namespace PetHelper.Api.Controllers
         public AuthenticationController(IAuthService authService) => _authService = authService;
 
         [HttpPost("register")]
-        public async Task<ServiceResult<Empty>> Register([FromBody] UserRequestModel userModel)
+        public async Task<ServiceResult<string>> Register([FromBody] UserRequestModel userModel)
             => await RunWithServiceResult(async () =>
             {
-                var claimsResult = await _authService.Register(userModel);
-                await HttpContext.SignInAsync(claimsResult.Value);
+                return await _authService.Register(userModel);
+                //await HttpContext.SignInAsync(claimsResult.Value);
 
-                return SuccessEmptyResult();
+                //return SuccessEmptyResult();
             });
 
         [HttpPost("login")]
-        public async Task<ServiceResult<Empty>> Login([FromBody] AuthModel authModel)
+        public async Task<ServiceResult<string>> Login([FromBody] AuthModel authModel)
             => await RunWithServiceResult(async () =>
             {
-                var claimsResult = await _authService.Login(authModel);
-                await HttpContext.SignInAsync(claimsResult.Value);
+                return await _authService.Login(authModel);
+                //await HttpContext.SignInAsync(claimsResult.Value);
 
-                return SuccessEmptyResult();
+                //return SuccessEmptyResult();
             });
 
         [HttpPatch("confirmEmail/{key}")]
-        public async Task<ServiceResult<Empty>> ConfirmEmail(string key)
+        public async Task<ServiceResult<string>> ConfirmEmail(string key)
             => await RunWithServiceResult(async () =>
             {
                 key = Uri.UnescapeDataString(key);
-                var newClaims = await _authService.ConfirmEmail(key);
+                return await _authService.ConfirmEmail(key);
 
-                await HttpContext.SignInAsync(newClaims.Value);
+                //await HttpContext.SignInAsync(newClaims.Value);
 
-                return SuccessEmptyResult();
+                //return SuccessEmptyResult();
             });
 
         [Authorize]

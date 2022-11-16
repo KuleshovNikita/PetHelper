@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using PetHelper.Api.Models.RequestModels;
 using PetHelper.Api.Models.RequestModels.Pets;
 using PetHelper.Api.Models.RequestModels.Schedules;
@@ -12,8 +14,11 @@ using PetHelper.Business.Modules;
 using PetHelper.DataAccess.Context;
 using PetHelper.DataAccess.Modules;
 using PetHelper.Domain;
+using PetHelper.Domain.Auth;
 using PetHelper.Domain.Modules;
 using PetHelper.Domain.Pets;
+using System.Text;
+using System.Text.Json;
 
 namespace PetHelper.Startup.Extensions
 {
@@ -35,10 +40,21 @@ namespace PetHelper.Startup.Extensions
                     opt => opt.UseSqlServer(config.GetConnectionString("SqlServer"))
                 );
 
-        public static AuthenticationBuilder ConfigureAuthentication(this IServiceCollection services, ConfigurationManager config)
+        public static AuthenticationBuilder ConfigureAuthentication(this IServiceCollection services, JwtSettings jwtSettings)
             => services
-                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(opt => opt.SetSimpleAuthentication(config));
+                .AddAuthentication("OAuth")
+                .AddJwtBearer("OAuth", cfg => 
+                {
+                    var secretBytes = Encoding.UTF8.GetBytes(jwtSettings.Secret);
+                    var key = new SymmetricSecurityKey(secretBytes);
+
+                    cfg.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = jwtSettings.Issuer,
+                        ValidAudience = jwtSettings.Audience,
+                        IssuerSigningKey = key
+                    };
+                });
 
         private static void SetSimpleAuthentication(this CookieAuthenticationOptions opt,
             ConfigurationManager config)
