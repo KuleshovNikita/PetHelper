@@ -32,7 +32,7 @@ namespace PetHelper.IoT.Startup
         private static Action<IMapperConfigurationExpression> GetAutoMapperConfigs()
             => cfg =>
             {
-                cfg.CreateMap<PetModel, WalkOptions>();
+                cfg.CreateMap<PetModel, WalkOptions>(MemberList.Destination);
             };
     }
 }

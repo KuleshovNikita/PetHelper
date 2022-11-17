@@ -28,7 +28,9 @@ namespace PetHelper.IoT.Business.Walks
             var serviceResult = new ServiceResult<Empty>();
 
             var petModel = await _petClient.GetPet(walkStartInfo.PetId);
-            var walkOptions = _mapper.Map<WalkOptions>(petModel);
+            petModel.CatchAny(petModel.ClientErrorMessage);
+
+            var walkOptions = _mapper.Map<WalkOptions>(petModel.Value);
             walkStartInfo.WalkOptions = walkOptions;
 
             _storageController.SaveWalkSettings(walkStartInfo);

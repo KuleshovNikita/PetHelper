@@ -29,7 +29,7 @@ namespace PetHelper.IoT.ServerClient
         protected async Task<ServiceResult<TResponse>> Get<TResponse>(string route)
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJNeWt5dGEgS3VsZXNob3YiLCJzdWIiOiI4NjBmNDVjYi1iZTg2LTRhZWQtOGJiOS00ZTU0YzYwZjlmNmQiLCJlbWFpbCI6Im15a3l0YS5rdWxlc2hvdkBudXJlLnVhIiwiZXhwIjoxNjY4NjkzMzEyLCJpc3MiOiJQZXRIZWxwZXJJc3N1ZXIiLCJhdWQiOiJQZXRIZWxwZXJBdWRpZW5jZSJ9.JtOggwxE_VrAuEytYZtltM5HgENtMFHf9OnWHgsARNU");
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJNeWt5dGEgS3VsZXNob3YiLCJzdWIiOiI4NjBmNDVjYi1iZTg2LTRhZWQtOGJiOS00ZTU0YzYwZjlmNmQiLCJlbWFpbCI6Im15a3l0YS5rdWxlc2hvdkBudXJlLnVhIiwiZXhwIjoxNjY4Njk1OTgwLCJpc3MiOiJQZXRIZWxwZXJJc3N1ZXIiLCJhdWQiOiJQZXRIZWxwZXJBdWRpZW5jZSJ9.vEc6-AmRPKN-pDsxyhAWoRR3On4RG7QDePsOndu5XEI");
             var response = await _client.GetAsync(route);
             var content = await response.Content.ReadFromJsonAsync<ServiceResult<TResponse>>();
 

@@ -12,6 +12,8 @@ namespace PetHelper.IoT.Domain.PetModels
 
         public string? Breed { get; set; }
 
+        public double AllowedDistance { get; set; }
+
         public IEnumerable<ScheduleModel> WalkingSchedule { get; set; } = null!;
 
         public IEnumerable<WalkModel> WalksHistory { get; set; } = null!;

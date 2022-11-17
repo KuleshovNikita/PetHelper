@@ -1,0 +1,1 @@
+{"PetId":"aa3077f1-0e72-4b73-40b5-08dabdc8e5e2","OwnerPosition":{"Longitude":0,"Latitude":0},"WalkOptions":{"AllowedDistance":15}}
