@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using PetHelper.IoT.Api.Extensions;
 using PetHelper.IoT.Startup;
 using System.Text.Json.Serialization;
@@ -10,6 +11,7 @@ builder.Services.AddControllers().AddJsonOptions(opt =>
 {
     opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    opt.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
