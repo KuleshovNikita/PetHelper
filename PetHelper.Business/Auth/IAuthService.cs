@@ -7,10 +7,10 @@ namespace PetHelper.Business.Auth
 {
     public interface IAuthService
     {
-        Task<ServiceResult<ClaimsPrincipal>> ConfirmEmail(string key);
+        Task<ServiceResult<string>> ConfirmEmail(string key);
 
-        Task<ServiceResult<ClaimsPrincipal>> Login(AuthModel authModel);
+        Task<ServiceResult<string>> Login(AuthModel authModel);
 
-        Task<ServiceResult<ClaimsPrincipal>> Register(UserRequestModel userModel);
+        Task<ServiceResult<string>> Register(UserRequestModel userModel);
     }
 }
