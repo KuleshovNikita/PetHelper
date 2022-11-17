@@ -4,12 +4,14 @@ using PetHelper.ServiceResulting;
 
 namespace PetHelper.IoT.ServerClient.PetsClient
 {
-    public class PetClient : BaseClient, IPetClient
+    public class PetClient : IPetClient
     {
-        public PetClient(IConfiguration config) : base(config)
-        {
-        }
+        private readonly ServerClient _client;
 
-        public async Task<ServiceResult<PetModel>> GetPet(Guid petId) => await Get<PetModel>($"/api/pet/{petId}");
+        public PetClient(ServerClient client)
+            => _client = client;
+
+        public async Task<ServiceResult<PetModel>> GetPet(Guid petId) 
+            => await _client.Get<PetModel>($"/api/pet/{petId}");
     }
 }

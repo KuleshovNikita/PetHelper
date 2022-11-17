@@ -1,18 +1,15 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using PetHelper.IoT.Domain.Exceptions;
 using PetHelper.ServiceResulting;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace PetHelper.IoT.ServerClient
 {
-    public abstract class BaseClient
+    public class ServerClient
     {
         private readonly HttpClient _client;
 
-        protected BaseClient(IConfiguration config)
+        public ServerClient(IConfiguration config)
         {
             _client = new HttpClient
             {
@@ -26,14 +23,24 @@ namespace PetHelper.IoT.ServerClient
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        protected async Task<ServiceResult<TResponse>> Get<TResponse>(string route)
-        {
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJNeWt5dGEgS3VsZXNob3YiLCJzdWIiOiI4NjBmNDVjYi1iZTg2LTRhZWQtOGJiOS00ZTU0YzYwZjlmNmQiLCJlbWFpbCI6Im15a3l0YS5rdWxlc2hvdkBudXJlLnVhIiwiZXhwIjoxNjY4Njk1OTgwLCJpc3MiOiJQZXRIZWxwZXJJc3N1ZXIiLCJhdWQiOiJQZXRIZWxwZXJBdWRpZW5jZSJ9.vEc6-AmRPKN-pDsxyhAWoRR3On4RG7QDePsOndu5XEI");
-            var response = await _client.GetAsync(route);
-            var content = await response.Content.ReadFromJsonAsync<ServiceResult<TResponse>>();
+        public void SetToken(string token)
+            => _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            return content;
+        public async Task<ServiceResult<TResponse>> Get<TResponse>(string route)
+        {
+            var response = await _client.GetAsync(route);
+
+            var content = await response.Content.ReadFromJsonAsync<ServiceResult<TResponse>>();
+            return content!;
+        }
+
+        public async Task<ServiceResult<TResponse>> Post<TBody, TResponse>(string route, TBody body)
+        {
+            var response = await _client.PostAsync(route, JsonContent.Create(body));
+
+            var content = await response.Content.ReadFromJsonAsync<ServiceResult<TResponse>>();
+            return content!;
+
         }
     }
 }

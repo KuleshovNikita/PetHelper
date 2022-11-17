@@ -16,7 +16,5 @@ namespace PetHelper.IoT.Api.Controllers
         [HttpPost]
         public async Task<ServiceResult<Empty>> StartWalk(WalkStartInfo walkStartInfo)
             => await RunWithServiceResult(async () => await _walkService.SetWalkSettings(walkStartInfo));
-
-
     }
 }
