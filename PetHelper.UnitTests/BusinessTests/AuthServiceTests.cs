@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
 using PetHelper.Api.Models.RequestModels;
@@ -10,6 +11,7 @@ using PetHelper.DataAccess.Repo;
 using PetHelper.Domain;
 using PetHelper.ServiceResulting;
 using PetHelper.UnitTests.Utils;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace PetHelper.UnitTests.BusinessTests
@@ -21,6 +23,7 @@ namespace PetHelper.UnitTests.BusinessTests
         private Mock<IEmailService> _mockEmailService;
         private Mock<IPasswordHasher> _mockPasswordHasher;
         private Mock<IMapper> _mockMapper;
+        private Mock<IConfiguration> _mockConfig;
 
         [SetUp]
         public void Setup()
@@ -29,6 +32,7 @@ namespace PetHelper.UnitTests.BusinessTests
             _mockEmailService = new Mock<IEmailService>();
             _mockPasswordHasher = new Mock<IPasswordHasher>();
             _mockMapper = new Mock<IMapper>();
+            _mockConfig = new Mock<IConfiguration>();
         }
 
         #region LoginTests
@@ -159,8 +163,7 @@ namespace PetHelper.UnitTests.BusinessTests
             Assert.Multiple(() =>
             {
                 Assert.That(result.IsSuccessful);
-                Assert.That(result.Value is ClaimsPrincipal);
-                Assert.That(result.Value.HasClaim(x => x.Type == ClaimTypes.Email));
+                Assert.That(result.Value is not null);
             });
         }
 
@@ -235,8 +238,7 @@ namespace PetHelper.UnitTests.BusinessTests
             Assert.Multiple(() =>
             {
                 Assert.That(result.IsSuccessful);
-                Assert.That(result.Value is ClaimsPrincipal);
-                Assert.That(!result.Value.HasClaim(x => x.Type == ClaimTypes.Email));
+                Assert.That(result.Value is not null);
             });
         }
 
@@ -306,8 +308,7 @@ namespace PetHelper.UnitTests.BusinessTests
             Assert.Multiple(() =>
             {
                 Assert.That(result.IsSuccessful);
-                Assert.That(result.Value is ClaimsPrincipal);
-                Assert.That(result.Value.HasClaim(x => x.Type == ClaimTypes.Email));
+                Assert.That(result.Value is not null);
             });
         }
 
@@ -317,6 +318,7 @@ namespace PetHelper.UnitTests.BusinessTests
             => new AuthService(_mockMapper.Object,
                      _mockPasswordHasher.Object,
                      _mockEmailService.Object,
-                     _mockUserService.Object);
+                     _mockUserService.Object, 
+                     _mockConfig.Object);
     }
 }

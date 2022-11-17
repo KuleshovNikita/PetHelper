@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using PetHelper.Api.Extensions;
 using PetHelper.Domain.Auth;
 using PetHelper.Startup.Extensions;
@@ -11,6 +12,7 @@ builder.Services.AddControllers()
                 {
                     opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                     opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                    opt.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 });
 
 builder.Services.AddEndpointsApiExplorer();

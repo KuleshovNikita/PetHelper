@@ -1,6 +1,8 @@
-﻿using System.Text.Json.Serialization;
+﻿using PetHelper.IoT.Domain.UserModels;
+using PetHelper.IoT.Domain.WalksModels;
+using System.Text.Json.Serialization;
 
-namespace PetHelper.Domain.Pets
+namespace PetHelper.IoT.Domain.PetModels
 {
     public record PetModel : BaseModel
     {

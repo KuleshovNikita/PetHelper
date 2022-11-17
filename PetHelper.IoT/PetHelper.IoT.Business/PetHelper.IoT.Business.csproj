@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\PetHelper.ServiceResulting\PetHelper.ServiceResulting.csproj" />
+    <ProjectReference Include="..\PetHelper.IoT.DeviceController\PetHelper.IoT.DeviceController.csproj" />
+    <ProjectReference Include="..\PetHelper.IoT.Domain\PetHelper.IoT.Domain.csproj" />
+    <ProjectReference Include="..\PetHelper.IoT.ServerClient\PetHelper.IoT.ServerClient.csproj" />
+  </ItemGroup>
+
+</Project>

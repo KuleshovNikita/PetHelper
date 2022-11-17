@@ -19,6 +19,9 @@ namespace PetHelper.DataAccess.Context.ModelContexts
 
                 entity.Property(x => x.AnimalType);
 
+                entity.Property(x => x.AllowedDistance)
+                      .HasDefaultValue(15);
+
                 entity.Property(x => x.Breed)
                       .HasMaxLength(50);
             });

@@ -9,9 +9,9 @@ namespace PetHelper.ServiceResulting
         public TEntity Value { get; set; }
 
         [JsonIgnore]
-        public Exception Exception { get; private set; }
+        public Exception Exception { get; set; } = null!;
 
-        public string? ClientErrorMessage { get; private set; }
+        public string? ClientErrorMessage { get; set; }
 
         public ServiceResult() { }
 
@@ -27,7 +27,7 @@ namespace PetHelper.ServiceResulting
 
         public ServiceResult<TEntity> CatchAny(string? errorMessage = null)
         {
-            if(Exception is not null)
+            if(Exception is not null || !IsSuccessful)
             {
                 BuildException(errorMessage);
             }
@@ -50,8 +50,8 @@ namespace PetHelper.ServiceResulting
 
         private void BuildException(string? errorMessage = null)
         {
-            ClientErrorMessage = errorMessage ?? Exception.Message;
-            throw new FailedServiceResultException(ClientErrorMessage, Exception);
+            ClientErrorMessage = errorMessage ?? Exception?.Message ?? "An error occured";
+            throw new FailedServiceResultException(ClientErrorMessage, Exception ?? new Exception(errorMessage));
         }
 
         private ServiceResult<TEntity> SetResultState(bool state, string message, Exception? ex = null)
