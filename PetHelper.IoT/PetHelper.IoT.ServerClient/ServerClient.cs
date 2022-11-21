@@ -42,5 +42,13 @@ namespace PetHelper.IoT.ServerClient
             return content!;
 
         }
+
+        public async Task<ServiceResult<Empty>> Patch(string route)
+        {
+            var response = await _client.PatchAsync(route, null);
+
+            var content = await response.Content.ReadFromJsonAsync<ServiceResult<Empty>>();
+            return content!;
+        }
     }
 }

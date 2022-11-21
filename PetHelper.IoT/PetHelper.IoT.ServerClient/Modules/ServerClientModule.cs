@@ -2,6 +2,7 @@
 using PetHelper.IoT.Domain.Modules;
 using PetHelper.IoT.ServerClient.Auth;
 using PetHelper.IoT.ServerClient.PetsClient;
+using PetHelper.IoT.ServerClient.WalksClient;
 
 namespace PetHelper.IoT.ServerClient.Modules
 {
@@ -11,6 +12,7 @@ namespace PetHelper.IoT.ServerClient.Modules
         {
             services.AddScoped<IPetClient, PetClient>();
             services.AddScoped<IAuthClient, AuthClient>();
+            services.AddScoped<IWalkClient, WalkClient>();
 
             services.AddSingleton<ServerClient>();
 

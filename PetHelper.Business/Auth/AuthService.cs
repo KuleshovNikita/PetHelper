@@ -49,12 +49,12 @@ namespace PetHelper.Business.Auth
 
             var userResult = await _userService.GetUser(x => x.Login == authModel.Login);
 
-            if(!userResult.Value.IsEmailConfirmed)
+            if (!userResult.Value.IsEmailConfirmed)
             {
                 return serviceResult.FailAndThrow(Resources.EmailConfirmationIsNeeded);
             }
 
-            if(!_passwordHasher.ComparePasswords(authModel.Password, userResult.Value.Password))
+            if (!_passwordHasher.ComparePasswords(authModel.Password, userResult.Value.Password))
             {
                 return serviceResult.FailAndThrow(Resources.WrongPasswordOrLogin);
             }
