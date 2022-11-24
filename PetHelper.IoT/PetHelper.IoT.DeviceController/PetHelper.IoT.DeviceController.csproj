@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\PetHelper.ServiceResulting\PetHelper.ServiceResulting.csproj" />
     <ProjectReference Include="..\PetHelper.IoT.Domain\PetHelper.IoT.Domain.csproj" />
   </ItemGroup>
 

@@ -1,1 +1,1 @@
-{"PetId":"aa3077f1-0e72-4b73-40b5-08dabdc8e5e2","OwnerPosition":{"Longitude":0,"Latitude":0},"WalkOptions":{"AllowedDistance":15}}
+{"PetId":"aa3077f1-0e72-4b73-40b5-08dabdc8e5e2","ScheduleId":"1ea64a09-cb37-4aa0-10bd-08dabdca71b6","OwnerPosition":{"Longitude":0,"Latitude":0},"WalkOptions":{"AllowedDistance":15}}
