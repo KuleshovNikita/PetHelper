@@ -1,11 +1,19 @@
 import { BaseEntity } from "./BaseEntity";
 
 export interface User extends BaseEntity {
-    email: string;
+    login: string;
     firstName: string;
     lastName: string;
     age?: string;
     token: string;
+}
+
+export interface UserUpdateModel extends BaseEntity {
+    login?: string;
+    firstName?: string;
+    lastName?: string;
+    age?: string;
+    password?: string;
 }
 
 export interface UserRegisterModel {

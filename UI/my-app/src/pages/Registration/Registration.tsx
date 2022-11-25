@@ -67,7 +67,7 @@ export default function Registration() {
 
         if(!age) {
             return;
-        } else if (age <= 10) {
+        } else if (age < 10) {
             setAgeErrors('The minimal allowed age is 10');
         } else if (age > 100) {
             setAgeErrors('The maximal allowed age is 100');

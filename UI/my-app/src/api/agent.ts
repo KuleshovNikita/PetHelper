@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { store } from "./stores/Store";
 import { redirect } from "react-router";
-import { User, UserLoginModel, UserRegisterModel } from "../models/User";
+import { User, UserLoginModel, UserRegisterModel, UserUpdateModel } from "../models/User";
 import { EmptyResult, Result } from "../models/Result";
 
 interface ErrorResponse {
@@ -43,7 +43,7 @@ axios.interceptors.response.use(async (response) => response,
                 break;
             case 401:
                 if (headers['www-authenticate']?.startsWith('Bearer error="invalid_token"')) {
-                    //store.userStore.logout();
+                    store.userStore.logout();
                     toast.error('Session has expired - please login again');
                 }
                 break;
@@ -75,6 +75,11 @@ const Auth = {
     register: (body: UserRegisterModel) => requests.post<Result<string>>("/authentication/register", body)
 }
 
+const Profile = {
+    updateUser: (body: UserUpdateModel) => requests.put<EmptyResult>(`/user/${body.id}`, body),
+}
+
 export const agent = {
-    Auth
+    Auth,
+    Profile
 };

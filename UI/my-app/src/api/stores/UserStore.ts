@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { agent } from "../agent";
-import { User, UserLoginModel, UserRegisterModel } from "../../models/User";
+import { User, UserLoginModel, UserRegisterModel, UserUpdateModel } from "../../models/User";
 import { store } from "./Store";
 import { toast } from "react-toastify";
 
@@ -34,6 +34,16 @@ export default class UserStore {
         this.user = null;
     };
 
+    updateUserInfo = async (user: UserUpdateModel) => {
+        const response = await agent.Profile.updateUser(user);
+
+        if(!response.isSuccessful) {
+            return response;
+        }
+
+        return await this.getCurrentUser();
+    }
+
     getCurrentUser = async () => {
         try {
             const response = await agent.Auth.current();
@@ -42,7 +52,6 @@ export default class UserStore {
                 return response;
             }
 
-            store.commonStore.setToken(response.value.token);
             runInAction(() => this.user = response.value);
 
             return response;
