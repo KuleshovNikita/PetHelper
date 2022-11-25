@@ -16,17 +16,11 @@ namespace PetHelper.Api.Controllers
 
         [HttpPost("register")]
         public async Task<ServiceResult<string>> Register([FromBody] UserRequestModel userModel)
-            => await RunWithServiceResult(async () =>
-            {
-                return await _authService.Register(userModel);
-            });
+            => await RunWithServiceResult(async () => await _authService.Register(userModel));
 
         [HttpPost("login")]
         public async Task<ServiceResult<string>> Login([FromBody] AuthModel authModel)
-            => await RunWithServiceResult(async () =>
-            {
-                return await _authService.Login(authModel);
-            });
+            => await RunWithServiceResult(async () => await _authService.Login(authModel));
 
         [HttpPatch("confirmEmail/{key}")]
         public async Task<ServiceResult<string>> ConfirmEmail(string key)
@@ -35,6 +29,10 @@ namespace PetHelper.Api.Controllers
                 key = Uri.UnescapeDataString(key);
                 return await _authService.ConfirmEmail(key);
             });
+
+        [HttpGet("current")]
+        public async Task<ServiceResult<UserModel>> GetCurrentUser()
+            => await RunWithServiceResult(async () => await _authService.GetCurrentUser());
 
         [Authorize]
         [HttpGet("logout")]
