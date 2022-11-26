@@ -8,10 +8,12 @@ import { AppRoutes } from './components/Routing/Routes';
 import { ToastContainer } from "react-toastify";
 
 function App() {
-  const { commonStore, userStore } = useStore();
+  const { commonStore, userStore, petStore } = useStore();
 
   useEffect(() => {
-    userStore.getCurrentUser().finally(() => commonStore.setAppLoaded());
+    userStore.getCurrentUser()
+    .then(() => petStore.getUserPets(userStore.user?.id!))
+    .finally(() => commonStore.setAppLoaded());
   }, [commonStore, userStore]);
 
   if (!commonStore.appLoaded) {

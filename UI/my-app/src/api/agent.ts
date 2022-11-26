@@ -4,6 +4,7 @@ import { store } from "./stores/Store";
 import { redirect } from "react-router";
 import { User, UserLoginModel, UserRegisterModel, UserUpdateModel } from "../models/User";
 import { EmptyResult, Result } from "../models/Result";
+import { Pet, PetUpdateModel } from "../models/Pet";
 
 interface ErrorResponse {
     errors: { detail: string }[];
@@ -79,7 +80,13 @@ const Profile = {
     updateUser: (body: UserUpdateModel) => requests.put<EmptyResult>(`/user/${body.id}`, body),
 }
 
+const Pets = {
+    updatePet: (body: PetUpdateModel) => requests.put<EmptyResult>(`/pet/${body.id}`, body),
+    getUserPets: (id: string) => requests.get<Result<Pet[]>>(`/pet/user/${id}`),
+}
+
 export const agent = {
     Auth,
-    Profile
+    Profile,
+    Pets
 };

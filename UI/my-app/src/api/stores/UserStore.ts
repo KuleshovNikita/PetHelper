@@ -20,6 +20,7 @@ export default class UserStore {
         const response = await agent.Auth.login(creds);
 
         if(!response.isSuccessful) {
+            console.log(response);
             return response;
         }
 

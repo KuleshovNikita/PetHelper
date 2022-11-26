@@ -1,4 +1,5 @@
 import { BaseEntity } from "./BaseEntity";
+import { Pet } from "./Pet";
 
 export interface User extends BaseEntity {
     login: string;
@@ -6,6 +7,7 @@ export interface User extends BaseEntity {
     lastName: string;
     age?: string;
     token: string;
+    pets: Pet[]
 }
 
 export interface UserUpdateModel extends BaseEntity {
