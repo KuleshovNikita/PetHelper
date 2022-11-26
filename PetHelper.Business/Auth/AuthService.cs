@@ -13,7 +13,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using PetHelper.Domain.Auth;
-using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace PetHelper.Business.Auth
 {
@@ -24,14 +24,16 @@ namespace PetHelper.Business.Auth
         private readonly IPasswordHasher _passwordHasher;
         private readonly IMapper _mapper;
         private readonly JwtSettings _jwtSettings;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AuthService(IMapper mapper, IPasswordHasher passwordHasher, IEmailService emailService, 
-            IUserService userService, IConfiguration config) 
+            IUserService userService, IConfiguration config, IHttpContextAccessor httpContextAccessor) 
         {
             _emailService = emailService;
             _userService = userService;
             _passwordHasher = passwordHasher;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
 
             _jwtSettings = config.GetSection("Jwt").Get<JwtSettings>();
         }
@@ -143,6 +145,20 @@ namespace PetHelper.Business.Auth
             var tokenHandler = new JwtSecurityTokenHandler().WriteToken(token);
 
             return tokenHandler;
+        }
+
+        public async Task<ServiceResult<UserModel>> GetCurrentUser()
+        {
+            var id = _httpContextAccessor.HttpContext.User
+                .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if(id == null)
+            {
+                return new ServiceResult<UserModel>().FailAndThrow("No current user exists");
+            }
+
+            var user = await _userService.GetUser(x => x.Id == Guid.Parse(id!));
+            return user.CatchAny();
         }
     }
 }

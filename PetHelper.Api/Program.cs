@@ -20,6 +20,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.RegisterDependencies();
 builder.Services.AddCors(x => x.AllowAnyOriginPolicy());
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.ConfigureAuthentication(builder.Configuration.GetSection("Jwt").Get<JwtSettings>());
 builder.Services.ConfigureDbConnection(builder.Configuration);
 
@@ -34,6 +36,8 @@ if (app.Environment.IsDevelopment())
 app.ConfigureCulture();
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
