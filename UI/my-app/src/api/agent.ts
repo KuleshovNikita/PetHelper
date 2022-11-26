@@ -4,7 +4,7 @@ import { store } from "./stores/Store";
 import { redirect } from "react-router";
 import { User, UserLoginModel, UserRegisterModel, UserUpdateModel } from "../models/User";
 import { EmptyResult, Result } from "../models/Result";
-import { Pet, PetUpdateModel, WalkingScheduleUpdateModel } from "../models/Pet";
+import { Pet, PetUpdateModel, WalkingScheduleRequestModel, WalkingScheduleUpdateModel } from "../models/Pet";
 
 interface ErrorResponse {
     errors: { detail: string }[];
@@ -86,7 +86,12 @@ const Pets = {
 }
 
 const Schedules = {
-    updateSchedule: (body: WalkingScheduleUpdateModel) => requests.put<EmptyResult>(`/schedule/${body.id}`, body),
+    updateSchedule: (body: WalkingScheduleUpdateModel) => 
+        requests.put<EmptyResult>(`/schedule/${body.id}`, body),
+    addSchedule: (body: WalkingScheduleRequestModel) => 
+        requests.post<EmptyResult>('/schedule', body),
+    removeSchedule: (scheduleId: string) => 
+        requests.delete<EmptyResult>(`/schedule/${scheduleId}`),
 }
 
 export const agent = {

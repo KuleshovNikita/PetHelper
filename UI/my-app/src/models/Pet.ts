@@ -10,10 +10,16 @@ export interface Pet extends BaseEntity {
 }
 
 export interface WalkingSchedule extends BaseEntity {
-    scheduledStart: Date,
-    scheduledEnd: Date,
+    scheduledStart: string,
+    scheduledEnd: string,
     petId: string,
     pet: Pet
+}
+
+export interface WalkingScheduleRequestModel {
+    scheduledStart: string,
+    scheduledEnd: string,
+    petId: string
 }
 
 export interface WalkingScheduleUpdateModel extends BaseEntity {

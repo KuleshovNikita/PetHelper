@@ -1,7 +1,7 @@
 import { Button, TextField, TextFieldProps, Typography } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers";
 import React, { useState } from "react";
-import { WalkingSchedule, WalkingScheduleUpdateModel } from "../../models/Pet";
+import { WalkingSchedule, WalkingScheduleRequestModel, WalkingScheduleUpdateModel } from "../../models/Pet";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DoneIcon from '@mui/icons-material/Done';
@@ -9,7 +9,8 @@ import { useStore } from "../../api/stores/Store";
 import { toast } from "react-toastify";
 
 type Props = {
-    scheduleItem: WalkingSchedule
+    scheduleItem: WalkingSchedule,
+    removeItem: () => void
 }
 
 const timePickerStyles = {
@@ -26,16 +27,20 @@ const listItemButton = {
     }
 }
 
-export default function ScheduleItem({ scheduleItem }: Props) {
+export default function ScheduleItem({ scheduleItem, removeItem }: Props) {
 
     const { scheduleStore } = useStore();
-    const [isTextFieldDisabled, setTextFieldDisabled] = useState(true);
+    const [isTextFieldDisabled, setTextFieldDisabled] = useState(scheduleItem.id !== "");
 
-    const toLocal = (value: Date) => {
-        const dt = new Date(value);
-        dt.setHours(dt.getHours() + 3);
+    const toLocal = (value: string | null) => {
+        if(value === null) {
+            return null;
+        }
 
-        return dt;
+        const date = new Date(value);
+        const dt = new Date((date.getMilliseconds() + date.getTime()) - (date.getTimezoneOffset() * 60000));
+
+        return new Date(dt);
     }
 
     const [start, setStart] = useState<Date | null>(toLocal(scheduleItem.scheduledStart));
@@ -52,6 +57,10 @@ export default function ScheduleItem({ scheduleItem }: Props) {
     }
 
     const changeScheduledTime = async () => {
+        if(scheduleItem.id === "") {
+            return await addSchedule();
+        }
+
         setTextFieldDisabled(!isTextFieldDisabled);
 
         if(isTextFieldDisabled) {
@@ -70,6 +79,40 @@ export default function ScheduleItem({ scheduleItem }: Props) {
             toast.error(result.clientErrorMessage);
         } else {
             toast.success("The schedule was updated");
+        }
+    }
+
+    const addSchedule = async () => {
+
+        const schedule: WalkingScheduleRequestModel = {
+            scheduledStart: start!.toJSON(),
+            scheduledEnd: end!.toJSON(),
+            petId: scheduleItem.petId
+        }
+
+        const result = await scheduleStore.addSchedule(schedule);
+
+        if(!result.isSuccessful) {
+            toast.error(result.clientErrorMessage);
+        } else {
+            toast.success("A new schedule was added");
+        }
+
+        return;
+    }
+
+    const removeSchedule = async () => {
+        if(scheduleItem.id !== "") {
+            const result = await scheduleStore.removeSchedule(scheduleItem.id)
+
+            if(!result.isSuccessful) {
+                toast.error(result.clientErrorMessage);
+            } else {
+                toast.success("The schedule was removed");
+                removeItem();
+            }
+        } else {
+            removeItem();
         }
     }
 
@@ -96,7 +139,7 @@ export default function ScheduleItem({ scheduleItem }: Props) {
             </Typography>
 
             {
-                isTextFieldDisabled
+                (scheduleItem.id !== "" && isTextFieldDisabled)
                 ? 
                     <Button sx={{...listItemButton, ml: 1}} onClick={changeScheduledTime}>
                         <EditIcon/>
@@ -107,7 +150,8 @@ export default function ScheduleItem({ scheduleItem }: Props) {
                     </Button>
             }
 
-            <Button sx={listItemButton}>
+            <Button sx={listItemButton}
+                    onClick={removeSchedule}>
                 <DeleteIcon/>
             </Button>
         </>

@@ -240,9 +240,9 @@ export default function PetProfile() {
                     </Button>
                 </Box>
             </Box>
-            <Box>
+            <Box sx={{ ml: 2 }}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <SchedulesList schedules={currentPet?.walkingSchedule!}/>
+                    <SchedulesList schedules={currentPet?.walkingSchedule!} pet={currentPet!}/>
                 </LocalizationProvider>
             </Box>
         </Box>

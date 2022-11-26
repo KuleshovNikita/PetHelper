@@ -1,11 +1,12 @@
 import { Button, ListItem, ListItemButton, ListItemText, TextField, Typography } from "@mui/material";
 import React, { Component, useState } from "react";
-import { WalkingSchedule } from "../../models/Pet";
+import { Pet, WalkingSchedule } from "../../models/Pet";
 import AddIcon from '@mui/icons-material/Add';
 import ScheduleItem from "./ScheduleItem";
 
 type Props = {
-    schedules: WalkingSchedule[]
+    schedules: WalkingSchedule[],
+    pet: Pet,
 }
 
 const listItemStyle = {
@@ -22,23 +23,42 @@ const addScheduleButton = {
     color: "white"
 }
 
-export default function SchedulesList({ schedules }: Props) {
+export default function SchedulesList({ schedules, pet }: Props) {
+    const [scheduleItems, setScheduleItems] = useState(schedules);
+
+    const addNewSchedule = () => {
+        const newSchedule: WalkingSchedule = {
+            scheduledStart: '',
+            scheduledEnd: '',
+            petId: pet.id,
+            pet: pet,
+            id: ""
+        };
+
+        setScheduleItems((items) => [...items, newSchedule]);
+    }
+
+    const removeSchedule = (schedule: WalkingSchedule) => {
+        setScheduleItems(scheduleItems.filter(sc => sc != schedule));
+    }
+
     return(
         <>
             <Typography variant="h4" component="h4">
                 Schedules:
             </Typography>
                 {
-                    schedules && 
-                    schedules.length !== 0 &&
-                    schedules.map((sch, key) => (
+                    scheduleItems && 
+                    scheduleItems.length !== 0 &&
+                    scheduleItems.map((sch, key) => (
                         <ListItem key={key} component="a" sx={listItemStyle}>
-                            <ScheduleItem scheduleItem={sch}/>
+                            <ScheduleItem scheduleItem={sch} removeItem={() => removeSchedule(sch)}/>
                         </ListItem>
                     ))
                 }
                 
-            <Button sx={addScheduleButton}>
+            <Button sx={addScheduleButton}
+                    onClick={addNewSchedule}>
                 <AddIcon/>
             </Button>
         </>
