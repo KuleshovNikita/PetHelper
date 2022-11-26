@@ -5,6 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { TimePicker } from "@mui/x-date-pickers";
+import ScheduleItem from "./ScheduleItem";
 
 type Props = {
     schedules: WalkingSchedule[]
@@ -34,42 +35,6 @@ const addScheduleButton = {
 }
 
 export default function SchedulesList({ schedules }: Props) {
-    const [isTextFieldDisabled, setTextFieldDisabled] = useState(true);
-
-    const [start, setStart] = useState<string | null>('');
-
-    let normalizedStart = '';
-    let normalizedEnd = '';
-
-    const handleStartChange = (value: string | null, kb: string | undefined) => {
-        normalizedStart = value!;
-        console.log(value!);
-        console.log(kb!);
-    }
-
-    const handleEndChange = (value: string | null, kb: string | undefined) => {
-        normalizedEnd = value!;
-    }
-
-    const normalizeTime = (schedule: WalkingSchedule) => {
-        normalizedStart = new Date(schedule.scheduledStart).toLocaleTimeString();
-        setStart(normalizedStart);
-
-        normalizedEnd = new Date(schedule.scheduledEnd).toLocaleTimeString();
-
-        return (
-            <Typography 
-                variant="h4" 
-                component="h4"
-                color="white">
-                    Start: <TimePicker
-                                value={start}
-                                onChange={(value) => { setStart(value) }}
-                                renderInput={(props) => <TextField {...props}/>}/>
-            </Typography>
-        );
-    }
-
     return(
         <>
             <Typography variant="h4" component="h4">
@@ -80,9 +45,8 @@ export default function SchedulesList({ schedules }: Props) {
                     schedules.length !== 0 &&
                     schedules.map((sch, key) => (
                         <ListItem key={key} component="a" sx={listItemStyle}>
-                            <ListItemText/>
-                            { normalizeTime(sch) }
-                            <Button sx={listItemButton}><EditIcon/></Button>
+                            <ScheduleItem scheduleItem={sch}/>
+                            <Button sx={{...listItemButton, ml: 1}}><EditIcon/></Button>
                             <Button sx={listItemButton}><DeleteIcon/></Button>
                         </ListItem>
                     ))
