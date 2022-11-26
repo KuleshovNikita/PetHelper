@@ -1,8 +1,10 @@
-import { Button, ListItem, ListItemButton, ListItemText, Typography } from "@mui/material";
-import React, { Component } from "react";
+import { Button, ListItem, ListItemButton, ListItemText, TextField, Typography } from "@mui/material";
+import React, { Component, useState } from "react";
 import { WalkingSchedule } from "../../models/Pet";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import { TimePicker } from "@mui/x-date-pickers";
 
 type Props = {
     schedules: WalkingSchedule[]
@@ -14,7 +16,7 @@ const listItemStyle = {
     mb: 1
 }
 
-const listItemChangeButton = {
+const listItemButton = {
     bgcolor: "white",
     color: "orange",
     mr: 1,
@@ -23,17 +25,47 @@ const listItemChangeButton = {
     }
 }
 
+const addScheduleButton = {
+    "&:hover": {
+        bgcolor: "brown"
+    },
+    bgcolor: "orange", 
+    color: "white"
+}
+
 export default function SchedulesList({ schedules }: Props) {
+    const [isTextFieldDisabled, setTextFieldDisabled] = useState(true);
+
+    const [start, setStart] = useState<string | null>('');
+
+    let normalizedStart = '';
+    let normalizedEnd = '';
+
+    const handleStartChange = (value: string | null, kb: string | undefined) => {
+        normalizedStart = value!;
+        console.log(value!);
+        console.log(kb!);
+    }
+
+    const handleEndChange = (value: string | null, kb: string | undefined) => {
+        normalizedEnd = value!;
+    }
+
     const normalizeTime = (schedule: WalkingSchedule) => {
-        const normStart = new Date(schedule.scheduledStart).toLocaleTimeString();
-        const normEnd = new Date(schedule.scheduledEnd).toLocaleTimeString();
+        normalizedStart = new Date(schedule.scheduledStart).toLocaleTimeString();
+        setStart(normalizedStart);
+
+        normalizedEnd = new Date(schedule.scheduledEnd).toLocaleTimeString();
 
         return (
             <Typography 
                 variant="h4" 
                 component="h4"
                 color="white">
-                {`${normStart} - ${normEnd}`}
+                    Start: <TimePicker
+                                value={start}
+                                onChange={(value) => { setStart(value) }}
+                                renderInput={(props) => <TextField {...props}/>}/>
             </Typography>
         );
     }
@@ -48,12 +80,17 @@ export default function SchedulesList({ schedules }: Props) {
                     schedules.length !== 0 &&
                     schedules.map((sch, key) => (
                         <ListItem key={key} component="a" sx={listItemStyle}>
-                            <ListItemText primary={normalizeTime(sch)} />
-                            <Button sx={listItemChangeButton}><EditIcon/></Button>
-                            <Button sx={listItemChangeButton}><DeleteIcon/></Button>
+                            <ListItemText/>
+                            { normalizeTime(sch) }
+                            <Button sx={listItemButton}><EditIcon/></Button>
+                            <Button sx={listItemButton}><DeleteIcon/></Button>
                         </ListItem>
                     ))
                 }
+                
+            <Button sx={addScheduleButton}>
+                <AddIcon/>
+            </Button>
         </>
     );
 }

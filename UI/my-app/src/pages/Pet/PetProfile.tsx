@@ -15,6 +15,9 @@ import React from "react";
 import { useParams } from "react-router";
 import { AnimalType, PetUpdateModel } from "../../models/Pet";
 import SchedulesList from "../../components/Schedules/SchedulesList";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import AdapterJalaali from '@date-io/jalaali';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
 type Focus = React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>; 
@@ -238,7 +241,9 @@ export default function PetProfile() {
                 </Box>
             </Box>
             <Box>
-                <SchedulesList schedules={currentPet?.walkingSchedule!}/>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <SchedulesList schedules={currentPet?.walkingSchedule!}/>
+                </LocalizationProvider>
             </Box>
         </Box>
     );
