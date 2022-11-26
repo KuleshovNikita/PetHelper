@@ -16,11 +16,16 @@ export interface WalkingSchedule extends BaseEntity {
     pet: Pet
 }
 
+export interface WalkingScheduleUpdateModel extends BaseEntity {
+    scheduledStart?: Date,
+    scheduledEnd?: Date,
+}
+
 export interface PetUpdateModel extends BaseEntity {
-    name: string;
+    name?: string;
     animalType?: AnimalType;
     breed?: string;
-    allowedDistance: number;
+    allowedDistance?: number;
 }
 
 export enum AnimalType {
