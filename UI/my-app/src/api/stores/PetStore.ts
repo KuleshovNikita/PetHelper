@@ -22,4 +22,14 @@ export default class PetStore {
 
         return result;
     }
+
+    removePet = async (id: string) => {
+        const result = await agent.Pets.removePet(id);
+
+        if(result.isSuccessful) {
+            runInAction(() => this.pets = this.pets?.filter(p => p.id !== id)!);
+        }
+
+        return result;
+    } 
 }

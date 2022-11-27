@@ -10,6 +10,7 @@ type Props = {
 }
 
 const listItemStyle = {
+    display: "block",
     bgcolor: "orange",
     borderRadius: "5px",
     mb: 1
@@ -51,7 +52,7 @@ export default function SchedulesList({ schedules, pet }: Props) {
                     scheduleItems && 
                     scheduleItems.length !== 0 &&
                     scheduleItems.map((sch, key) => (
-                        <ListItem key={key} component="a" sx={listItemStyle}>
+                        <ListItem key={key} component="div" sx={listItemStyle}>
                             <ScheduleItem scheduleItem={sch} removeItem={() => removeSchedule(sch)}/>
                         </ListItem>
                     ))

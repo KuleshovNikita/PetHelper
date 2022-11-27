@@ -1,4 +1,4 @@
-import { Button, TextField, TextFieldProps, Typography } from "@mui/material";
+import { Box, Button, TextField, TextFieldProps, Typography } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers";
 import React, { useState } from "react";
 import { WalkingSchedule, WalkingScheduleRequestModel, WalkingScheduleUpdateModel } from "../../models/Pet";
@@ -109,7 +109,7 @@ export default function ScheduleItem({ scheduleItem, removeItem }: Props) {
     }
 
     return (
-        <>
+        <Box sx={{ display: "grid", gridTemplateColumns: "2fr 1fr" }}>
             <Typography 
                 variant="h4" 
                 component="h4"
@@ -130,22 +130,24 @@ export default function ScheduleItem({ scheduleItem, removeItem }: Props) {
                             />
             </Typography>
 
-            {
-                (scheduleItem.id !== "" && isTextFieldDisabled)
-                ? 
-                    <Button sx={{...listItemButton, ml: 1}} onClick={changeScheduledTime}>
-                        <EditIcon/>
-                    </Button>
-                :
-                    <Button sx={{...listItemButton, ml: 1}} onClick={changeScheduledTime}>
-                        <DoneIcon/>
-                    </Button>
-            }
+            <Box sx={{ display: "flex", justifyContent: "end" }}>
+                {
+                    (scheduleItem.id !== "" && isTextFieldDisabled)
+                    ? 
+                        <Button sx={{...listItemButton, ml: 1}} onClick={changeScheduledTime}>
+                            <EditIcon/>
+                        </Button>
+                    :
+                        <Button sx={{...listItemButton, ml: 1}} onClick={changeScheduledTime}>
+                            <DoneIcon/>
+                        </Button>
+                }
 
-            <Button sx={listItemButton}
-                    onClick={removeSchedule}>
-                <DeleteIcon/>
-            </Button>
-        </>
+                <Button sx={listItemButton}
+                        onClick={removeSchedule}>
+                    <DeleteIcon/>
+                </Button>
+            </Box>
+        </Box>
     );
 }

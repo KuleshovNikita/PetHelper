@@ -1,41 +1,26 @@
-import { ListItemButton, ListItemText, Typography } from "@mui/material";
+import { ListItem, ListItemButton, ListItemText, Typography } from "@mui/material";
 import { info } from "console";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { AnimalType, Pet } from "../../models/Pet";
+import PetListItem from "./PetListItem";
 
 type Props = {
     pets: Pet[]
 }
 
 const listItemStyle = {
+    display: "block",
     bgcolor: "orange",
     borderRadius: "5px",
-    "&:hover": {
-        bgcolor: "brown"
-    },
     mb: 1
 }
 
 export default function PetsList({ pets }: Props) {
-    const navigate = useNavigate();
+    const [petList, setPetList] = useState(pets);
 
-    const getSecondaryPetInfo = (pet: Pet) => {
-        let secondaryProps: string[] = [];
-
-        if(pet.animalType !== undefined && AnimalType[pet.animalType]) {
-            secondaryProps.push(AnimalType[pet.animalType]);
-        }
-
-        if(pet.breed) {
-            secondaryProps.push(pet.breed);
-        }
-
-        return secondaryProps.join(' | ');
-    }
-
-    const openPetPage = (pet: Pet) => {
-        navigate(`/pet/${pet.id}`);
+    const removePet = (pet: Pet) => {
+        setPetList(petList.filter(p => p != pet));
     }
 
     return(
@@ -44,14 +29,12 @@ export default function PetsList({ pets }: Props) {
             Pets:
         </Typography>
             {
-                pets && 
-                pets.length !== 0 &&
-                pets.map((pet, key) => (
-                    <ListItemButton key={key} component="a" sx={listItemStyle}>
-                        <ListItemText primary={pet.name} 
-                                      secondary={getSecondaryPetInfo(pet)}
-                                      onClick={() => openPetPage(pet)} />
-                    </ListItemButton>
+                petList && 
+                petList.length !== 0 &&
+                petList.map((pet, key) => (
+                    <ListItem key={key} component="div" sx={listItemStyle}>
+                        <PetListItem petItem={pet} removeItem={() => removePet(pet)}/>
+                    </ListItem>
                 ))
             }
         </>

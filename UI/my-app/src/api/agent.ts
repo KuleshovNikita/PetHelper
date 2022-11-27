@@ -83,6 +83,7 @@ const Profile = {
 const Pets = {
     updatePet: (body: PetUpdateModel) => requests.put<EmptyResult>(`/pet/${body.id}`, body),
     getUserPets: (id: string) => requests.get<Result<Pet[]>>(`/pet/user/${id}`),
+    removePet: (id: string) => requests.delete<EmptyResult>(`/pet/${id}`),
 }
 
 const Schedules = {
