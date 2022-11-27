@@ -74,6 +74,8 @@ export function Login() {
         if(!result.isSuccessful) {
             toast.error(result.clientErrorMessage);
         } else {
+
+
             toast.success(`Successful login, ${userStore.user?.firstName}`);
             navigate(fromPage, { replace: true });
         }

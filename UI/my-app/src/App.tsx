@@ -6,15 +6,14 @@ import LoadingComponent from './components/Loading/LoadingComponent';
 import 'react-toastify/dist/ReactToastify.css';
 import { AppRoutes } from './components/Routing/Routes';
 import { ToastContainer } from "react-toastify";
+import AppLoader from './AppLoader';
 
 function App() {
   const { commonStore, userStore, petStore } = useStore();
 
   useEffect(() => {
-    userStore.getCurrentUser()
-    .then(() => petStore.getUserPets(userStore.user?.id!))
-    .finally(() => commonStore.setAppLoaded());
-  }, [commonStore, userStore]);
+    AppLoader({ commonStore, userStore, petStore });
+  }, [commonStore, userStore, petStore]);
 
   if (!commonStore.appLoaded) {
     return <LoadingComponent />;
