@@ -24,7 +24,7 @@ type Focus = React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>;
 export default function PetProfile() {
 
     const { userStore, petStore } = useStore();
-    const { id } = useParams();
+    const { id, isRedactingMode } = useParams();
 
     const currentPet = petStore.pets!.find(p => p.id === id);
 
@@ -148,6 +148,14 @@ export default function PetProfile() {
         }
     }
 
+    const getRedactingMode = () => {
+        if (!isRedactingMode || isRedactingMode.toLocaleLowerCase() === 'false') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     return(
         <Box sx={mainBoxStyle}>
             <Box>
@@ -241,7 +249,11 @@ export default function PetProfile() {
             </Box>
             <Box sx={{ ml: 2 }}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <SchedulesList schedules={currentPet?.walkingSchedule!} pet={currentPet!}/>
+                    <SchedulesList 
+                        schedules={currentPet?.walkingSchedule!} 
+                        pet={currentPet!}
+                        isChangingMode={getRedactingMode()}
+                    />
                 </LocalizationProvider>
             </Box>
         </Box>

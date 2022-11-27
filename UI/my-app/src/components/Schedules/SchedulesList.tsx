@@ -7,6 +7,7 @@ import ScheduleItem from "./ScheduleItem";
 type Props = {
     schedules: WalkingSchedule[],
     pet: Pet,
+    isChangingMode: boolean
 }
 
 const listItemStyle = {
@@ -24,7 +25,7 @@ const addScheduleButton = {
     color: "white"
 }
 
-export default function SchedulesList({ schedules, pet }: Props) {
+export default function SchedulesList({ schedules, pet, isChangingMode }: Props) {
     const [scheduleItems, setScheduleItems] = useState(schedules);
 
     const addNewSchedule = () => {
@@ -53,7 +54,11 @@ export default function SchedulesList({ schedules, pet }: Props) {
                     scheduleItems.length !== 0 &&
                     scheduleItems.map((sch, key) => (
                         <ListItem key={key} component="div" sx={listItemStyle}>
-                            <ScheduleItem scheduleItem={sch} removeItem={() => removeSchedule(sch)}/>
+                            <ScheduleItem 
+                                isChangingMode={isChangingMode} 
+                                scheduleItem={sch} 
+                                removeItem={() => removeSchedule(sch)}
+                            />
                         </ListItem>
                     ))
                 }

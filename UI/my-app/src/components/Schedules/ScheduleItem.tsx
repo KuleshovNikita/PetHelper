@@ -1,17 +1,19 @@
-import { Box, Button, TextField, TextFieldProps, Typography } from "@mui/material";
+import { Box, BoxTypeMap, Button, TextField, TextFieldProps, Typography } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers";
 import React, { useState } from "react";
-import { WalkingSchedule, WalkingScheduleRequestModel, WalkingScheduleUpdateModel } from "../../models/Pet";
+import { WalkingSchedule, WalkingScheduleRequestModel, WalkingScheduleUpdateModel, WalkRequestModel } from "../../models/Pet";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DoneIcon from '@mui/icons-material/Done';
 import { useStore } from "../../api/stores/Store";
 import { toast } from "react-toastify";
 import { listItemButton } from "../../styles/Button/ButtonStyles";
+import { useNavigate } from "react-router";
 
 type Props = {
     scheduleItem: WalkingSchedule,
-    removeItem: () => void
+    removeItem: () => void,
+    isChangingMode: boolean
 }
 
 const timePickerStyles = {
@@ -19,10 +21,11 @@ const timePickerStyles = {
     mr: 1
 }
 
-export default function ScheduleItem({ scheduleItem, removeItem }: Props) {
+export default function ScheduleItem({ scheduleItem, removeItem, isChangingMode }: Props) {
 
-    const { scheduleStore } = useStore();
+    const { scheduleStore, walkStore } = useStore();
     const [isTextFieldDisabled, setTextFieldDisabled] = useState(scheduleItem.id !== "");
+    const navigate = useNavigate();
 
     const toLocal = (value: string | null) => {
         if(value === null) {
@@ -108,6 +111,54 @@ export default function ScheduleItem({ scheduleItem, removeItem }: Props) {
         }
     }
 
+    const showChangingButtons = () => {
+        return(
+            <>
+                {
+                    (scheduleItem.id !== "" && isTextFieldDisabled)
+                    ? 
+                        <Button sx={{...listItemButton, ml: 1}} onClick={changeScheduledTime}>
+                            <EditIcon fontSize="large"/>
+                        </Button>
+                    :
+                        <Button sx={{...listItemButton, ml: 1}} onClick={changeScheduledTime}>
+                            <DoneIcon fontSize="large"/>
+                        </Button>
+                }
+
+                <Button sx={listItemButton} onClick={removeSchedule}>
+                    <DeleteIcon fontSize="large"/>
+                </Button>
+            </>
+        );
+    }
+
+    const showChooseButtons = () => {
+        return(
+            <>
+                <Button sx={{...listItemButton, ml: 1}} onClick={startWalk}>
+                    <DoneIcon fontSize="large"/>
+                </Button>
+            </>
+        )
+    }
+
+    const startWalk = async () => {
+        const walk: WalkRequestModel = {
+            scheduleId: scheduleItem.id,
+            petId: scheduleItem.petId
+        };
+
+        const result = await walkStore.startWalk(walk);
+
+        if(result.isSuccessful) {
+            toast.success("A new walk has started");
+            navigate('/userProfile', { replace: true });
+        } else {
+            toast.error(result.clientErrorMessage);
+        }
+    }
+
     return (
         <Box sx={{ display: "grid", gridTemplateColumns: "2fr 1fr" }}>
             <Typography variant="h4" component="h4" color="white">
@@ -129,20 +180,12 @@ export default function ScheduleItem({ scheduleItem, removeItem }: Props) {
 
             <Box sx={{ display: "flex", justifyContent: "end" }}>
                 {
-                    (scheduleItem.id !== "" && isTextFieldDisabled)
-                    ? 
-                        <Button sx={{...listItemButton, ml: 1}} onClick={changeScheduledTime}>
-                            <EditIcon fontSize="large"/>
-                        </Button>
+                        !isChangingMode
+                    ?
+                        showChangingButtons()
                     :
-                        <Button sx={{...listItemButton, ml: 1}} onClick={changeScheduledTime}>
-                            <DoneIcon fontSize="large"/>
-                        </Button>
+                        showChooseButtons()
                 }
-
-                <Button sx={listItemButton} onClick={removeSchedule}>
-                    <DeleteIcon fontSize="large"/>
-                </Button>
             </Box>
         </Box>
     );

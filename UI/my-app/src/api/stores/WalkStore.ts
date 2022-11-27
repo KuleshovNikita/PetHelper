@@ -22,19 +22,22 @@ export default class WalkStore {
     startWalk = async (walk: WalkRequestModel) => {
         const result = await agent.Walks.startWalk(walk);
 
-        if(result.isSuccessful) {
-            
-            console.log("walk added successfully");
-            console.log(this.walks);
-            runInAction(() => {
-                if(!this.walks) {
-                   this.walks = [];
-                }
-
-                this.walks?.push(result.value);
-            });
-            console.log(this.walks);
+        if(!result.isSuccessful) {
+            return result;
         }
+        console.log("success");
+
+        runInAction(() => {
+
+            console.log(this.walks);
+
+            if(!this.walks) {
+               this.walks = [];
+            }
+
+            this.walks?.push(result.value);
+            console.log(this.walks);
+        });
 
         return result;
     }

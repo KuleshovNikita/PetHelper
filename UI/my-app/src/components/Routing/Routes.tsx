@@ -14,7 +14,7 @@ export function AppRoutes() {
             <Route path="" element={ <Navigate to="/userProfile"/> } />
             <Route path="/login" element={ <Login/> } />
             <Route path="/logout" element={ <Logout/> } />
-            <Route path="/pet/:id" element={ <RequireAuth><PetProfile/></RequireAuth> } />
+            <Route path="/pet/:id/:isRedactingMode" element={ <RequireAuth><PetProfile/></RequireAuth> } />
             <Route path="/userProfile" element={ <RequireAuth><UserProfile/></RequireAuth> } />
             <Route path="/register" element={ <Registration /> } />
             <Route path="/notFound" element={ <NotFound /> } />

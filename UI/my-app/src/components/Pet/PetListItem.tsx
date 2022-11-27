@@ -50,19 +50,22 @@ export default function PetListItem({ petItem, removeItem }: Props) {
     }
 
     const startNewWalk = async () => {
-        const walk: WalkRequestModel = {
-            scheduleId: '1EA64A09-CB37-4AA0-10BD-08DABDCA71B6',
-            petId: petItem.id
-        };
+        setPetWalking(true);
+        navigate(`/pet/${petItem.id}/true`);
 
-        const result = await walkStore.startWalk(walk);
+        // const walk: WalkRequestModel = {
+        //     scheduleId: '1EA64A09-CB37-4AA0-10BD-08DABDCA71B6',
+        //     petId: petItem.id
+        // };
 
-        if(result.isSuccessful) {
-            setPetWalking(true);
-            toast.success("A new walk has started");
-        } else {
-            toast.error(result.clientErrorMessage);
-        }
+        // const result = await walkStore.startWalk(walk);
+
+        // if(result.isSuccessful) {
+        //     setPetWalking(true);
+        //     toast.success("A new walk has started");
+        // } else {
+        //     toast.error(result.clientErrorMessage);
+        // }
     }
 
     const finishWalk = async () => {
@@ -83,7 +86,7 @@ export default function PetListItem({ petItem, removeItem }: Props) {
     }
 
     const openPetProfile = () => {
-        navigate(`/pet/${petItem.id}`);
+        navigate(`/pet/${petItem.id}/false`);
     }
 
     return (
