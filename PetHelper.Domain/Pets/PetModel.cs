@@ -12,6 +12,8 @@ namespace PetHelper.Domain.Pets
 
         public double AllowedDistance { get; set; }
 
+        public bool IsWalking { get; set; }
+
         public IEnumerable<ScheduleModel> WalkingSchedule { get; set; } = null!;
 
         public IEnumerable<WalkModel> WalksHistory { get; set; } = null!;

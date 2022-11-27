@@ -10,6 +10,8 @@ namespace PetHelper.DataAccess.Modules
         {
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IWalkRepository, WalkRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPetRepository, PetRepository>();
 
             return services;
         }

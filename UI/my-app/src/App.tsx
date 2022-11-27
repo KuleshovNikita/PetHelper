@@ -6,13 +6,15 @@ import LoadingComponent from './components/Loading/LoadingComponent';
 import 'react-toastify/dist/ReactToastify.css';
 import { AppRoutes } from './components/Routing/Routes';
 import { ToastContainer } from "react-toastify";
+import AppLoader from './AppLoader';
+import Header from './components/Header/Header';
 
 function App() {
-  const { commonStore, userStore } = useStore();
+  const { commonStore, userStore, petStore, walkStore } = useStore();
 
   useEffect(() => {
-    userStore.getCurrentUser().finally(() => commonStore.setAppLoaded());
-  }, [commonStore, userStore]);
+    AppLoader({ commonStore, userStore, petStore, walkStore });
+  }, [commonStore, userStore, petStore]);
 
   if (!commonStore.appLoaded) {
     return <LoadingComponent />;
@@ -21,6 +23,7 @@ function App() {
   return (
     <BrowserRouter>
       <React.StrictMode>
+        <Header />        
         <main className="main">
           <AppRoutes />
         </main>

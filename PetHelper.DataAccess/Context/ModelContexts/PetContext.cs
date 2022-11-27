@@ -13,6 +13,10 @@ namespace PetHelper.DataAccess.Context.ModelContexts
                 entity.Property(x => x.Id)
                       .IsRequired();
 
+                entity.Property(x => x.IsWalking)
+                      .HasDefaultValue(false)
+                      .IsRequired();
+
                 entity.Property(x => x.Name)
                       .HasMaxLength(30)
                       .IsRequired();

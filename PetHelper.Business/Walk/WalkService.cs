@@ -47,9 +47,9 @@ namespace PetHelper.Business.Walk
             return walkResult;
         }
 
-        public async Task<ServiceResult<Empty>> FinishWalk(Guid walkId)
+        public async Task<ServiceResult<WalkModel>> FinishWalk(Guid walkId)
         {
-            var serviceResult = new ServiceResult<Empty>();
+            var serviceResult = new ServiceResult<WalkModel>();
 
             if(walkId == Guid.Empty)
             {
@@ -71,10 +71,12 @@ namespace PetHelper.Business.Walk
 
             targetWalk!.EndTime = DateTime.UtcNow;
 
-            serviceResult = await _repository.Update(targetWalk);
-            serviceResult.CatchAny();
+            var updateResult = await _repository.Update(targetWalk);
+            updateResult.CatchAny();
 
-            return serviceResult;
+            serviceResult.Value = targetWalk;
+
+            return serviceResult.Success();
         }
     }
 }

@@ -13,6 +13,8 @@ namespace PetHelper.Business.Pet
 
         Task<ServiceResult<PetModel>> GetPet(Expression<Func<PetModel, bool>> predicate);
 
+        Task<ServiceResult<IEnumerable<PetModel>>> GetPets(Expression<Func<PetModel, bool>> predicate);
+
         Task<ServiceResult<Empty>> RemovePet(Guid petId);
     }
 }

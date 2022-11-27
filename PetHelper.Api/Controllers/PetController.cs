@@ -34,5 +34,9 @@ namespace PetHelper.Api.Controllers
         [HttpDelete("{petId:guid}")]
         public async Task<ServiceResult<Empty>> RemovePet(Guid petId)
             => await RunWithServiceResult(async () => await _petService.RemovePet(petId));
+
+        [HttpGet("user/{userId:guid}")]
+        public async Task<ServiceResult<IEnumerable<PetModel>>> GetUserPets(Guid userId)
+            => await RunWithServiceResult(async () => await _petService.GetPets(x => x.OwnerId == userId));
     }
 }

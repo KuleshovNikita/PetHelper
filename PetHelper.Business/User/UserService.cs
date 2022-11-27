@@ -11,16 +11,17 @@ using System.Linq.Expressions;
 
 namespace PetHelper.Business.User
 {
-    public class UserService : DataAccessableService<UserModel>, IUserService
+    public class UserService : IUserService
     {
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IUserRepository _repository;
         private readonly IMapper _mapper;
 
-        public UserService(IMapper mapper, IPasswordHasher passwordHasher, IRepository<UserModel> repository) 
-            : base(repository)
+        public UserService(IMapper mapper, IPasswordHasher passwordHasher, IUserRepository repository)
         {
             _mapper = mapper;
             _passwordHasher = passwordHasher;
+            _repository = repository;
         }
 
         public async Task<ServiceResult<Empty>> AddUser(UserModel userModel)

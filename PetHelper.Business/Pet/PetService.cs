@@ -11,15 +11,17 @@ using System.Linq.Expressions;
 
 namespace PetHelper.Business.Pet
 {
-    public class PetService : DataAccessableService<PetModel>, IPetService
+    public class PetService : IPetService
     {
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
+        private readonly IPetRepository _repository;
 
-        public PetService(IUserService userService, IMapper mapper, IRepository<PetModel> repo) : base(repo)
+        public PetService(IUserService userService, IMapper mapper, IPetRepository repo)
         {
             _mapper = mapper;
             _userService = userService;
+            _repository = repo;
         }
 
         public async Task<ServiceResult<Empty>> AddPet(PetRequestModel petRequestModel, Guid userId)
@@ -50,6 +52,13 @@ namespace PetHelper.Business.Pet
         public async Task<ServiceResult<PetModel>> GetPet(Expression<Func<PetModel, bool>> predicate)
         {
             var result = await _repository.FirstOrDefault(predicate);
+            return result.Catch<EntityNotFoundException>(Resources.TheItemDoesntExist)
+                         .CatchAny();
+        }
+
+        public async Task<ServiceResult<IEnumerable<PetModel>>> GetPets(Expression<Func<PetModel, bool>> predicate)
+        {
+            var result = await _repository.Where(predicate);
             return result.Catch<EntityNotFoundException>(Resources.TheItemDoesntExist)
                          .CatchAny();
         }

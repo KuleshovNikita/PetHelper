@@ -77,7 +77,7 @@ namespace PetHelper.DataAccess.Repo
             }
         }
 
-        public virtual Task<ServiceResult<Empty>> Update(T entity)
+        public virtual async Task<ServiceResult<Empty>> Update(T entity)
         {
             var result = new ServiceResult<Empty>();
 
@@ -85,13 +85,13 @@ namespace PetHelper.DataAccess.Repo
             {
                 _context.Set<T>().Update(entity);
                 _context.Entry(entity).State = EntityState.Modified;
-                _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-                return Task.FromResult(result.Success());
+                return result.Success();
             }
             catch (Exception ex)
             {
-                return Task.FromResult(result.Fail(ex));
+                return result.Fail(ex);
             }
         }
 
