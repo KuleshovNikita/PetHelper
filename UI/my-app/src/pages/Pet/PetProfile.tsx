@@ -4,12 +4,12 @@ import { useEffect, useState, useRef } from "react";
 import { useStore } from "../../api/stores/Store";
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
-import { buttonImageIconStyles, mainBoxStyle, 
+import { mainBoxStyle, 
          profileBoxStyle, 
-         avatarStyle, 
-         profileButtonHoverStyles, 
-         profileButtonsBoxStyles 
-} from "../UserProfile/UserProfileStyles";
+         avatarStyle } from "../UserProfile/UserProfileStyles";
+import { buttonImageIconStyles,
+         buttonHoverStyles, 
+         buttonBoxStyles } from "../../styles/Button/ButtonStyles";
 import { toast } from "react-toastify";
 import React from "react";
 import { useParams } from "react-router";
@@ -213,9 +213,9 @@ export default function PetProfile() {
                         onChange={handleAllowedDistanceChange}
                     />
                 </Box>
-                <Box sx={profileButtonsBoxStyles}>
+                <Box sx={buttonBoxStyles}>
                     <Button
-                        sx={profileButtonHoverStyles}   
+                        sx={buttonHoverStyles}   
                         variant="contained"   
                         onClick={setProfileChanging}
                         disabled={!changeMode}             
@@ -227,7 +227,7 @@ export default function PetProfile() {
                     </Button>
 
                     <Button
-                        sx={profileButtonHoverStyles}   
+                        sx={buttonHoverStyles}   
                         variant="contained"   
                         onClick={submit} 
                         disabled={changeMode}          

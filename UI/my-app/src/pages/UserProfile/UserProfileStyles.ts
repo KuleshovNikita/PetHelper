@@ -24,23 +24,3 @@ export const avatarStyle = {
     mb: 2,
     bgcolor: deepOrange[500]
 }
-
-export const profileButtonsBoxStyles = { 
-    display: "flex", 
-    justifyContent: "space-between", 
-    width: 260 
-}
-
-export const profileButtonHoverStyles = { 
-    "&:hover": { 
-        bgcolor: "orange" 
-    }, 
-    mt: 1 
-}
-
-export const buttonImageIconStyles = { 
-    ml: 1, 
-    bgcolor: "white", 
-    color: "blue" 
-}
-

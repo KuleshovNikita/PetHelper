@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DoneIcon from '@mui/icons-material/Done';
 import { useStore } from "../../api/stores/Store";
 import { toast } from "react-toastify";
+import { listItemButton } from "../../styles/Button/ButtonStyles";
 
 type Props = {
     scheduleItem: WalkingSchedule,
@@ -16,15 +17,6 @@ type Props = {
 const timePickerStyles = {
     width: 120,
     mr: 1
-}
-
-const listItemButton = {
-    bgcolor: "white",
-    color: "orange",
-    mr: 1,
-    "&:hover": {
-        bgcolor: "brown"
-    }
 }
 
 export default function ScheduleItem({ scheduleItem, removeItem }: Props) {

@@ -4,13 +4,12 @@ import { useEffect, useState, useRef } from "react";
 import { useStore } from "../../api/stores/Store";
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
-import { deepOrange } from "@mui/material/colors";
-import { buttonImageIconStyles, mainBoxStyle, 
+import { mainBoxStyle, 
          profileBoxStyle, 
-         avatarStyle, 
-         profileButtonHoverStyles, 
-         profileButtonsBoxStyles 
-} from "./UserProfileStyles";
+         avatarStyle } from "./UserProfileStyles";
+import { buttonImageIconStyles,
+         buttonHoverStyles, 
+         buttonBoxStyles } from "../../styles/Button/ButtonStyles";
 import { toast } from "react-toastify";
 import { UserUpdateModel } from "../../models/User";
 import React from "react";
@@ -250,9 +249,9 @@ export default function UserProfile() {
                         onChange={handlePasswordChange}
                     />
                 </Box>
-                <Box sx={profileButtonsBoxStyles}>
+                <Box sx={buttonBoxStyles}>
                     <Button
-                        sx={profileButtonHoverStyles}   
+                        sx={buttonHoverStyles}   
                         variant="contained"   
                         onClick={setProfileChanging}
                         disabled={!changeMode}             
@@ -264,7 +263,7 @@ export default function UserProfile() {
                     </Button>
 
                     <Button
-                        sx={profileButtonHoverStyles}   
+                        sx={buttonHoverStyles}   
                         variant="contained"   
                         onClick={submit} 
                         disabled={changeMode}          

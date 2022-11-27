@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { AppRoutes } from './components/Routing/Routes';
 import { ToastContainer } from "react-toastify";
 import AppLoader from './AppLoader';
+import Header from './components/Header/Header';
 
 function App() {
   const { commonStore, userStore, petStore } = useStore();
@@ -22,6 +23,7 @@ function App() {
   return (
     <BrowserRouter>
       <React.StrictMode>
+        <Header />        
         <main className="main">
           <AppRoutes />
         </main>
