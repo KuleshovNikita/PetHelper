@@ -1,12 +1,14 @@
-import { Box, Button, TextFieldProps, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useStore } from "../../api/stores/Store";
-import { AnimalType, Pet } from "../../models/Pet";
+import { AnimalType, Pet, WalkRequestModel } from "../../models/Pet";
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { toast } from "react-toastify";
 import { listItemButton } from "../../styles/Button/ButtonStyles";
 import { useNavigate } from "react-router";
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import HomeIcon from '@mui/icons-material/Home';
 
 type Props = {
     petItem: Pet,
@@ -14,7 +16,8 @@ type Props = {
 }
 
 export default function PetListItem({ petItem, removeItem }: Props) {
-    const { petStore } = useStore();
+    const { petStore, walkStore } = useStore();
+    const [ isPetWalking, setPetWalking ] = useState(petItem.isWalking);
     const navigate = useNavigate();
 
     const removePet = async () => {
@@ -46,6 +49,39 @@ export default function PetListItem({ petItem, removeItem }: Props) {
         return secondaryProps.join(' | ');
     }
 
+    const startNewWalk = async () => {
+        const walk: WalkRequestModel = {
+            scheduleId: '1EA64A09-CB37-4AA0-10BD-08DABDCA71B6',
+            petId: petItem.id
+        };
+
+        const result = await walkStore.startWalk(walk);
+
+        if(result.isSuccessful) {
+            setPetWalking(true);
+            toast.success("A new walk has started");
+        } else {
+            toast.error(result.clientErrorMessage);
+        }
+    }
+
+    const finishWalk = async () => {
+        if(!walkStore.walks) {
+            setPetWalking(false);
+            return;
+        }
+
+        const walkId = walkStore.walks?.find(w => w.endTime === undefined)?.id;
+        const result = await walkStore.finishWalk(walkId!);
+
+        if(result.isSuccessful) {
+            setPetWalking(false);
+            toast.success("The walk has finished");
+        } else {
+            toast.error(result.clientErrorMessage);
+        }
+    }
+
     const openPetProfile = () => {
         navigate(`/pet/${petItem.id}`);
     }
@@ -62,11 +98,24 @@ export default function PetListItem({ petItem, removeItem }: Props) {
             </Box>
 
             <Box sx={{ display: "flex", justifyContent: "end" }}>
-                <Button sx={{...listItemButton, ml: 1}} onClick={openPetProfile}>
-                    <VisibilityIcon/>
+                <Button sx={listItemButton} onClick={openPetProfile}>
+                    <VisibilityIcon fontSize="large"/>
                 </Button>
+
+                {
+                        isPetWalking
+                    ?
+                        <Button sx={listItemButton} onClick={finishWalk}>
+                            <HomeIcon fontSize="large"/>
+                        </Button>
+                    :
+                        <Button sx={listItemButton} onClick={startNewWalk}>
+                            <DirectionsRunIcon fontSize="large"/>
+                        </Button>
+                }
+                
                 <Button sx={listItemButton} onClick={removePet}>
-                    <DeleteIcon/>
+                    <DeleteIcon fontSize="large"/>
                 </Button>
             </Box>
         </Box>

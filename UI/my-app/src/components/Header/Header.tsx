@@ -45,7 +45,7 @@ export default function Header() {
                         <Button sx={{...listItemButton, width: "20px", height: "40px"}}
                                 onClick={logout}
                         >
-                            <LogoutIcon />
+                            <LogoutIcon fontSize="large"/>
                         </Button>
                     </Box>
                 </Box>

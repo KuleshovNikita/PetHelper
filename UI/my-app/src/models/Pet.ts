@@ -4,6 +4,7 @@ export interface Pet extends BaseEntity {
     name: string;
     animalType?: AnimalType;
     breed?: string;
+    isWalking: boolean;
     allowedDistance: number;
     ownerId: string;
     walkingSchedule: WalkingSchedule[]
@@ -14,6 +15,20 @@ export interface WalkingSchedule extends BaseEntity {
     scheduledEnd: string,
     petId: string,
     pet: Pet
+}
+
+export interface Walk extends BaseEntity {
+    startTime: string,
+    endTime?: string,
+    scheduleId: string,
+    schedule: WalkingSchedule,
+    petId: string,
+    pet: Pet
+}
+
+export interface WalkRequestModel {
+    scheduleId: string,
+    petId: string
 }
 
 export interface WalkingScheduleRequestModel {

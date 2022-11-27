@@ -68,14 +68,11 @@ export function Login() {
         }
 
         const user: UserLoginModel = { login: email, password: password };
-
         const result = await userStore.login(user);
 
         if(!result.isSuccessful) {
             toast.error(result.clientErrorMessage);
         } else {
-
-
             toast.success(`Successful login, ${userStore.user?.firstName}`);
             navigate(fromPage, { replace: true });
         }

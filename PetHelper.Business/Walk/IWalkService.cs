@@ -9,7 +9,7 @@ namespace PetHelper.Business.Walk
     {
         Task<ServiceResult<WalkModel>> StartWalk(WalkRequestModel walkRequestModel);
 
-        Task<ServiceResult<Empty>> FinishWalk(Guid walkId);
+        Task<ServiceResult<WalkModel>> FinishWalk(Guid walkId);
 
         Task<ServiceResult<IEnumerable<WalkModel>>> GetWalks(Expression<Func<WalkModel, bool>> predicate);
     }

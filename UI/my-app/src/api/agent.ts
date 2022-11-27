@@ -4,7 +4,7 @@ import { store } from "./stores/Store";
 import { redirect } from "react-router";
 import { User, UserLoginModel, UserRegisterModel, UserUpdateModel } from "../models/User";
 import { EmptyResult, Result } from "../models/Result";
-import { Pet, PetUpdateModel, WalkingScheduleRequestModel, WalkingScheduleUpdateModel } from "../models/Pet";
+import { Pet, PetUpdateModel, Walk, WalkingScheduleRequestModel, WalkingScheduleUpdateModel, WalkRequestModel } from "../models/Pet";
 
 interface ErrorResponse {
     errors: { detail: string }[];
@@ -67,6 +67,7 @@ const requests = {
     post: <T>(url: string, body: {}) => axios.post<T>(url, body).then(responseBody),
     put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
     delete: <T>(url: string) => axios.delete<T>(url).then(responseBody),
+    patch: <T>(url: string) => axios.patch<T>(url).then(responseBody),
 };
 
 const Auth = {
@@ -86,6 +87,12 @@ const Pets = {
     removePet: (id: string) => requests.delete<EmptyResult>(`/pet/${id}`),
 }
 
+const Walks = {
+    startWalk: (body: WalkRequestModel) => requests.post<Result<Walk>>('/walk', body),
+    finishWalk: (walkId: string) => requests.patch<Result<Walk>>(`/walk/${walkId}`),
+    getPetWalks: (petId: string) => requests.get<Result<Walk[]>>(`/walk/${petId}`),
+}
+
 const Schedules = {
     updateSchedule: (body: WalkingScheduleUpdateModel) => 
         requests.put<EmptyResult>(`/schedule/${body.id}`, body),
@@ -99,5 +106,6 @@ export const agent = {
     Auth,
     Profile,
     Pets,
-    Schedules
+    Schedules,
+    Walks
 };

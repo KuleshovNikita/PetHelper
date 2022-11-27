@@ -14,13 +14,13 @@ import { toast } from "react-toastify";
 import { UserUpdateModel } from "../../models/User";
 import React from "react";
 import PetsList from "../../components/Pet/PetsList";
+import AppLoader from "../../AppLoader";
 
 const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
 type Focus = React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>; 
 
 export default function UserProfile() {
     const passwordSecret = "**********";
-
     const { userStore } = useStore();
     const currentUser = userStore.user;
 

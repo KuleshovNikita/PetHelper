@@ -10,10 +10,10 @@ import AppLoader from './AppLoader';
 import Header from './components/Header/Header';
 
 function App() {
-  const { commonStore, userStore, petStore } = useStore();
+  const { commonStore, userStore, petStore, walkStore } = useStore();
 
   useEffect(() => {
-    AppLoader({ commonStore, userStore, petStore });
+    AppLoader({ commonStore, userStore, petStore, walkStore });
   }, [commonStore, userStore, petStore]);
 
   if (!commonStore.appLoaded) {

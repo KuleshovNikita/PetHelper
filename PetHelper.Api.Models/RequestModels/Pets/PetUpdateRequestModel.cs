@@ -6,6 +6,8 @@ namespace PetHelper.Api.Models.RequestModels.Pets
     {
         public string? Name { get; set; }
 
+        public bool? IsWalking { get; set; }
+
         public AnimalType? AnimalType { get; set; }
 
         public string? Breed { get; set; }

@@ -110,10 +110,7 @@ export default function ScheduleItem({ scheduleItem, removeItem }: Props) {
 
     return (
         <Box sx={{ display: "grid", gridTemplateColumns: "2fr 1fr" }}>
-            <Typography 
-                variant="h4" 
-                component="h4"
-                color="white">
+            <Typography variant="h4" component="h4" color="white">
                     Start: <TimePicker
                                 value={start}
                                 onChange={(value) => { setStart(value) }}
@@ -135,17 +132,16 @@ export default function ScheduleItem({ scheduleItem, removeItem }: Props) {
                     (scheduleItem.id !== "" && isTextFieldDisabled)
                     ? 
                         <Button sx={{...listItemButton, ml: 1}} onClick={changeScheduledTime}>
-                            <EditIcon/>
+                            <EditIcon fontSize="large"/>
                         </Button>
                     :
                         <Button sx={{...listItemButton, ml: 1}} onClick={changeScheduledTime}>
-                            <DoneIcon/>
+                            <DoneIcon fontSize="large"/>
                         </Button>
                 }
 
-                <Button sx={listItemButton}
-                        onClick={removeSchedule}>
-                    <DeleteIcon/>
+                <Button sx={listItemButton} onClick={removeSchedule}>
+                    <DeleteIcon fontSize="large"/>
                 </Button>
             </Box>
         </Box>
