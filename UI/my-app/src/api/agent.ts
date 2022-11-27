@@ -4,7 +4,7 @@ import { store } from "./stores/Store";
 import { redirect } from "react-router";
 import { User, UserLoginModel, UserRegisterModel, UserUpdateModel } from "../models/User";
 import { EmptyResult, Result } from "../models/Result";
-import { Pet, PetUpdateModel, Walk, WalkingScheduleRequestModel, WalkingScheduleUpdateModel, WalkRequestModel } from "../models/Pet";
+import { Pet, PetRequestModel, PetUpdateModel, Walk, WalkingScheduleRequestModel, WalkingScheduleUpdateModel, WalkRequestModel } from "../models/Pet";
 
 interface ErrorResponse {
     errors: { detail: string }[];
@@ -85,6 +85,7 @@ const Pets = {
     updatePet: (body: PetUpdateModel) => requests.put<EmptyResult>(`/pet/${body.id}`, body),
     getUserPets: (id: string) => requests.get<Result<Pet[]>>(`/pet/user/${id}`),
     removePet: (id: string) => requests.delete<EmptyResult>(`/pet/${id}`),
+    addPet: (body: PetRequestModel) => requests.post<EmptyResult>('/pet', body),
 }
 
 const Walks = {

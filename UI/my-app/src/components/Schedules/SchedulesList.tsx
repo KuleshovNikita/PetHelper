@@ -7,7 +7,8 @@ import ScheduleItem from "./ScheduleItem";
 type Props = {
     schedules: WalkingSchedule[],
     pet: Pet,
-    isChangingMode: boolean
+    isChangingMode: boolean,
+    isNewPet: boolean
 }
 
 const listItemStyle = {
@@ -22,10 +23,13 @@ const addScheduleButton = {
         bgcolor: "brown"
     },
     bgcolor: "orange", 
-    color: "white"
+    color: "white",
+    "&:disabled": {
+        bgcolor: "lightgray"
+    }
 }
 
-export default function SchedulesList({ schedules, pet, isChangingMode }: Props) {
+export default function SchedulesList({ schedules, pet, isChangingMode, isNewPet }: Props) {
     const [scheduleItems, setScheduleItems] = useState(schedules);
 
     const addNewSchedule = () => {
@@ -63,8 +67,7 @@ export default function SchedulesList({ schedules, pet, isChangingMode }: Props)
                     ))
                 }
                 
-            <Button sx={addScheduleButton}
-                    onClick={addNewSchedule}>
+            <Button sx={addScheduleButton} onClick={addNewSchedule} disabled={isNewPet}>
                 <AddIcon/>
             </Button>
         </>

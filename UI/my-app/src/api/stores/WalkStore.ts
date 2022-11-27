@@ -25,18 +25,13 @@ export default class WalkStore {
         if(!result.isSuccessful) {
             return result;
         }
-        console.log("success");
 
         runInAction(() => {
-
-            console.log(this.walks);
-
             if(!this.walks) {
                this.walks = [];
             }
 
             this.walks?.push(result.value);
-            console.log(this.walks);
         });
 
         return result;

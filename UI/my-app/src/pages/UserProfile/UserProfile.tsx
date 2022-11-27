@@ -275,7 +275,7 @@ export default function UserProfile() {
                     </Button>
                 </Box>
             </Box>
-            <Box>
+            <Box sx={{ ml: 2 }}>
                 <PetsList pets={currentUser?.pets!}/>
             </Box>
         </Box>

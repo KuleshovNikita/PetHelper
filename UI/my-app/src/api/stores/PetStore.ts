@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { Pet, PetUpdateModel } from "../../models/Pet";
+import { Pet, PetRequestModel, PetUpdateModel } from "../../models/Pet";
 import { agent } from "../agent";
 
 export default class PetStore {
@@ -32,4 +32,6 @@ export default class PetStore {
 
         return result;
     } 
+
+    addPet = async (pet: PetRequestModel) => await agent.Pets.addPet(pet);
 }

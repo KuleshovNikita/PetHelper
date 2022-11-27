@@ -12,21 +12,42 @@ import { buttonImageIconStyles,
          buttonBoxStyles } from "../../styles/Button/ButtonStyles";
 import { toast } from "react-toastify";
 import React from "react";
-import { useParams } from "react-router";
-import { AnimalType, PetUpdateModel } from "../../models/Pet";
+import { useNavigate, useParams } from "react-router";
+import { AnimalType, Pet, PetRequestModel, PetUpdateModel } from "../../models/Pet";
 import SchedulesList from "../../components/Schedules/SchedulesList";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
-const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
 type Focus = React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>; 
 
 export default function PetProfile() {
 
-    const { userStore, petStore } = useStore();
+    const { petStore } = useStore();
     const { id, isRedactingMode } = useParams();
+    const navigate = useNavigate();
 
-    const currentPet = petStore.pets!.find(p => p.id === id);
+    const isNewPage = id?.toLocaleLowerCase() === 'new';
+
+    const getCurrentPet = () => {
+        if(!isNewPage) {
+            return petStore.pets!.find(p => p.id === id);
+        } else {
+            const pet: Pet = {
+                name: "",
+                allowedDistance: 15,
+                animalType: 0,
+                breed: "",
+                isWalking: false,
+                ownerId: "",
+                walkingSchedule: [],
+                id: ""
+            }
+
+            return pet;
+        }        
+    }
+
+    const currentPet = getCurrentPet();
 
     const [name, setName] = useState(currentPet!.name);
     const [nameErrors, setNameErrors] = useState('');
@@ -40,7 +61,7 @@ export default function PetProfile() {
     const [allowedDistance, setAllowedDistance] = useState(currentPet!.allowedDistance);
     const [allowedDistanceErrors, setAllowedDistanceErrors] = useState('');
 
-    const [changeMode, setChangeMode] = useState(true);
+    const [changeMode, setChangeMode] = useState(!isNewPage);
 
     const setProfileChanging = () => {
         setChangeMode(!changeMode);
@@ -73,22 +94,6 @@ export default function PetProfile() {
         }
 
         setAnimalType(animalType);
-    }
-
-    const handleBreedChange = (e: Focus) => {
-        const breed = Number(e.target.value);
-
-        if(!breed) {
-            return;
-        } else if (breed < 10) {
-            setBreedErrors('The minimal allowed age is 10');
-        } else if (breed > 100) {
-            setBreedErrors('The maximal allowed age is 100');
-        } else {
-            setBreedErrors('');
-        }
-
-        setBreed(String(breed));
     }
 
     const handleAllowedDistanceChange = (e: Focus) => {
@@ -124,7 +129,30 @@ export default function PetProfile() {
         return !isTouched || (isTouched && hasAnyError);
     }
 
+    const createPet = async () => {
+        const pet: PetRequestModel = {
+            name: name,
+            allowedDistance: allowedDistance,
+            animalType: Number(Object.entries(AnimalType).find((p) => p[0].toLocaleLowerCase() === animalType.toLocaleLowerCase())?.[1]!),
+            breed: breed
+        }
+
+        const result = await petStore.addPet(pet);
+
+        if(!result.isSuccessful) {
+            toast.error(result.clientErrorMessage);
+        } else {
+            toast.success('A new pet has been added');
+            navigate('/userProfile', { replace: true });
+        }
+    }
+
     const submit = async () => {
+        if(isNewPage) {
+            await createPet();
+            return;
+        }
+
         if (hasErrors()) {
             return;
         }
@@ -144,7 +172,7 @@ export default function PetProfile() {
         if(!result.isSuccessful) {
             toast.error(result.clientErrorMessage);
         } else {
-            toast.success('Pet\'s data was updated');
+            toast.success('Pet\'s data has been updated');
         }
     }
 
@@ -161,7 +189,7 @@ export default function PetProfile() {
             <Box>
                 <Box sx={profileBoxStyle}>
                     <Avatar sx={avatarStyle}>
-                        {currentPet?.name[0].toUpperCase()}
+                        {name[0]?.toUpperCase() ?? ''}
                     </Avatar>
 
                     <TextField 
@@ -203,8 +231,8 @@ export default function PetProfile() {
                         inputRef={breedRef}
                         error={breedErrors.length !== 0}
                         margin="dense"
-                        onFocus={(e) => handleBreedChange(e)}
-                        onChange={handleBreedChange}
+                        onFocus={(e) => setBreed(e.target.value)}
+                        onChange={(e) => setBreed(e.target.value)}
                     />
                     <TextField 
                         label="Allowed Distance"
@@ -252,6 +280,7 @@ export default function PetProfile() {
                     <SchedulesList 
                         schedules={currentPet?.walkingSchedule!} 
                         pet={currentPet!}
+                        isNewPet={isNewPage}
                         isChangingMode={getRedactingMode()}
                     />
                 </LocalizationProvider>
